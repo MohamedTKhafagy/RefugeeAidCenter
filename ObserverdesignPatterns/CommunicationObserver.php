@@ -1,0 +1,6 @@
+<?php
+interface CommunicationObserver{
+
+}
+
+?>
