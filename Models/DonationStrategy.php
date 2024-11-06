@@ -1,20 +1,37 @@
 <?php
 
 interface DonationStrategy{
-    public function Donate();
+    public function Donate() : bool;
+    public function Description();
 }
 
 class ClothesDonation implements DonationStrategy{
     private $Quantity;
-    public function Donate() {
+    public function __construct($Quantity)
+    {
+        $this->Quantity = $Quantity;
+    }
+    public function Donate() : bool{
         $inventory = new Inventory();
-        $inventory->AddClothesQuantity($this->Quantity);
+        return $inventory->AddClothesQuantity($this->Quantity);
+    }
+    public function Description()
+    {
+        return "You donated " + $this->Quantity + " articles of clothes";
     }
 }
 class FoodResourceDonation implements DonationStrategy{
     private $Quantity;
-    public function Donate() {
+    public function __construct($Quantity)
+    {
+        $this->Quantity = $Quantity;
+    }
+    public function Donate() : bool{
         $inventory = new Inventory();
-        $inventory->AddFoodResourceQuantity($this->Quantity);
+        return $inventory->AddFoodResourceQuantity($this->Quantity);
+    }
+    public function Description()
+    {
+        return "You donated " + $this->Quantity + " food resources";
     }
 }
