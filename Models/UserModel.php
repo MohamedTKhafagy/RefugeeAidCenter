@@ -15,5 +15,6 @@ abstract class User{
 
 
     abstract public function RegisterEvent();
+    abstract public function Update();
 
 }
