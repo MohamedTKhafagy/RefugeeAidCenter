@@ -1,0 +1,14 @@
+[
+    {
+        "SchoolID": "1",
+        "Name": "Greenwood High",
+        "Address": "123 Elm St, Springfield",
+        "StudentCount": 500
+    },
+    {
+        "SchoolID": "2",
+        "Name": "Sunnyvale School",
+        "Address": "456 Oak St, Springfield",
+        "StudentCount": 300
+    }
+]

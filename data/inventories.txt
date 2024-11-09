@@ -1,0 +1,20 @@
+[
+    {
+        "InventoryID": "INV001",
+        "Money": 5000,
+        "ClothesQuantity": 200,
+        "FoodResourcesQuantity": 300
+    },
+    {
+        "InventoryID": "INV002",
+        "Money": 3000,
+        "ClothesQuantity": 150,
+        "FoodResourcesQuantity": 100
+    },
+    {
+        "InventoryID": "INV003",
+        "Money": 7000,
+        "ClothesQuantity": 400,
+        "FoodResourcesQuantity": 250
+    }
+]
