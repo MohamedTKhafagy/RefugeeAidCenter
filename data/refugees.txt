@@ -1,0 +1,50 @@
+[
+    {
+        "RefugeeID": "R12345",
+        "PassportNumber": "P987654321",
+        "Advisor": "John Doe", 
+        "Shelter": "Shelter A",
+        "HealthCare": "Basic Healthcare Plan",
+        "Name": "Ali Ahmed",
+        "Age": 30,
+        "Gender": "Male",
+        "Address": "123 Main Street, City, Country",
+        "Phone": "+1234567890",
+        "Nationality": "Country A",
+        "Type": "Asylum Seeker",
+        "Email": "ali.ahmed@example.com",
+        "Preference": "Prefer English-speaking advisor"
+    },
+    {
+        "RefugeeID": "R67890",
+        "PassportNumber": "P1122334455",
+        "Advisor": "Jane Smith", 
+        "Shelter": "Shelter B",
+        "HealthCare": "Comprehensive Healthcare Plan",
+        "Name": "Maria Gonzalez",
+        "Age": 25,
+        "Gender": "Female",
+        "Address": "456 Another Street, City, Country",
+        "Phone": "+9876543210",
+        "Nationality": "Country B",
+        "Type": "Refugee",
+        "Email": "maria.gonzalez@example.com",
+        "Preference": "Prefer Spanish-speaking advisor"
+    },
+    {
+        "RefugeeID": "R11223",
+        "PassportNumber": "P5566778899",
+        "Advisor": "Mohammed Al Farsi", 
+        "Shelter": "Shelter C",
+        "HealthCare": "Basic Healthcare Plan",
+        "Name": "Ibrahim Mustafa",
+        "Age": 40,
+        "Gender": "Male",
+        "Address": "789 New Street, City, Country",
+        "Phone": "+1122334455",
+        "Nationality": "Country C",
+        "Type": "Asylum Seeker",
+        "Email": "ibrahim.mustafa@example.com",
+        "Preference": "Prefer Arabic-speaking advisor"
+    }
+]
