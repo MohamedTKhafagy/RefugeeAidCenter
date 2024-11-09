@@ -51,10 +51,10 @@
 
     <?php if (isset($refugee)) { ?>
         <h3>Refugee Details:</h3>
-        <p>Name: <?php echo $refugee->Name; ?></p>
-        <p>Age: <?php echo $refugee->Age; ?></p>
+        <p>Name: <?php echo $refugee->getRefugeeName(); ?></p>
+        <p>Age: <?php echo $refugee->getRefugeeAge(); ?></p>
         <!-- Add more fields as needed -->
-    <?php } ?>
+    <?php }  ?>
 </body>
 
 </html>

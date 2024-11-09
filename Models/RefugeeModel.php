@@ -10,7 +10,7 @@ class Refugee extends User
     private $Shelter; // Instance of Shelter
     private $HealthCare; // Instance of HealthcareStrategy
 
-    private static $file = '../data/refugees.txt'; // Path to text file
+    private static $file = __DIR__ . '/../data/refugees.txt'; // Path to text file
 
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare)
     {
@@ -21,6 +21,7 @@ class Refugee extends User
         $this->Shelter = $Shelter; // Pass an instance of Shelter
         $this->HealthCare = $HealthCare; // Pass an instance of HealthcareStrategy
     }
+
 
     public function RegisterEvent()
     {

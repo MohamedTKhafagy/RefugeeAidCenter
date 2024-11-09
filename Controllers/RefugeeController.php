@@ -31,3 +31,5 @@ class RefugeeController
         return Refugee::findById($id);
     }
 }
+
+?>

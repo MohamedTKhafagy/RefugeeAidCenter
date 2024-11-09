@@ -41,4 +41,14 @@ abstract class User
     {
         return "Name: $this->Name, Age: $this->Age, Gender: $this->Gender, Nationality: $this->Nationality, Email: $this->Email";
     }
+
+    public function getRefugeeName()
+    {
+        return $this->Name;
+    }
+
+    public function getRefugeeAge()
+    {
+        return $this->Age;
+    }
 }
