@@ -28,8 +28,8 @@ class RefugeeController
 
     public function findRefugeeById($id)
     {
-        return Refugee::findById($id);
+
+        $refugee = Refugee::findById($id);
+        require  'Views/RefugeeView.php';
     }
 }
-
-?>
