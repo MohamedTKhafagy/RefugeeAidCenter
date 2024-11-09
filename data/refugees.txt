@@ -1,8 +1,8 @@
 [
     {
-        "RefugeeID": "R12345",
+        "Id": "R12345",
         "PassportNumber": "P987654321",
-        "Advisor": "John Doe", 
+        "Advisor": "John Doe",
         "Shelter": "Shelter A",
         "HealthCare": "Basic Healthcare Plan",
         "Name": "Ali Ahmed",
@@ -16,9 +16,9 @@
         "Preference": "Prefer English-speaking advisor"
     },
     {
-        "RefugeeID": "R67890",
+        "Id": "R67890",
         "PassportNumber": "P1122334455",
-        "Advisor": "Jane Smith", 
+        "Advisor": "Jane Smith",
         "Shelter": "Shelter B",
         "HealthCare": "Comprehensive Healthcare Plan",
         "Name": "Maria Gonzalez",
@@ -32,9 +32,9 @@
         "Preference": "Prefer Spanish-speaking advisor"
     },
     {
-        "RefugeeID": "R11223",
+        "Id": "R11223",
         "PassportNumber": "P5566778899",
-        "Advisor": "Mohammed Al Farsi", 
+        "Advisor": "Mohammed Al Farsi",
         "Shelter": "Shelter C",
         "HealthCare": "Basic Healthcare Plan",
         "Name": "Ibrahim Mustafa",
@@ -46,5 +46,21 @@
         "Type": "Asylum Seeker",
         "Email": "ibrahim.mustafa@example.com",
         "Preference": "Prefer Arabic-speaking advisor"
+    },
+    {
+        "Id": "R4326",
+        "PassportNumber": "3012129308273",
+        "Advisor": "ayhaga",
+        "Shelter": "ayhaga",
+        "HealthCare": "ayhaga",
+        "Name": "Ahmed Nezar",
+        "Age": "23",
+        "Gender": "Male",
+        "Address": "orayeb",
+        "Phone": "01147292955",
+        "Nationality": "Egyptian",
+        "Type": "Refugee",
+        "Email": "ahmed@ahmed.com",
+        "Preference": "ayhaga"
     }
 ]

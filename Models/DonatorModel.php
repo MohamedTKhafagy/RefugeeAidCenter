@@ -22,6 +22,11 @@ class Donator extends User{
         return $Donation->GenerateInvoice();
     }
 
+    public function Update()
+    {
+        // Implement the Update method
+    }
+
     public function RegisterEvent()
     {
         //to be done when events are implemented    
