@@ -1,4 +1,5 @@
 <?php
+include_once 'FacilityClassModel.php';
 
 class Shelter extends Facility
 {
