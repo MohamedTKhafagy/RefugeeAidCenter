@@ -1,6 +1,7 @@
 <?php
 
-
+include_once "DonationStrategy.php";
+include_once "MoneyDonationDecorator.php";
 class Donation {
     private $ID;
     private DonationStrategy $DonationStrategy;
