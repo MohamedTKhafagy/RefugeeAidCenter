@@ -1,2 +1,2 @@
 <?php
-class Controller {}
+class RefugeeController {}
