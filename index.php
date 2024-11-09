@@ -1,67 +1,51 @@
 
 
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// require_once 'Controllers/RefugeeController.php';
-
-// $controller = new RefugeeController();
-
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     if ($_POST['action'] === 'save') {
-//         $controller->saveRefugee($_POST);
-//     }
-// } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'find') {
-//     $refugee = $controller->findRefugeeById($_GET['id']);
-// } else {
-//     include 'Views/RefugeeView.php';
-// }
-
-//-------------------------------******-----------------
-// require_once 'Controllers/ShelterController.php';
-
-// $controller = new ShelterController();
-
-// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-//     if ($_POST['action'] === 'updateCapacity' && isset($_POST['ShelterID'], $_POST['newCapacity'])) {
-//         $controller->updateCapacity($_POST['ShelterID'], (int)$_POST['newCapacity']);
-//     }
-// } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
-//     if ($_GET['action'] === 'showAll') {
-//         $controller->showAllShelters();
-//     } elseif ($_GET['action'] === 'show' && isset($_GET['ShelterID'])) {
-//         $controller->showShelter((int)$_GET['ShelterID']);
-//     }
-// } else {
-//     // Default action: show all shelters
-//     $controller->showAllShelters();
-// }
-
-//-----------------------------------------
-
-
-// require_once 'Controllers/InventoryController.php';
-
-// $controller = new InventoryController();
-
-// if (isset($_GET['action']) && $_GET['action'] === 'show' && isset($_GET['inventoryID'])) {
-//     $controller->showInventory($_GET['inventoryID']);
-// } else {
-//     $controller->showAllInventory();
-// }
-// 
-
-///----------------------------------
-
-
+require_once 'Controllers/RefugeeController.php';
+require_once 'Controllers/HospitalController.php';
+require_once 'Controllers/ShelterController.php';
 require_once 'Controllers/SchoolController.php';
+$basePath = dirname($_SERVER['SCRIPT_NAME']);
+$requestUri = str_replace($basePath, '', $_SERVER['REQUEST_URI']);
+$requestUri = trim($requestUri, '/');
 
-$controller = new SchoolController();
+$parsedUrl = parse_url($requestUri);
+$path = isset($parsedUrl['path']) ? $parsedUrl['path'] : '';
+$queryString = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
 
-if (isset($_GET['action']) && $_GET['action'] === 'show' && isset($_GET['SchoolID'])) {
-    $controller->showSchool($_GET['SchoolID']);
+// Split the path into segments
+$segments = explode('/', trim($path, '/'));
+
+if ($segments[0] == 'refugees') {
+    $controller = new RefugeeController();
+    if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else $controller->index();
+} else if ($segments[0] == 'hospitals') {
+    $controller = new HospitalController();
+    if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else $controller->index();
+} elseif ($segments[0] == 'shelters') {
+
+    $controller = new ShelterController();
+    if (isset($segments[1]) && $segments[1] === 'shelterDetails') {
+        parse_str($queryString, $queryArray);
+        $controller->showShelter((!empty($queryArray)) ? $queryArray : null);
+    } else {
+        $controller->showAllShelters();
+    }
+} elseif ($segments[0] == 'schools') {
+
+    $controller = new SchoolController();
+    if (isset($segments[1]) && $segments[1] === 'schoolDetails') {
+        parse_str($queryString, $queryArray);
+        $controller->showSchool((!empty($queryArray)) ? $queryArray : null);
+    } else {
+        $controller->showAllSchools();
+    }
 } else {
-    $controller->showAllSchools();
+    echo '404 Not Found';
 }
-
-
 ?>

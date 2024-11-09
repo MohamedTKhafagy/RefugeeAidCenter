@@ -51,4 +51,19 @@ abstract class User
     {
         return $this->Age;
     }
+
+    public function getRefugeeGender()
+    {
+        return $this->Gender;
+    }
+
+    public function getRefugeeNationality()
+    {
+        return $this->Nationality;
+    }
+
+    public function getRefugeeID()
+    {
+        return $this->Id;
+    }
 }

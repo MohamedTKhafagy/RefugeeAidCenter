@@ -9,9 +9,9 @@ class SchoolController
         include __DIR__ . '/../views/SchoolListView.php';
     }
 
-    public function showSchool($SchoolID)
+    public function showSchool($data)
     {
-        $school = School::findById($SchoolID);
+        $school = School::findById($data["SchoolID"]);
         if ($school) {
             include __DIR__ . '/../views/SchoolDetailView.php';
         } else {

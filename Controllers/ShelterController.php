@@ -11,9 +11,10 @@ class ShelterController
     }
 
     // Display a specific shelter's details
-    public function showShelter($ShelterID)
+    public function showShelter($data)
     {
-        $shelter = Shelter::findById($ShelterID);
+
+        $shelter = Shelter::findById($data["ShelterID"]);
         if ($shelter) {
             include __DIR__ . '/../Views/ShelterDetailView.php';
         } else {

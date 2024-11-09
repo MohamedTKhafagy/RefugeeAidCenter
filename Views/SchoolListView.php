@@ -23,7 +23,10 @@
                 <td><?= htmlspecialchars($school['Name']) ?></td>
                 <td><?= htmlspecialchars($school['Address']) ?></td>
                 <td><?= htmlspecialchars($school['AvailableBeds']) ?></td>
-                <td><a href="index.php?action=show&SchoolID=<?= urlencode($school['SchoolID']) ?>">View Details</a></td>
+
+                <td><?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
+                    <a href="<?php echo $base_url; ?>/schools/schoolDetails?SchoolID=<?= $school['SchoolID'] ?>">View</a>
+                </td>
             </tr>
         <?php endforeach; ?>
     </table>

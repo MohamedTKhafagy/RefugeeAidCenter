@@ -26,7 +26,7 @@ class Donator extends User
 
     public function Update()
     {
-        // Implement the update functionality here
+        // Implement the Update method
     }
 
     public function RegisterEvent()

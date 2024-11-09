@@ -26,8 +26,8 @@
                 <td><?= $shelter['Supervisor'] ?></td>
                 <td><?= $shelter['MaxCapacity'] ?></td>
                 <td><?= $shelter['CurrentCapacity'] ?></td>
-                <td>
-                    <a href="index.php?action=show&ShelterID=<?= $shelter['ShelterID'] ?>">View</a>
+                <td><?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
+                    <a href="<?php echo $base_url; ?>/shelters/shelterDetails?ShelterID=<?= $shelter['ShelterID'] ?>">View</a>
                 </td>
             </tr>
         <?php endforeach; ?>

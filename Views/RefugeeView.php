@@ -1,60 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Refugee Information</title>
+    <title>Refugee Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-
 <body>
-    <h2>Add Refugee</h2>
-    <form action="index.php" method="post">
-        <input type="hidden" name="action" value="save">
-        <label for="RefugeeID">Refugee ID:</label>
-        <input type="text" name="RefugeeID" required><br>
-        <label for="PassportNumber">Passport Number:</label>
-        <input type="text" name="PassportNumber" required><br>
-        <label for="Name">Name:</label>
-        <input type="text" name="Name" required><br>
-        <label for="Age">Age:</label>
-        <input type="text" name="Age" required><br>
-        <label for="Gender">Gender:</label>
-        <input type="text" name="Gender" required><br>
-        <label for="Address">Address:</label>
-        <input type="text" name="Address" required><br>
-        <label for="Phone">Phone:</label>
-        <input type="text" name="Phone" required><br>
-        <label for="Nationality">Nationality:</label>
-        <input type="text" name="Nationality" required><br>
-        <label for="Type">Type:</label>
-        <input type="text" name="Type" required><br>
-        <label for="Email">Email:</label>
-        <input type="text" name="Email" required><br>
-        <label for="Preference">Preference:</label>
-        <input type="text" name="Preference" required><br>
-        <label for="Advisor">Advisor:</label>
-        <input type="text" name="Advisor" required><br>
-        <label for="Shelter">Shelter:</label>
-        <input type="text" name="Shelter" required><br>
-        <label for="HealthCare">HealthCare:</label>
-        <input type="text" name="HealthCare" required><br>
-        <button type="submit">Save Refugee</button>
-    </form>
-
-    <h2>Find Refugee</h2>
-    <form action="index.php" method="get">
-        <input type="hidden" name="action" value="find">
-        <label for="id">Refugee ID:</label>
-        <input type="text" name="id" required>
-        <button type="submit">Find</button>
-    </form>
-
-    <?php if (isset($refugee)) { ?>
-        <h3>Refugee Details:</h3>
-        <p>Name: <?php echo $refugee->getRefugeeName(); ?></p>
-        <p>Age: <?php echo $refugee->getRefugeeAge(); ?></p>
-        <!-- Add more fields as needed -->
-    <?php }  ?>
+<div class="container">
+    <h1 class="mt-4 mb-4">Refugee Management</h1>
+    
+    <!-- Add New Refugee Button -->
+    <div class="mb-3">
+    <?php
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        echo '<a href="' . $base_url . '/refugees/add" class="btn btn-primary">Add New Refugee</a>';
+        ?>
+    </div>
+    
+    <!-- Refugee Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Nationality</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($refugees as $refugee): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($refugee->getRefugeeID()); ?></td>
+                    <td><?php echo htmlspecialchars($refugee->getRefugeeName()); ?></td>
+                    <td><?php echo htmlspecialchars($refugee->getRefugeeGender()); ?></td>
+                    <td><?php echo htmlspecialchars($refugee->getRefugeeAge()); ?></td>
+                    <td><?php echo htmlspecialchars($refugee->getRefugeeNationality()); ?></td>
+                    <td>
+                        <a href="update_refugee.php?id=<?php echo $refugee->getRefugeeID(); ?>" class="btn btn-warning btn-sm">Update</a>
+                        <a href="delete_refugee.php?id=<?php echo $refugee->getRefugeeID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 </body>
-
 </html>

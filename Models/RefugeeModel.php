@@ -41,7 +41,7 @@ class Refugee extends User
 
         // Add this refugee's data to the array
         $data[] = [
-            "RefugeeID" => $this->RefugeeID,
+            "Id" => $this->Id,
             "PassportNumber" => $this->PassportNumber,
             "Advisor" => $this->Advisor,
             "Shelter" => $this->Shelter,
@@ -97,5 +97,37 @@ class Refugee extends User
             }
         }
         return null;
+    }
+
+    // Get all refugees from the text file
+    public static function all()
+    {
+        // Load the file data
+        if (file_exists(self::$file)) {
+            $data = json_decode(file_get_contents(self::$file), true);
+
+            // Create an array of Refugee instances
+            $refugees = [];
+            foreach ($data as $refugee) {
+                $refugees[] = new self(
+                    $refugee['Id'] ?? null,
+                    $refugee['Name'] ?? null,
+                    $refugee['Age'] ?? null,
+                    $refugee['Gender'] ?? null,
+                    $refugee['Address'] ?? null,
+                    $refugee['Phone'] ?? null,
+                    $refugee['Nationality'] ?? null,
+                    $refugee['Type'] ?? null,
+                    $refugee['Email'] ?? null,
+                    $refugee['Preference'] ?? null,
+                    $refugee['RefugeeID'],
+                    $refugee['PassportNumber'],
+                    $refugee['Advisor'],
+                    $refugee['Shelter'],
+                    $refugee['HealthCare']
+                );
+            }
+        }
+        return $refugees ?? [];
     }
 }
