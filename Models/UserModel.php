@@ -1,6 +1,6 @@
 <?php
 
-abstract class User{
+abstract class User implements Observer {
     private $Id;
     private $Name;
     private $Age;

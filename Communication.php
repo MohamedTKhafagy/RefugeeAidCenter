@@ -1,6 +1,7 @@
 <?php
 include_once "CommunicationStrategy.php";
-class Communication implements CommunicationSubject{
+class Communication implements Subject{
+    private $observers = [];
     private CommunicationStrategy $communicationStrategy;
     private $type; //0: SMS, 1:Email
     private $phoneNumber;
@@ -37,19 +38,26 @@ class Communication implements CommunicationSubject{
     }
 
     public function Send(){
-
-    }
-
-    public function RegisterObserver(){
-
-    }
-
-    public function RemoveObserver(){
-
-    }
-
-    public function NotifyObserver(){
         $this->communicationStrategy->notify();
+        $this->NotifyObservers();
+    }
+
+    public function RegisterObserver(Observer $observer){
+        $this->observers[]= $observer;
+    }
+
+    public function RemoveObserver(Observer $observer){
+        $index= array_search($observer, $this->observers, true);
+        if($index!=false){
+            unset($this->observers[$index]);
+            $this->observers= array_values($this->observers);
+        }
+    }
+
+    public function NotifyObservers(){
+        foreach($this->observers as $observer){
+            $observer->update("Message sent through" . get_class($this->communicationStrategy));
+        }
     }
 
 }
