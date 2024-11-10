@@ -11,7 +11,6 @@
     <h1>Inventory List</h1>
     <table border="1">
         <tr>
-            <th>Inventory ID</th>
             <th>Money</th>
             <th>Clothes Quantity</th>
             <th>Food Resources Quantity</th>
@@ -19,11 +18,11 @@
         </tr>
         <?php foreach ($inventoryItems as $item): ?>
             <tr>
-                <td><?= htmlspecialchars($item['InventoryID']) ?></td>
                 <td><?= htmlspecialchars($item['Money']) ?></td>
                 <td><?= htmlspecialchars($item['ClothesQuantity']) ?></td>
                 <td><?= htmlspecialchars($item['FoodResourcesQuantity']) ?></td>
-                <td><a href="index.php?action=show&inventoryID=<?= urlencode($item['InventoryID']) ?>">View Details</a></td>
+                <td><?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
+                    <a href="<?php echo $base_url; ?>/inventory/inventorydetails">View Details</a></td>
             </tr>
         <?php endforeach; ?>
     </table>

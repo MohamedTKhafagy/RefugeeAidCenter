@@ -10,9 +10,9 @@ class InventoryController
         include __DIR__ . '/../views/InventoryListView.php';
     }
 
-    public function showInventory($inventoryID)
+    public function showInventory()
     {
-        $inventory = Inventory::findById($inventoryID);
+        $inventory = new Inventory();
         if ($inventory) {
             include __DIR__ . '/../views/InventoryDetailView.php';
         } else {

@@ -8,6 +8,7 @@ require_once 'Controllers/RefugeeController.php';
 require_once 'Controllers/HospitalController.php';
 require_once 'Controllers/ShelterController.php';
 require_once 'Controllers/SchoolController.php';
+require_once 'Controllers/InventoryController.php';
 $basePath = dirname($_SERVER['SCRIPT_NAME']);
 $requestUri = str_replace($basePath, '', $_SERVER['REQUEST_URI']);
 $requestUri = trim($requestUri, '/');
@@ -45,7 +46,17 @@ if ($segments[0] == 'refugees') {
     } else {
         $controller->showAllSchools();
     }
-} else {
+} elseif ($segments[0] == 'inventory') {
+
+    $controller = new InventoryController();
+    if (isset($segments[1]) && $segments[1] === 'inventorydetails') {
+        parse_str($queryString, $queryArray);
+        $controller->showInventory((!empty($queryArray)) ? $queryArray : null);
+    } else {
+        $controller->showAllInventory();
+    }
+} 
+else {
     echo '404 Not Found';
 }
 ?>
