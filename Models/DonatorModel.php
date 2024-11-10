@@ -1,7 +1,8 @@
 <?php
 require_once "UserModel.php";
 
-class Donator extends User{
+class Donator extends User
+{
     private $DonatorID;
 
 
@@ -25,17 +26,20 @@ class Donator extends User{
        }
     }
 
-    public function GetInvoice(Donation $Donation){
+    public function GetInvoice(Donation $Donation)
+    {
         return $Donation->GenerateInvoice();
+    }
+
+    public function Update()
+    {
+        // Implement the Update method
     }
 
     public function RegisterEvent()
     {
         //to be done when events are implemented    
     }
-    public function Update()
-    {
-        //to be implemented
-    }
+
 }
 
