@@ -9,6 +9,7 @@
 </head>
 
 <body>
+<div class="container">
     <h1>Donator Details</h1>
     <p><strong>ID:</strong> <?= htmlspecialchars($donator->getID()) ?></p>
     <p><strong>Name:</strong> <?= htmlspecialchars($donator->getName()) ?></p>
@@ -17,7 +18,7 @@
     <p><strong>Email:</strong> <?= htmlspecialchars($donator->getEmail()) ?></p>
     <p><strong>Type:</strong> <?= htmlspecialchars($donator->getType()) ?></p>
     <p><strong>Nationality:</strong> <?= htmlspecialchars($donator->getNationality()) ?></p>
-    <p><strong>Address:</strong> <?= htmlspecialchars($donator->getAddress()) ?></p>
+    <p><strong>Address:</strong> <?= htmlspecialchars($donator->getFullAddress($donator->getAddress())) ?></p>
     <p><strong>Phone:</strong> <?= htmlspecialchars($donator->getPhone()) ?></p>
     <div class="mb-3">
     <?php
@@ -25,6 +26,7 @@
         echo '<a href="' . $base_url . '/donations/makeDonation/' . $donator->getID() . '" class="btn btn-primary">Make a Donation</a>';
         ?>
     </div>
+</div>
 </body>
 
 </html>

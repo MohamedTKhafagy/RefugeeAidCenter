@@ -1,0 +1,42 @@
+[
+    {
+        "Id": "1",
+        "Name": "Egypt",
+        "ParentId": "0"
+    },
+    {
+        "Id": "2",
+        "Name": "Cairo",
+        "ParentId": "1"
+    },
+    {
+        "Id": "3",
+        "Name": "Giza",
+        "ParentId": "1"
+    },
+    {
+        "Id": "4",
+        "Name": "Madinet Nasr",
+        "ParentId": "2"
+    },
+    {
+        "Id": "5",
+        "Name": "Masr Al Gadida",
+        "ParentId": "2"
+    },
+    {
+        "Id": "6",
+        "Name": "New Cairo",
+        "ParentId": "2"
+    },
+    {
+        "Id": "7",
+        "Name": "Sheikh Zayed",
+        "ParentId": "3"
+    },
+    {
+        "Id": "8",
+        "Name": "Abbaseya",
+        "ParentId": "2"
+    }
+]

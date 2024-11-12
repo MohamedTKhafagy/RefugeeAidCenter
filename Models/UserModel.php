@@ -2,6 +2,7 @@
 
 abstract class User
 {
+    private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
 
     // User properties
     protected $Id;
@@ -13,7 +14,7 @@ abstract class User
     protected $Nationality;
     protected $Type; // Could be 'refugee', 'volunteer', etc.
     protected $Email;
-    protected $Preference; // Some preferences specific to the user
+    protected $Preference; // Communication Preference (SMS, Email)
 
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
@@ -117,5 +118,26 @@ abstract class User
     public function setPreference($Preference){
         $this->Preference = $Preference;
         return true;
+    }
+    public function getFullAddress(){
+        return $this->getFullAddressHelper($this->Address);
+    }
+
+    private function getFullAddressHelper($address){
+        // Load the file data
+        if (file_exists(self::$Addressfile)) {
+            $data = json_decode(file_get_contents(self::$Addressfile), true);
+            // Search for the Donator by ID
+            foreach ($data as $Address) {
+                if ($Address['Id'] == $address) {
+                    if ($Address['ParentId']==0){
+                        return $Address['Name']. ".";
+                    }
+                    // Create a new Refugee instance with the found data
+                    return $Address['Name'] . ", " . self::getFullAddressHelper($Address['ParentId']);
+                }
+            }
+        }
+        return "Error";
     }
 }

@@ -1,7 +1,0 @@
-[
-    {
-        "Money": 5000,
-        "ClothesQuantity": 200,
-        "FoodResourcesQuantity": 300
-    }
-]

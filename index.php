@@ -72,6 +72,6 @@ if ($segments[0] == 'donations') {
     else $controller->index();
 }
 else {
-    echo '404 Not Found';
+    
 }
 ?>
