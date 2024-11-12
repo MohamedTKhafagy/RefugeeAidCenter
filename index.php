@@ -9,6 +9,9 @@ require_once 'Controllers/HospitalController.php';
 require_once 'Controllers/ShelterController.php';
 require_once 'Controllers/SchoolController.php';
 require_once 'Controllers/InventoryController.php';
+require_once 'Controllers/DonatorController.php';
+require_once 'Controllers/DonationController.php';
+
 $basePath = dirname($_SERVER['SCRIPT_NAME']);
 $requestUri = str_replace($basePath, '', $_SERVER['REQUEST_URI']);
 $requestUri = trim($requestUri, '/');
@@ -55,7 +58,19 @@ if ($segments[0] == 'refugees') {
     } else {
         $controller->showAllInventory();
     }
-} 
+}
+if ($segments[0] == 'donators') {
+    $controller = new DonatorController();
+    if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findDonatorById($segments[2]);
+    else $controller->index();
+}
+if ($segments[0] == 'donations') {
+    $controller = new DonationController();
+    if (isset($segments[1]) && $segments[1] === 'makeDonation') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2]))$controller->findDonationById($segments[2]);
+    else $controller->index();
+}
 else {
     echo '404 Not Found';
 }
