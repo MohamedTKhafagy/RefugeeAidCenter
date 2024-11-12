@@ -143,6 +143,59 @@ class Donator extends User{
     }
     
 
+    public static function editById($id, $donor)
+    {
+    // Load the file data
+    if (file_exists(self::$file)) {
+        $data = json_decode(file_get_contents(self::$file), true);
+
+        // Loop through the data and update the user with the matching ID
+        foreach ($data as &$donator) {
+            if ($donator['Id'] == $id) {
+                $donator['Id'] = $donor->getID();
+                $donator['Name'] = $donor->getName();
+                $donator['Age'] = $donor->getAge();
+                $donator['Gender'] = $donor->getGender();
+                $donator['Address'] = $donor->getAddress();
+                $donator['Phone'] = $donor->getPhone();
+                $donator['Nationality'] = $donor->getNationality();
+                $donator['Type'] = $donor->getType();
+                $donator['Email'] = $donor->getEmail();
+                $donator['Preference'] = $donor->getPreference();
+                break;
+            }
+        }
+
+        // Save the updated data back to the file
+        file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT));
+
+        return true; // Indicate success
+    }
+
+        return false; // File does not exist or operation failed
+    }
+
+
+    public static function deleteById($id)
+    {
+    // Load the file data
+    if (file_exists(self::$file)) {
+        $data = json_decode(file_get_contents(self::$file), true);
+
+        // Filter out the user with the matching ID
+        $data = array_filter($data, function ($donator) use ($id) {
+            return $donator['Id'] != $id;
+        });
+
+        // Save the updated data back to the file
+        file_put_contents(self::$file, json_encode(array_values($data), JSON_PRETTY_PRINT));
+
+        return true; // Indicate success
+    }
+
+        return false; // File does not exist or operation failed
+    }
+
 }
 
 
