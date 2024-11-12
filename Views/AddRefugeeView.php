@@ -55,7 +55,7 @@
 
         <div class="form-group">
             <label for="Type">Type:</label>
-            <input type="text" name="Type" id="Type" class="form-control" required>
+            <input readonly type="text" name="Type" id="Type" value="Refugee" class="form-control" required>
         </div>
 
         <div class="form-group">

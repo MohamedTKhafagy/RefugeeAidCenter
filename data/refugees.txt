@@ -1,6 +1,6 @@
 [
     {
-        "Id": "R12345",
+        "Id": "1",
         "PassportNumber": "P987654321",
         "Advisor": "John Doe",
         "Shelter": "Shelter A",
@@ -16,7 +16,7 @@
         "Preference": "Prefer English-speaking advisor"
     },
     {
-        "Id": "R67890",
+        "Id": "2",
         "PassportNumber": "P1122334455",
         "Advisor": "Jane Smith",
         "Shelter": "Shelter B",
@@ -32,7 +32,7 @@
         "Preference": "Prefer Spanish-speaking advisor"
     },
     {
-        "Id": "R11223",
+        "Id": "3",
         "PassportNumber": "P5566778899",
         "Advisor": "Mohammed Al Farsi",
         "Shelter": "Shelter C",
@@ -48,7 +48,7 @@
         "Preference": "Prefer Arabic-speaking advisor"
     },
     {
-        "RefugeeID": "R12345",
+        "Id": "4",
         "PassportNumber": "11111111",
         "Advisor": "adasD",
         "Shelter": "asda",
@@ -62,5 +62,37 @@
         "Type": "volunteer",
         "Email": "mamin7522@gmail.com",
         "Preference": "gsdfSDF"
+    },
+    {
+        "Id": "5",
+        "PassportNumber": "asdasfsd2123",
+        "Advisor": "ali",
+        "Shelter": "shelter1",
+        "HealthCare": "none",
+        "Name": "Ahmed",
+        "Age": "25",
+        "Gender": "Male",
+        "Address": "5",
+        "Phone": "01221602822",
+        "Nationality": "Egyptian",
+        "Type": "Refugee",
+        "Email": "abc@gmail.com",
+        "Preference": "email"
+    },
+    {
+        "Id": "6",
+        "PassportNumber": "asdasfsd2123",
+        "Advisor": "ali",
+        "Shelter": "shelter1",
+        "HealthCare": "none",
+        "Name": "Ahmed",
+        "Age": "25",
+        "Gender": "Male",
+        "Address": "5",
+        "Phone": "01221602822",
+        "Nationality": "Egyptian",
+        "Type": "Refugee",
+        "Email": "abc@gmail.com",
+        "Preference": "email"
     }
 ]

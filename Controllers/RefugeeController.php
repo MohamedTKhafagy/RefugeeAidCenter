@@ -36,7 +36,6 @@ class RefugeeController
             $data['Type'],
             $data['Email'],
             $data['Preference'],
-            $data['RefugeeID'],
             $data['PassportNumber'],
             $data['Advisor'],
             $data['Shelter'],
