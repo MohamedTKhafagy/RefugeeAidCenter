@@ -1,0 +1,26 @@
+[
+    {
+        "Id": "1",
+        "Name": "Ahmed",
+        "Age": "26",
+        "Gender": "Male",
+        "Address": "5",
+        "Phone": "01221602822",
+        "Nationality": "Egyptian",
+        "Type": "Donator",
+        "Email": "abc@gmail.com",
+        "Preference": "email"
+    },
+    {
+        "Id": "2",
+        "Name": "samir",
+        "Age": "26",
+        "Gender": "Male",
+        "Address": "5",
+        "Phone": "01221602822",
+        "Nationality": "Egyptian",
+        "Type": "Donator",
+        "Email": "abc@gmail.com",
+        "Preference": "email"
+    }
+]
