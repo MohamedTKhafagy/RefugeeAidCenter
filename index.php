@@ -8,6 +8,8 @@ require_once 'Controllers/RefugeeController.php';
 require_once 'Controllers/HospitalController.php';
 require_once 'Controllers/ShelterController.php';
 require_once 'Controllers/SchoolController.php';
+require_once 'Controllers/VolunteerController.php';
+
 $basePath = dirname($_SERVER['SCRIPT_NAME']);
 $requestUri = str_replace($basePath, '', $_SERVER['REQUEST_URI']);
 $requestUri = trim($requestUri, '/');
@@ -23,7 +25,11 @@ if ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else $controller->index();
-} else if ($segments[0] == 'hospitals') {
+} elseif ($segments[0] == 'volunteers') {
+    $controller = new VolunteerController();
+    if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else $controller->index();
+} elseif ($segments[0] == 'hospitals') {
     $controller = new HospitalController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else $controller->index();
