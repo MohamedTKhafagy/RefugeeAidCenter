@@ -27,11 +27,24 @@ if ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else $controller->index();
-} else if ($segments[0] == 'hospitals') {
+} if ($segments[0] == 'hospitals') {
     $controller = new HospitalController();
-    if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else $controller->index();
-} elseif ($segments[0] == 'shelters') {
+
+    if (isset($segments[1])) {
+        if ($segments[1] === 'add') {
+            $controller->add((!empty($_POST)) ? $_POST : null);
+        } elseif ($segments[1] === 'assignStrategy') {
+            parse_str($queryString, $queryArray);
+            $controller->assignStrategy($queryArray['hospitalId'], $queryArray['type']);
+        } else {
+            echo "Invalid action for hospitals.";
+        }
+    } else {
+        $controller->index();
+    }
+}
+
+ elseif ($segments[0] == 'shelters') {
 
     $controller = new ShelterController();
     if (isset($segments[1]) && $segments[1] === 'shelterDetails') {

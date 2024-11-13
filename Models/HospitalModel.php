@@ -1,8 +1,10 @@
 <?php
 
 require_once "FacilityClassModel.php";
+require_once "HealthcareStrategy.php";
 
 class Hospital extends Facility{
+    private $healthcareStrategy; // New property for strategy
     private $HospitalID;
     private $Supervisor;
     private $MaxCapacity;
@@ -37,14 +39,16 @@ class Hospital extends Facility{
     public function setAddress($Address){
         $this->Address = $Address;
     }
-    public function setCurrentCapacity($CurrentCapacity){
-        if($CurrentCapacity>$this->MaxCapacity){
-            return false;
-        }
-        else{
+    public function setCurrentCapacity($CurrentCapacity) {
+        if ($CurrentCapacity > $this->MaxCapacity) {
+            throw new Exception("Current capacity exceeds maximum capacity.");
+        } elseif ($CurrentCapacity < 0) {
+            throw new Exception("Current capacity cannot be negative.");
+        } else {
             $this->CurrentCapacity = $CurrentCapacity;
         }
     }
+    
 
 
     public function getName(){
@@ -107,5 +111,25 @@ class Hospital extends Facility{
             }
         }
         return $hospitals ?? [];
+    }
+    public function setHealthcareStrategy(HealthcareStrategy $strategy) {
+        $this->healthcareStrategy = $strategy;
+    }
+    
+    public function getHealthcareStrategy() {
+        return $this->healthcareStrategy;
+    }
+    
+    public function assignWithStrategy() {
+        if ($this->CurrentCapacity < $this->MaxCapacity) {
+            $this->CurrentCapacity++;
+            if ($this->healthcareStrategy) {
+                $this->healthcareStrategy->AssignHospital($this);
+            } else {
+                echo "No healthcare strategy assigned for this hospital.\n";
+            }
+        } else {
+            echo "Hospital capacity reached. Cannot assign more.\n";
+        }
     }
 }

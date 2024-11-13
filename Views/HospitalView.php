@@ -46,5 +46,25 @@
         </tbody>
     </table>
 </div>
+<div>
+<form method="POST" action="assign_strategy.php">
+    <label for="hospital">Select Hospital:</label>
+    <select name="hospital_id">
+        <?php foreach ($hospitals as $hospital): ?>
+            <option value="<?php echo $hospital->getID(); ?>">
+                <?php echo htmlspecialchars($hospital->getName()); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <label for="strategy">Select Strategy:</label>
+    <select name="strategy_type">
+        <option value="basic">Basic Insurance</option>
+        <option value="comprehensive">Comprehensive Insurance</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">Assign Strategy</button>
+</form>
+</div>
 </body>
 </html>
