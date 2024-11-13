@@ -41,28 +41,54 @@ abstract class User
     {
         return "Name: $this->Name, Age: $this->Age, Gender: $this->Gender, Nationality: $this->Nationality, Email: $this->Email";
     }
+    // ///////////////////?????????????????????
+    // public function getRefugeeName()
+    // {
+    //     return $this->Name;
+    // }
 
-    public function getRefugeeName()
+    // public function getRefugeeAge()
+    // {
+    //     return $this->Age;
+    // }
+
+    // public function getRefugeeGender()
+    // {
+    //     return $this->Gender;
+    // }
+
+    // public function getRefugeeNationality()
+    // {
+    //     return $this->Nationality;
+    // }
+
+    // public function getRefugeeID()
+    // {
+    //     return $this->Id;
+    // }
+
+    // ///////////////////////////
+    public function getName()
     {
         return $this->Name;
     }
 
-    public function getRefugeeAge()
+    public function getAge()
     {
         return $this->Age;
     }
 
-    public function getRefugeeGender()
+    public function getGender()
     {
         return $this->Gender;
     }
 
-    public function getRefugeeNationality()
+    public function getNationality()
     {
         return $this->Nationality;
     }
 
-    public function getRefugeeID()
+    public function getId()
     {
         return $this->Id;
     }
