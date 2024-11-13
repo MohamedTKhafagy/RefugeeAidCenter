@@ -37,9 +37,37 @@ class DonatorController
             $data['Nationality'],
             $data['Type'],
             $data['Email'],
-            $data['Preference'],
+            $data['Preference']
         );
         $donator->save();
+    }
+
+    public function editDonator($data){
+        $donator = new Donator(
+            $data['Id'],
+            $data['Name'],
+            $data['Age'],
+            $data['Gender'],
+            $data['Address'],
+            $data['Phone'],
+            $data['Nationality'],
+            $data['Type'],
+            $data['Email'],
+            $data['Preference']
+        );
+        Donator::editById($data['Id'], $donator);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/donators');
+    }
+
+    public function edit($id){
+            $donator = Donator::findById($id);
+            require 'Views/EditDonatorView.php';
+    }
+    public function delete($id){
+        Donator::deleteById($id);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/donators');
     }
 
     public function findDonatorById($id)

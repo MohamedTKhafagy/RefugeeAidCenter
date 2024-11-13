@@ -148,7 +148,6 @@ class Donator extends User{
     // Load the file data
     if (file_exists(self::$file)) {
         $data = json_decode(file_get_contents(self::$file), true);
-
         // Loop through the data and update the user with the matching ID
         foreach ($data as &$donator) {
             if ($donator['Id'] == $id) {
