@@ -14,6 +14,6 @@ abstract class User implements Observer {
 
 
 
-    abstract public function RegisterEvent();
+    abstract public function RegisterEvent(Event $event);
 
 }

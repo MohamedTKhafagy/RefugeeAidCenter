@@ -6,19 +6,23 @@ class Communication implements Subject{
     private $type; //0: SMS, 1:Email
     private $phoneNumber;
     private $email;
+    private $subject;
+    private $messageBody;
 
-    public function __construct($type, $phoneNumber, $email){
+    public function __construct($type, $phoneNumber, $email, $subject, $messageBody){
         $this->type=$type;
         $this->phoneNumber=$phoneNumber;
         $this->email=$email;
+        $this->subject = $subject;
+        $this->messageBody = $messageBody;
         $this->InitializeCommunicationStrategy();
     }
 
     public function InitializeCommunicationStrategy(){
         if($this->type==0){
-            $this->communicationStrategy= new SMSCommunication($this->phoneNumber);
+            $this->communicationStrategy = new SMSCommunication($this->phoneNumber, $this->messageBody);
         } else {
-            $this->communicationStrategy= new EmailCommunication($this->email);
+            $this->communicationStrategy = new EmailCommunication($this->email, $this->subject, $this->messageBody);
         }
     }
 
@@ -32,8 +36,10 @@ class Communication implements Subject{
 
     public function ScheduleMessage(Message $message, DateTime $scheduleDate ){
         $currentTime= new DateTime();
-        if($scheduleDate> $currentTime){
-            
+        if ($scheduleDate > $currentTime) {
+            echo "Message scheduled for " . $scheduleDate->format('Y-m-d H:i:s') . "\n";
+        } else {
+            throw new InvalidArgumentException("Scheduled date must be in the future.");
         }
     }
 
@@ -56,8 +62,13 @@ class Communication implements Subject{
 
     public function NotifyObservers(){
         foreach($this->observers as $observer){
-            $observer->update("Message sent through" . get_class($this->communicationStrategy));
+            $observer->update("Message sent through " . get_class($this->communicationStrategy ) . "\n");
         }
     }
 
 }
+
+
+
+
+

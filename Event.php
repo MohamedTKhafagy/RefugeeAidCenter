@@ -1,5 +1,6 @@
 <?php
 class Event{
+
     private $id;
     private $name;
     private $location;
@@ -9,6 +10,8 @@ class Event{
     private $date;
     private $volunteers;
     private $attendees;
+    public $is_deleted = 0;
+
     public function __construct($id, $name, $location,$type, $maxCapacity,$currentCapacity, $date, $volunteers, $attendees){
         $this->id = $id;
         $this->name = $name;
@@ -19,11 +22,29 @@ class Event{
         $this->date = $date;
         $this->volunteers = $volunteers;
         $this->attendees = $attendees;
+        
     }
-    public function changeDate(){
-        //date
+
+    public function getId() {
+        return $this->id;
     }
-    
+
+    public function changeDate($changedDate){
+        $this->date= $changedDate;
+    }
+
+    public function getAttendees(){
+        return $this->attendees;
+    }
+
+    public function getCurrentCapacity(){
+        return $this->currentCapacity;
+    }
+
+    public function delete() {
+        $this->is_deleted = 1;
+    }
+
 }
 
 
