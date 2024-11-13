@@ -14,7 +14,10 @@
         <form action="<?php echo $base_url; ?>/volunteers/add" method="POST">
             <!-- Hidden action field -->
             <input type="hidden" name="action" value="save">
-
+            <div class="form-group">
+                <label for="ID">ID:</label>
+                <input readonly type="text" name="Id" id="Id" value="<?php echo htmlspecialchars($id); ?>" class="form-control" required>
+            </div>
             <div class="form-group">
                 <label for="Name">Name:</label>
                 <input type="text" name="Name" id="Name" class="form-control" required>

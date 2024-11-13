@@ -40,15 +40,9 @@
                         <td><?php echo htmlspecialchars($volunteer->getSkills()); ?></td>
                         <td><?php echo htmlspecialchars($volunteer->getAvailability()); ?></td>
                         <td>
-                            <a href="<?php echo $base_url; ?>/volunteers/update?id=<?php echo $volunteer->getId(); ?>" class="btn btn-warning btn-sm">Update</a>
-                            <a href="<?php echo $base_url; ?>/volunteers/delete?id=<?php echo $volunteer->getId(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this volunteer?');">Delete</a>
-                        </td>
-
-                        <td>
-                            <?php
-                            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-                            echo '<a href="' . $base_url . '/volunteers/volunteerDetails?id=' . $volunteer->getId() . '" class="btn btn-info btn-sm">View</a>';
-                            ?>
+                            <a href="<?php echo $base_url; ?>/volunteers/edit/<?php echo $volunteer->getID(); ?>" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="<?php echo $base_url; ?>/volunteers/delete/<?php echo $volunteer->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                            <a href="<?php echo $base_url; ?>/volunteers/view/<?php echo $volunteer->getID(); ?>" class="btn btn-primary btn-sm">View</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
