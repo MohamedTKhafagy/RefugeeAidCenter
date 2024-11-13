@@ -2,7 +2,6 @@
 
 abstract class User
 {
-
     // User properties
     protected $Id;
     protected $Name;
@@ -30,44 +29,20 @@ abstract class User
         $this->Preference = $Preference;
     }
 
-
     abstract public function RegisterEvent();
     abstract public function Update();
-
-
 
     // Method to display a brief user information
     public function displayInfo()
     {
         return "Name: $this->Name, Age: $this->Age, Gender: $this->Gender, Nationality: $this->Nationality, Email: $this->Email";
     }
-    // ///////////////////?????????????????????
-    // public function getRefugeeName()
-    // {
-    //     return $this->Name;
-    // }
 
-    // public function getRefugeeAge()
-    // {
-    //     return $this->Age;
-    // }
+    public function getId()
+    {
+        return $this->Id;
+    }
 
-    // public function getRefugeeGender()
-    // {
-    //     return $this->Gender;
-    // }
-
-    // public function getRefugeeNationality()
-    // {
-    //     return $this->Nationality;
-    // }
-
-    // public function getRefugeeID()
-    // {
-    //     return $this->Id;
-    // }
-
-    // ///////////////////////////
     public function getName()
     {
         return $this->Name;
@@ -83,13 +58,33 @@ abstract class User
         return $this->Gender;
     }
 
+    public function getAddress()
+    {
+        return $this->Address;
+    }
+
+    public function getPhone()
+    {
+        return $this->Phone;
+    }
+
     public function getNationality()
     {
         return $this->Nationality;
     }
 
-    public function getId()
+    public function getType()
     {
-        return $this->Id;
+        return $this->Type;
+    }
+
+    public function getEmail()
+    {
+        return $this->Email;
+    }
+
+    public function getPreference()
+    {
+        return $this->Preference;
     }
 }

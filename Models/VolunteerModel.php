@@ -3,18 +3,15 @@ require_once 'UserModel.php';
 
 class Volunteer extends User
 {
-    private $VolunteerID;
     private $Skills;
     private $Availability;
-    private $AssignedEvents; // Events that the volunteer is part of
-
+    private $AssignedEvents;
 
     private static $file = __DIR__ . '/../data/volunteers.txt'; // Path to text file
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $VolunteerID, $Skills, $Availability, $AssignedEvents = [])
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $Skills, $Availability, $AssignedEvents = [])
     {
         parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
-        $this->VolunteerID = $VolunteerID;
         $this->Skills = $Skills;
         $this->Availability = $Availability;
         $this->AssignedEvents = $AssignedEvents;
@@ -29,7 +26,6 @@ class Volunteer extends User
     {
         echo "Updating volunteer information.";
     }
-
 
     // Getter for Skills
     public function getSkills()
@@ -58,7 +54,6 @@ class Volunteer extends User
         // Add this volunteer's data to the array
         $data[] = [
             "Id" => $this->Id,
-            "VolunteerID" => $this->VolunteerID,
             "Skills" => $this->Skills,
             "Availability" => $this->Availability,
             "AssignedEvents" => $this->AssignedEvents,
@@ -88,7 +83,7 @@ class Volunteer extends User
             $data = json_decode(file_get_contents(self::$file), true);
 
             foreach ($data as $volunteer) {
-                if ($volunteer['VolunteerID'] == $id) {
+                if ($volunteer['Id'] == $id) {
                     return new self(
                         $volunteer['Id'] ?? null,
                         $volunteer['Name'] ?? null,
@@ -100,7 +95,6 @@ class Volunteer extends User
                         $volunteer['Type'] ?? null,
                         $volunteer['Email'] ?? null,
                         $volunteer['Preference'] ?? null,
-                        $volunteer['VolunteerID'],
                         $volunteer['Skills'],
                         $volunteer['Availability'],
                         $volunteer['AssignedEvents'] ?? []
@@ -130,7 +124,6 @@ class Volunteer extends User
                     $volunteer['Type'] ?? null,
                     $volunteer['Email'] ?? null,
                     $volunteer['Preference'] ?? null,
-                    $volunteer['VolunteerID'],
                     $volunteer['Skills'],
                     $volunteer['Availability'],
                     $volunteer['AssignedEvents'] ?? []
@@ -141,7 +134,6 @@ class Volunteer extends User
         return [];
     }
 
-
     public static function editById($id, $volunteer)
     {
         // Load the file data
@@ -149,7 +141,7 @@ class Volunteer extends User
             $data = json_decode(file_get_contents(self::$file), true);
             // Loop through the data and update the volunteer with the matching ID
             foreach ($data as &$vol) {
-                if ($vol['VolunteerID'] == $id) {
+                if ($vol['Id'] == $id) {
                     $vol['Id'] = $volunteer->getId();
                     $vol['Name'] = $volunteer->getName();
                     $vol['Age'] = $volunteer->getAge();
@@ -160,7 +152,6 @@ class Volunteer extends User
                     $vol['Type'] = $volunteer->getType();
                     $vol['Email'] = $volunteer->getEmail();
                     $vol['Preference'] = $volunteer->getPreference();
-                    $vol['VolunteerID'] = $volunteer->getVolunteerID();
                     $vol['Skills'] = $volunteer->getSkills();
                     $vol['Availability'] = $volunteer->getAvailability();
                     $vol['AssignedEvents'] = $volunteer->getAssignedEvents();
@@ -185,7 +176,7 @@ class Volunteer extends User
 
             // Filter out the volunteer with the matching ID
             $data = array_filter($data, function ($vol) use ($id) {
-                return $vol['VolunteerID'] != $id;
+                return $vol['Id'] != $id;
             });
 
             // Save the updated data back to the file
@@ -195,5 +186,24 @@ class Volunteer extends User
         }
 
         return false; // File does not exist or operation failed
+    }
+
+    public static function getLatestId()
+    {
+        // Read the file content
+        $fileContent = file_get_contents(self::$file);
+        $data = json_decode($fileContent, true);
+
+        // Check if JSON decoding was successful and if the data is an array
+        if ($data === null || !is_array($data) || empty($data)) {
+            return 0;
+        }
+
+        // Extract the IDs and find the maximum
+        $ids = array_map(function ($item) {
+            return isset($item['Id']) ? (int)$item['Id'] : 0;
+        }, $data);
+
+        return !empty($ids) ? max($ids) : 0;
     }
 }
