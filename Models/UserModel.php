@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../DB.php';
+
 abstract class User
 {
 
@@ -14,6 +16,7 @@ abstract class User
     protected $Type; // Could be 'refugee', 'volunteer', etc.
     protected $Email;
     protected $Preference; // Some preferences specific to the user
+    protected $Password;
 
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
@@ -65,5 +68,30 @@ abstract class User
     public function getRefugeeID()
     {
         return $this->Id;
+    }
+
+    public function save() {
+        return DB::save($this->getProperties(), "/data/users.txt", "Id");
+    }
+
+    private function getProperties() {
+        return [
+            "Id" => $this->Id,
+            "Name" => $this->Name,
+            "Age" => $this->Age,
+            "Gender" => $this->Gender,
+            "Address" => $this->Address,
+            "Phone" => $this->Phone,
+            "Nationality" => $this->Nationality,
+            "Type" => $this->Type,
+            "Email" => $this->Email,
+            "Preference" => $this->Preference
+        ];
+    }
+
+    public static function login($data) {
+        $exist = DB::findBy("/data/users.txt", "Email", $data['email']);
+        if($exist) return true;
+        return false;
     }
 }

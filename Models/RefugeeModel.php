@@ -1,14 +1,16 @@
 <?php
 require_once 'UserModel.php';
+require_once __DIR__ . '/../DB.php';
 
 class Refugee extends User
 {
 
-    private $RefugeeID;
-    private $PassportNumber;
-    private $Advisor; // Instance of SocialWorker
-    private $Shelter; // Instance of Shelter
-    private $HealthCare; // Instance of HealthcareStrategy
+
+    protected $RefugeeID;
+    protected $PassportNumber;
+    protected $Advisor; // Instance of SocialWorker
+    protected $Shelter; // Instance of Shelter
+    protected $HealthCare; // Instance of HealthcareStrategy
 
     private static $file = __DIR__ . '/../data/refugees.txt'; // Path to text file
 
@@ -36,33 +38,26 @@ class Refugee extends User
     // Save refugee details to the text file (JSON format)
     public function save()
     {
-        // Load existing data
-        $data = file_exists(self::$file) ? json_decode(file_get_contents(self::$file), true) : [];
+        $parentId = parent::save();
+        if ($parentId == -1) echo "Error saving refugee: Parent data not saved.";
+        return DB::save($this->getProperties(["userId" => $parentId]), "/data/refugees.txt", "RefugeeID");
+    }
 
-        // Add this refugee's data to the array
-        $data[] = [
-            "Id" => $this->Id,
+    private function getProperties($newProperty = null)
+    {
+        $properties = [
+            "RefugeeID" => $this->RefugeeID,
             "PassportNumber" => $this->PassportNumber,
             "Advisor" => $this->Advisor,
             "Shelter" => $this->Shelter,
-            "HealthCare" => $this->HealthCare,
-            "Name" => $this->Name,
-            "Age" => $this->Age,
-            "Gender" => $this->Gender,
-            "Address" => $this->Address,
-            "Phone" => $this->Phone,
-            "Nationality" => $this->Nationality,
-            "Type" => $this->Type,
-            "Email" => $this->Email,
-            "Preference" => $this->Preference
+            "HealthCare" => $this->HealthCare
         ];
 
-        // Write the updated data back to the file
-        if (file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT))) {
-            echo "Refugee saved successfully.";
-        } else {
-            echo "Error saving refugee.";
+        if ($newProperty) {
+            $properties = array_merge($properties, $newProperty);
         }
+
+        return $properties;
     }
 
     // Find a refugee by ID from the text file
@@ -99,35 +94,29 @@ class Refugee extends User
         return null;
     }
 
-    // Get all refugees from the text file
     public static function all()
     {
-        // Load the file data
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true);
-
-            // Create an array of Refugee instances
-            $refugees = [];
-            foreach ($data as $refugee) {
-                $refugees[] = new self(
-                    $refugee['Id'] ?? null,
-                    $refugee['Name'] ?? null,
-                    $refugee['Age'] ?? null,
-                    $refugee['Gender'] ?? null,
-                    $refugee['Address'] ?? null,
-                    $refugee['Phone'] ?? null,
-                    $refugee['Nationality'] ?? null,
-                    $refugee['Type'] ?? null,
-                    $refugee['Email'] ?? null,
-                    $refugee['Preference'] ?? null,
-                    $refugee['RefugeeID'],
-                    $refugee['PassportNumber'],
-                    $refugee['Advisor'],
-                    $refugee['Shelter'],
-                    $refugee['HealthCare']
-                );
-            }
+        $refugeesData = DB::all("/data/refugees.txt");
+        foreach ($refugeesData as $refugee) {
+            $userDate = DB::findById("/data/users.txt", $refugee['userId'], "Id");
+            $refugees[] = new self(
+                $userDate['Id'] ?? null,
+                $userDate['Name'] ?? null,
+                $userDate['Age'] ?? null,
+                $userDate['Gender'] ?? null,
+                $userDate['Address'] ?? null,
+                $userDate['Phone'] ?? null,
+                $userDate['Nationality'] ?? null,
+                $userDate['Type'] ?? null,
+                $userDate['Email'] ?? null,
+                $userDate['Preference'] ?? null,
+                $refugee['RefugeeID'],
+                $refugee['PassportNumber'],
+                $refugee['Advisor'],
+                $refugee['Shelter'],
+                $refugee['HealthCare']
+            );
         }
-        return $refugees ?? [];
+        return $refugees;
     }
 }

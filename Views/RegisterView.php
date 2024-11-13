@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Refugee</title>
+    <title>User Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -92,16 +92,17 @@
 
 <body>
     <div class="container">
-        <h2>Add Refugee</h2>
+        <h2>User Registration</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
         <form id="registrationForm" action="<?php echo $base_url ?>/register/new" method="POST" onsubmit="return validateForm()">
             <!-- Common Fields -->
             <div class="form-group">
-                <label for="type">Refugee Type:</label>
+                <label for="type">User Type:</label>
                 <select name="type" id="type" required onchange="toggleFields()">
-                    <option value="">Select Refugee Type</option>
-                    <option value="adult">Adult</option>
-                    <option value="child">Child</option>
+                    <option value="">Select User Type</option>
+                    <option value="donator">Donator</option>
+                    <option value="refugee">Refugee</option>
+                    <option value="volunteer">Volunteer</option>
                 </select>
             </div>
             
@@ -145,7 +146,8 @@
                 <input type="email" id="email" name="email" required>
             </div>
 
-            <div id="adultFields" class="hidden">
+            <!-- Refugee-Specific Fields -->
+            <div id="refugeeFields" class="hidden">
                 <div class="form-group">
                     <label for="passportNumber">Passport Number:</label>
                     <input type="text" id="passportNumber" name="passportNumber">
@@ -160,18 +162,40 @@
                 </div>
             </div>
 
-            <div id="childFields" class="hidden">
+            <!-- Volunteer-Specific Fields -->
+            <div id="volunteerFields" class="hidden">
                 <div class="form-group">
-                    <label for="school">School:</label>
-                    <input type="text" id="school" name="school">
-                </div>
-                <div class="form-group">
-                    <label for="level">Level:</label>
-                    <input type="text" id="level" name="level">
-                </div>
-                <div class="form-group">
-                    <label for="guardian">Guardian:</label>
-                    <input type="text" id="guardian" name="guardian">
+                    <label>Availability:</label>
+                    <div class="days">
+                        <div class="day">
+                            <label for="Saturday">Sat</label>
+                            <input type="checkbox" name="availability" id="Saturday" value="Saturday">
+                        </div>
+                        <div class="day">
+                            <label for="Sunday">Sun</label>
+                            <input type="checkbox" name="availability" id="Sunday" value="Sunday">
+                        </div>
+                        <div class="day">
+                            <label for="Monday">Mon</label>
+                            <input type="checkbox" name="availability" id="Monday" value="Monday">
+                        </div>
+                        <div class="day">
+                            <label for="Tuesday">Tue</label>
+                            <input type="checkbox" name="availability" id="Tuesday" value="Tuesday">
+                        </div>
+                        <div class="day">
+                            <label for="Wednesday">Wed</label>
+                            <input type="checkbox" name="availability" id="Wednesday" value="Wednesday">
+                        </div>
+                        <div class="day">
+                            <label for="Thursday">Thu</label>
+                            <input type="checkbox" name="availability" id="Thursday" value="Thursday">
+                        </div>
+                        <div class="day">
+                            <label for="Friday">Fri</label>
+                            <input type="checkbox" name="availability" id="Friday" value="Friday">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -191,8 +215,8 @@
     <script>
         function toggleFields() {
             const type = document.getElementById("type").value;
-            document.getElementById("adultFields").classList.toggle("hidden", type !== "adult");
-            document.getElementById("childFields").classList.toggle("hidden", type !== "child");
+            document.getElementById("refugeeFields").classList.toggle("hidden", type !== "refugee");
+            document.getElementById("volunteerFields").classList.toggle("hidden", type !== "volunteer");
         }
 
         function validateForm() {
@@ -209,6 +233,11 @@
                 }
             }
 
+            const checkboxes = document.querySelectorAll('#volunteerFields input[type="checkbox"]');
+            if (type === "volunteer" && !Array.from(checkboxes).some(checkbox => checkbox.checked)) {
+                alert("Please select at least one availability day for Volunteers.");
+                return false;
+            }
 
             return true;
         }

@@ -1,7 +1,7 @@
 <?php
 
 require_once'Models/RefugeeModel.php';
-require_once 'SingeltonDB.php';
+// require_once 'SingeltonDB.php';
 class Adult extends Refugee {
     private $AdultID;
     private $Profession;
@@ -14,6 +14,27 @@ class Adult extends Refugee {
         $this->Profession = $Profession;
         $this->Education = $Education;
         $this->Family = $Family;
+    }
+
+    public function save() {
+        $parentId = parent::save();
+        if ($parentId == -1) echo "Error saving adult: Parent data not saved.";
+        return DB::save($this->getProperties(["RefugeeID" => $parentId]), "/data/adults.txt", "AdultID");
+    }
+
+    private function getProperties($newProperty = null) {
+        $properties = [
+            "AdultID" => $this->AdultID,
+            "Profession" => $this->Profession,
+            "Education" => $this->Education,
+            "Family" => $this->Family
+        ];
+    
+        if ($newProperty) {
+            $properties = array_merge($properties, $newProperty);
+        }
+    
+        return $properties;
     }
     /*
     This functions is to save the parent information into the database with the ID later used to be a key in the child table.
