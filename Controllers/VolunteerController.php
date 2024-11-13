@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../Models/VolunteerModel.php';
 
+
 class VolunteerController
 {
 
@@ -14,11 +15,13 @@ class VolunteerController
     // Display form to add a new volunteer or handle form submission
     public function add($data = null)
     {
+
         if ($data) {
             $this->saveVolunteer($data);
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/volunteers'); // Redirect to list after adding
         } else {
+            $id = Volunteer::getLatestId() + 1;
             require 'Views/AddVolunteerView.php';
         }
     }
@@ -37,7 +40,6 @@ class VolunteerController
             $data['Type'],
             $data['Email'],
             $data['Preference'],
-            $data['VolunteerID'],
             $data['Skills'],
             $data['Availability']
         );
@@ -49,5 +51,45 @@ class VolunteerController
     {
         $volunteer = Volunteer::findById($id);
         require 'Views/VolunteerDetailView.php'; // Load view to display volunteer details
+    }
+    public function editVolunteer($data)
+    {
+        echo var_dump($data);
+        $volunteer = new Volunteer(
+            $data['Id'],
+            $data['Name'],
+            $data['Age'],
+            $data['Gender'],
+            $data['Address'],
+            $data['Phone'],
+            $data['Nationality'],
+            $data['Type'],
+            $data['Email'],
+            $data['Preference'],
+            $data['Skills'],
+            $data['Availability']
+        );
+        Volunteer::editById($data['Id'], $volunteer);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/volunteers');
+    }
+
+    public function edit($id)
+    {
+        $volunteer = Volunteer::findById($id);
+
+        require 'Views/EditVolunteerView.php';
+    }
+
+    public function delete($id)
+    {
+        Volunteer::deleteById($id);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/volunteers');
+    }
+    public function findVolunteerById($id)
+    {
+        $volunteer = Volunteer::findById($id);
+        require 'Views/VolunteerDetailView.php';
     }
 }
