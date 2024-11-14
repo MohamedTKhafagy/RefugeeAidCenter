@@ -9,7 +9,7 @@
 <div class="container">
     <h2 class="mt-4 mb-4">Add New Hospital</h2>
     <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
-    <form action="<?php echo $base_url; ?>/hospitals/add" method="POST">
+    <form action="/hospitals/add" method="POST">
         <!-- Hidden action field -->
         <input type="hidden" name="action" value="save">
 
@@ -31,6 +31,11 @@
         <div class="form-group">
             <label for="Gender">Max Capacity:</label>
             <input type="text" name="MaxCapacity" id="MaxCapacity" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+        <label for="insuranceType">Insurance Type</label>
+        <input type="text" name="insuranceType" class="form-control" placeholder="Enter Insurance Type">
         </div>
         
         <button type="submit" class="btn btn-primary">Add Hospital</button>

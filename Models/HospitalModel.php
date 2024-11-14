@@ -8,10 +8,12 @@ class Hospital extends Facility{
     private $HospitalID;
     private $Supervisor;
     private $MaxCapacity;
-    private $CurrentCapacity;
+    private $CurrentCapacity = null;
+
+    private $insuranceType = 'N/A' ; //Variable for insurance type (will be assigned using strategy function assign hospital) 
     private static $file = __DIR__ . '/../data/hospitals.txt';
 
-    public function __construct($Name,$Address,$Supervisor,$MaxCapacity,$CurrentCapacity)
+    public function __construct($Name,$Address,$Supervisor,$MaxCapacity,$CurrentCapacity,$insuranceType = 'basic')
     {
         $this->HospitalID = uniqid();
         $this->Name = $Name;
@@ -19,6 +21,7 @@ class Hospital extends Facility{
         $this->CurrentCapacity = $CurrentCapacity;
         $this->MaxCapacity = $MaxCapacity;
         $this->Supervisor= $Supervisor;
+        $this->insuranceType = $insuranceType; // It has a basic default value
     }
 
     public function Assign(){
@@ -69,6 +72,13 @@ class Hospital extends Facility{
     public function getID(){
         return $this->HospitalID;
     }
+    public function getInsuranceType() {
+        return $this->insuranceType;
+    }
+
+    public function setInsuranceType($insuranceType) {
+        $this->insuranceType = $insuranceType;
+    }
 
     public function save() {
         // Load existing data
@@ -81,7 +91,8 @@ class Hospital extends Facility{
             'Address' => $this->Address,
             'Supervisor' => $this->Supervisor,
             'MaxCapacity' => $this->MaxCapacity,
-            'CurrentCapacity' => $this->CurrentCapacity
+            'CurrentCapacity' => $this->CurrentCapacity,
+            'InsuranceType' => $this->insuranceType
         ];
 
         // Write the updated data back to the file
@@ -106,7 +117,8 @@ class Hospital extends Facility{
                     $hospital['Address'],
                     $hospital['Supervisor'],
                     $hospital['MaxCapacity'],
-                    $hospital['CurrentCapacity']
+                    $hospital['CurrentCapacity'],
+                    $hospital['insuranceType']
                 );
             }
         }

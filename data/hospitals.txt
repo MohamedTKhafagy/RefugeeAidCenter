@@ -5,7 +5,8 @@
         "Address": "123 Health Street, City, Country",
         "Supervisor": "Dr. Emily Johnson",
         "MaxCapacity": 200,
-        "CurrentCapacity": 150
+        "CurrentCapacity": 150,
+        "insuranceType":"Basic"
     },
     {
         "HospitalID": "5f4eabf35d2e8",
@@ -13,7 +14,8 @@
         "Address": "456 Medical Avenue, City, Country",
         "Supervisor": "Dr. John Smith",
         "MaxCapacity": 300,
-        "CurrentCapacity": 250
+        "CurrentCapacity": 250,
+        "insuranceType":"Basic"
     },
     {
         "HospitalID": "5f4eabf35d2e9",
@@ -21,7 +23,8 @@
         "Address": "789 Sunrise Road, City, Country",
         "Supervisor": "Dr. Sarah Lee",
         "MaxCapacity": 100,
-        "CurrentCapacity": 80
+        "CurrentCapacity": 80,
+        "insuranceType":"Basic"
     },
     {
         "HospitalID": "5f4eabf35d2ea",
@@ -29,7 +32,8 @@
         "Address": "321 Valley Street, City, Country",
         "Supervisor": "Dr. Ahmed Ali",
         "MaxCapacity": 150,
-        "CurrentCapacity": 120
+        "CurrentCapacity": 120,
+        "insuranceType":"Basic"
     },
     {
         "HospitalID": "672fcdf8accb9",
@@ -37,6 +41,7 @@
         "Address": "orayeb",
         "Supervisor": "Ahmed",
         "MaxCapacity": "30",
-        "CurrentCapacity": 0
+        "CurrentCapacity": 0,
+        "insuranceType":"Basic"
     }
 ]

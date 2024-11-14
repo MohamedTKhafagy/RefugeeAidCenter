@@ -26,6 +26,7 @@
                 <th>Address</th>
                 <th>Capacity</th>
                 <th>Max Capacity</th>
+                <th>Insurance Type</th> <!-- New Column -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -37,6 +38,7 @@
                     <td><?php echo htmlspecialchars($hospital->getAddress()); ?></td>
                     <td><?php echo htmlspecialchars($hospital->getCurrentCapacity()); ?></td>
                     <td><?php echo htmlspecialchars($hospital->getMaxCapacity()); ?></td>
+                    <td><?php echo htmlspecialchars($hospital->getInsuranceType() ?? 'Not Specified'); ?></td>
                     <td>
                         <a href="update_hospital.php?id=<?php echo $hospital->getID(); ?>" class="btn btn-warning btn-sm">Update</a>
                         <a href="delete_hospital.php?id=<?php echo $hospital->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
@@ -45,26 +47,6 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-</div>
-<div>
-<form method="POST" action="assign_strategy.php">
-    <label for="hospital">Select Hospital:</label>
-    <select name="hospital_id">
-        <?php foreach ($hospitals as $hospital): ?>
-            <option value="<?php echo $hospital->getID(); ?>">
-                <?php echo htmlspecialchars($hospital->getName()); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-
-    <label for="strategy">Select Strategy:</label>
-    <select name="strategy_type">
-        <option value="basic">Basic Insurance</option>
-        <option value="comprehensive">Comprehensive Insurance</option>
-    </select>
-
-    <button type="submit" class="btn btn-primary">Assign Strategy</button>
-</form>
 </div>
 </body>
 </html>
