@@ -8,23 +8,35 @@ class HospitalController {
     }
 
     public function add($data = null) {
-        if ($data) {
+        if ($data && !empty($data)) {
             try {
+                // Set a default current capacity if not provided
+                $currentCapacity = isset($data['CurrentCapacity']) ? $data['CurrentCapacity'] : 0;
+                
                 $hospital = new Hospital(
                     $data['Name'],
                     $data['Address'],
                     $data['Supervisor'],
                     $data['MaxCapacity'],
-                    $data['CurrentCapacity'],
+                    $currentCapacity,
                     $data['insuranceType']
                 );
-                $hospital->save();
-                header("Location: /hospitals");
+                
+                $result = $hospital->save();
+                
+                if ($result) {
+                    // Use the base URL for redirection
+                    $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+                    header("Location: " . $base_url . "/hospitals");
+                    exit();
+                } else {
+                    throw new Exception("Failed to save hospital data");
+                }
             } catch (Exception $e) {
                 echo "Error adding hospital: " . $e->getMessage();
             }
         } else {
-            include __DIR__ . '/../Views/AddHospitalView.php'; // Load a form view
+            include __DIR__ . '/../Views/AddHospitalView.php';
         }
     }
 
@@ -65,7 +77,7 @@ class HospitalController {
     }
     
     private function saveToFile($hospitals) {
-        $filePath = __DIR__ . '/../Data/hospitals.txt';
+        $filePath = __DIR__ . '/../data/hospitals.txt';
         
         $file = fopen($filePath, 'w');
         if (!$file) {

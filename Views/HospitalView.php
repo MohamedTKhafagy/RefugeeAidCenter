@@ -40,8 +40,14 @@
                     <td><?php echo htmlspecialchars($hospital->getMaxCapacity()); ?></td>
                     <td><?php echo htmlspecialchars($hospital->getInsuranceType() ?? 'Not Specified'); ?></td>
                     <td>
-                        <a href="update_hospital.php?id=<?php echo $hospital->getID(); ?>" class="btn btn-warning btn-sm">Update</a>
-                        <a href="delete_hospital.php?id=<?php echo $hospital->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                      <?php 
+                         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+                        ?>
+                        <a href="<?php echo $base_url . '/hospitals/update?id=' . $hospital->getID(); ?>" 
+                        class="btn btn-warning btn-sm">Update</a>
+                        <a href="<?php echo $base_url . '/hospitals/delete?id=' . $hospital->getID(); ?>" 
+                        class="btn btn-danger btn-sm" 
+                        onclick="return confirm('Are you sure you want to delete this hospital?');">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

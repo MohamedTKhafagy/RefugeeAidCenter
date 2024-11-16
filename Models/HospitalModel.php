@@ -12,10 +12,9 @@ class Hospital extends Facility{
 
     private $insuranceType = 'N/A' ; //Variable for insurance type (will be assigned using strategy function assign hospital) 
     private static $file = __DIR__ . '/../data/hospitals.txt';
-
-    public function __construct($Name,$Address,$Supervisor,$MaxCapacity,$CurrentCapacity,$insuranceType = 'basic')
+    public function __construct($Name,$Address,$Supervisor,$MaxCapacity,$CurrentCapacity,$insuranceType)
     {
-        $this->HospitalID = uniqid();
+        $this->HospitalID =  uniqid('HOSP_');
         $this->Name = $Name;
         $this->Address = $Address;
         $this->CurrentCapacity = $CurrentCapacity;
@@ -81,25 +80,50 @@ class Hospital extends Facility{
     }
 
     public function save() {
-        // Load existing data
-        $data = file_exists(self::$file) ? json_decode(file_get_contents(self::$file), true) : [];
-
-        // Add this refugee's data to the array
-        $data[] = [
-            'HospitalID' => $this->HospitalID,
-            'Name' => $this->Name,
-            'Address' => $this->Address,
-            'Supervisor' => $this->Supervisor,
-            'MaxCapacity' => $this->MaxCapacity,
-            'CurrentCapacity' => $this->CurrentCapacity,
-            'InsuranceType' => $this->insuranceType
-        ];
-
-        // Write the updated data back to the file
-        if (file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT))) {
-            echo "Hospital saved successfully.";
-        } else {
-            echo "Error saving Hospital.";
+        try {
+            // Ensure the file exists and is writable
+            if (!file_exists(self::$file)) {
+                file_put_contents(self::$file, json_encode([]));
+            }
+            
+            // Check if file is writable
+            if (!is_writable(self::$file)) {
+                throw new Exception("File is not writable");
+            }
+    
+            // Load existing data
+            $data = [];
+            $fileContent = file_get_contents(self::$file);
+            if ($fileContent !== false) {
+                $data = json_decode($fileContent, true) ?: [];
+            }
+    
+            // Generate a unique ID if not set
+            if (!$this->HospitalID) {
+                $this->HospitalID = uniqid('HOSP_');
+            }
+    
+            // Add this hospital's data to the array
+            $data[] = [
+                'HospitalID' => $this->HospitalID,
+                'Name' => $this->Name,
+                'Address' => $this->Address,
+                'Supervisor' => $this->Supervisor,
+                'MaxCapacity' => $this->MaxCapacity,
+                'CurrentCapacity' => $this->CurrentCapacity,
+                'InsuranceType' => $this->insuranceType
+            ];
+    
+            // Write the updated data back to the file
+            $result = file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT));
+            if ($result === false) {
+                throw new Exception("Failed to write to file");
+            }
+    
+            return true;
+        } catch (Exception $e) {
+            error_log("Error saving hospital: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -144,4 +168,15 @@ class Hospital extends Facility{
             echo "Hospital capacity reached. Cannot assign more.\n";
         }
     }
+    // Add this to your Hospital class constructor or in a init method
+public static function initStorage() {
+    $dir = dirname(self::$file);
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    if (!file_exists(self::$file)) {
+        file_put_contents(self::$file, json_encode([]));
+    }
 }
+}
+
