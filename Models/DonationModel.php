@@ -1,5 +1,5 @@
 <?php
-
+include_once "SingletonDB.php";
 include_once "DonationStrategy.php";
 include_once "MoneyDonationDecorator.php";
 class Donation {
@@ -10,10 +10,10 @@ class Donation {
     private $Id;
     private DonationStrategy $DonationStrategy;
     private $Amount;
-    private $Type;
-    private $DirectedTo;
-    private $Collection;
-    private $currency;
+    private $Type;//Type: 0 = Money, 1 = Clothes, 2 = Food
+    private $DirectedTo;//DirectedTo: 0 = Hospital, 1 = School, 2 = Shelter
+    private $Collection;//Collection: 0 = No Collection Fee, 1 = Add Collection Fee (Default)
+    private $currency;//Currency: 0 = EGP (Default), 1 = USD, 2 = GBP
 
     public function __construct($Id,$Type,$Amount,$DirectedTo,$Collection=1,$currency=0){
         $this->Id = $Id;
@@ -24,10 +24,7 @@ class Donation {
         $this->currency = $currency;
         $this->InitializeDonationStrategy();
     }
-    //Type: 0 = Money, 1 = Clothes, 2 = Food
-    //DirectedTo: 0 = Hospital, 1 = School, 2 = Shelter
-    //Collection: 0 = No Collection Fee, 1 = Add Collection Fee (Default)
-    //Currency: 0 = EGP (Default), 1 = USD, 2 = GBP
+    
     public function InitializeDonationStrategy(){
         if($this->Type == 0){//Money
             if($this->DirectedTo == 0){//Hospital
@@ -156,7 +153,7 @@ class Donation {
     public function getCollection() {
         return $this->Collection;
     }
-
+/*
     public function recordTransaction($DonatorId){
          // Load existing data
          $data = file_exists(self::$DonationToDonatorfile) ? json_decode(file_get_contents(self::$DonationToDonatorfile), true) : [];
@@ -174,7 +171,76 @@ class Donation {
              echo "Error saving Donation.";
          }
     }
+         */
+    public function recordTransaction($DonatorId){
+        $db=DbConnection::getInstance();
+        $sql = " 
+       INSERT INTO `donatordonation` (`DonatorId`, `DonationId`) VALUES ('$DonatorId', '$this->Id');
+        ";
+        $db->query($sql);
+    }
+   
+    public static function findById($id){
+        $db=DbConnection::getInstance();
+        $sql = "SELECT * FROM Donation WHERE Id = $id;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $donation){
+            return new self(
+                $donation["Id"],
+                $donation["Type"],
+                $donation["Amount"],
+                $donation["DirectedTo"],
+                $donation["Collection"],
+                $donation["Currency"],
+                );
+        }
+    }
     
+    public static function all(){
+        $db=DbConnection::getInstance();
+        $sql = "SELECT * FROM Donation";
+        $rows=$db->fetchAll($sql);
+        $donations = [];
+        foreach($rows as $donation){
+            $donations[]= new self(
+                $donation["Id"],
+                $donation["Type"],
+                $donation["Amount"],
+                $donation["DirectedTo"],
+                $donation["Collection"],
+                $donation["Currency"],
+                );
+        }
+        return $donations ?? [];
+    
+    }
+    
+    public function save(){
+        $db=DbConnection::getInstance();
+        $sql = "
+        INSERT INTO Donation (Amount, Type, DirectedTo, Collection, Currency)
+        VALUES ($this->Amount, $this->Type, $this->DirectedTo, $this->Collection, $this->currency)
+        ";
+        $db->query($sql);
+        $sql ="SELECT LAST_INSERT_ID() AS last;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $row){
+            return $this->findById($row["last"]);
+        }
+    }
+    public function findDonatorId(){
+        $db=DbConnection::getInstance();
+        $sql = "SELECT * FROM donatordonation Where DonationId = $this->Id";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $row){
+            return $row['DonatorId'];
+        }
+    }
+
+}
+    
+
+ /*
     public function save()
     {
         // Load existing data
@@ -279,10 +345,8 @@ class Donation {
     
         return !empty($ids) ? max($ids) : 0;
     }
-    
-}
-
-function extractLastNumber($url)
+    */
+/*function extractLastNumber($url)
 {
     // Use a regular expression to match the last number
     if (preg_match('/\d+(?=[^\/]*$)/', $url, $matches)) {
@@ -290,3 +354,4 @@ function extractLastNumber($url)
     }
     return null; // Return null if no number is found
 }
+*/
