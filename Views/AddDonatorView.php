@@ -12,12 +12,6 @@
     <form action="<?php echo $base_url; ?>/donators/add" method="POST">
         <!-- Hidden action field -->
         <input type="hidden" name="action" value="save">
-        
-        <div class="form-group">
-            <label for="ID">ID:</label>
-            <input readonly type="text" name="Id" id="Id" value="<?php echo htmlspecialchars($id); ?>" class="form-control" required>
-        </div>
-        
 
         <div class="form-group">
             <label for="Name">Name:</label>
@@ -31,12 +25,21 @@
 
         <div class="form-group">
             <label for="Gender">Gender:</label>
-            <input type="text" name="Gender" id="Gender" class="form-control" required>
+            <select name="Gender" id="Gender" class="form-control" required>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+            </select>
         </div>
 
         <div class="form-group">
             <label for="Address">Address:</label>
-            <input type="text" name="Address" id="Address" class="form-control" required>
+            <select name="Address" id="Address" class="form-control" required>
+                <option value="4">Madinet Nasr</option>
+                <option value="5">Masr Al Gadida</option>
+                <option value="6">New Cairo</option>
+                <option value="7">Sheikh Zayed</option>
+                <option value="8">Abbaseya</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -61,7 +64,10 @@
 
         <div class="form-group">
             <label for="Preference">Preference:</label>
-            <input type="text" name="Preference" id="Preference" class="form-control" required>
+            <select name="Preference" id="Preference" class="form-control" required>
+                <option value="0">Email</option>
+                <option value="1">SMS</option>
+            </select>
         </div>
 
         
