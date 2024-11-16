@@ -20,7 +20,6 @@ class DonatorController
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/donators');
         } else {
-            $id = Donator::getLatestId()+1;
             require 'Views/AddDonatorView.php';
         }
     }
@@ -28,14 +27,14 @@ class DonatorController
     public function saveDonator($data)
     {
         $donator = new Donator(
-            $data['Id'],
+            null,
             $data['Name'],
             $data['Age'],
             $data['Gender'],
             $data['Address'],
             $data['Phone'],
             $data['Nationality'],
-            $data['Type'],
+            1,
             $data['Email'],
             $data['Preference']
         );
@@ -51,7 +50,7 @@ class DonatorController
             $data['Address'],
             $data['Phone'],
             $data['Nationality'],
-            $data['Type'],
+            1,
             $data['Email'],
             $data['Preference']
         );
