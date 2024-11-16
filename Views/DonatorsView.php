@@ -38,8 +38,8 @@
                     <td><?php echo htmlspecialchars($donator->getAge()); ?></td>
                     <td><?php echo htmlspecialchars($donator->getNationality()); ?></td>
                     <td>
-                        <a href="update_donator.php?id=<?php echo $donator->getID(); ?>" class="btn btn-warning btn-sm">Update</a>
-                        <a href="delete_donator.php?id=<?php echo $donator->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                        <a href="donators/edit/<?php echo $donator->getID(); ?>" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="donators/delete/<?php echo $donator->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
                         <a href="donators/view/<?php echo $donator->getID(); ?>" class="btn btn-primary btn-sm">View</a>
                     </td>
                 </tr>

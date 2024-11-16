@@ -1,20 +1,20 @@
 [
     {
         "Id": "1",
-        "Name": "Ahmed",
-        "Age": "26",
+        "Name": "Khaled",
+        "Age": "29",
         "Gender": "Male",
-        "Address": "8",
+        "Address": "5",
         "Phone": "01221602822",
         "Nationality": "Egyptian",
         "Type": "Donator",
-        "Email": "abc@gmail.com",
-        "Preference": "email"
+        "Email": "123@gmail.com",
+        "Preference": "SMS"
     },
     {
         "Id": "2",
-        "Name": "samir",
-        "Age": "26",
+        "Name": "Ahmed",
+        "Age": "32",
         "Gender": "Male",
         "Address": "5",
         "Phone": "01221602822",

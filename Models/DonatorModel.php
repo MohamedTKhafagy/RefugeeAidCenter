@@ -1,5 +1,6 @@
 <?php
 require_once "UserModel.php";
+require_once "SingletonDB.php";
 
 class Donator extends User{
 
@@ -38,7 +39,7 @@ class Donator extends User{
         //to be implemented
     }
 
-
+/*
     public function save()
     {
         // Load existing data
@@ -148,7 +149,6 @@ class Donator extends User{
     // Load the file data
     if (file_exists(self::$file)) {
         $data = json_decode(file_get_contents(self::$file), true);
-
         // Loop through the data and update the user with the matching ID
         foreach ($data as &$donator) {
             if ($donator['Id'] == $id) {
@@ -195,7 +195,83 @@ class Donator extends User{
 
         return false; // File does not exist or operation failed
     }
+*/
+    public static function findById($id){
+        $db=DbConnection::getInstance();
+        $sql = "SELECT * FROM User WHERE Id = $id;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $donor){
+            return new self(
+                $donor["Id"],
+                $donor["Name"],
+                $donor["Age"],
+                $donor["Gender"],
+                $donor["Address"],
+                $donor["Phone"],
+                $donor["Nationality"],
+                $donor["Type"],
+                $donor["Email"],
+                $donor["Preference"]);
+        }
+    }
 
+    public static function all(){
+        $db=DbConnection::getInstance();
+        $sql = "SELECT * FROM User WHERE Type = 1 AND IsDeleted = 0;";
+        $rows=$db->fetchAll($sql);
+        $donators = [];
+        foreach($rows as $donor){
+            $donators[]= new self(
+                $donor["Id"],
+                $donor["Name"],
+                $donor["Age"],
+                $donor["Gender"],
+                $donor["Address"],
+                $donor["Phone"],
+                $donor["Nationality"],
+                $donor["Type"],
+                $donor["Email"],
+                $donor["Preference"]);
+        }
+        return $donators ?? [];
+
+    }
+
+    public function save(){
+        $db=DbConnection::getInstance();
+        $sql = "
+        INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference)
+        VALUES ('$this->Name', $this->Age, $this->Gender, $this->Address, '$this->Phone', '$this->Nationality', $this->Type, '$this->Email', $this->Preference)
+        ";
+        $db->query($sql);
+    }
+
+    public static function editById($id,$donor){
+        $db=DbConnection::getInstance();
+        $sql= "UPDATE User
+        SET 
+        Name = '$donor->Name',
+        Age = $donor->Age,
+        Gender = $donor->Gender,
+        Address = $donor->Address,
+        Phone = '$donor->Phone',
+        Nationality = '$donor->Nationality',
+        Type = $donor->Type,
+        Email = '$donor->Email',
+        Preference = $donor->Preference
+        WHERE Id = $id;";
+        $db->query($sql);
+    }
+
+    public Static function deleteById($id){
+        $db = DbConnection::getInstance();
+        $sql = "UPDATE User
+        SET
+        IsDeleted = 1
+        WHERE Id = $id;";
+        $db->query($sql);
+    }
 }
+
 
 

@@ -20,13 +20,28 @@ class DonatorController
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/donators');
         } else {
-            $id = Donator::getLatestId()+1;
             require 'Views/AddDonatorView.php';
         }
     }
 
     public function saveDonator($data)
     {
+        $donator = new Donator(
+            null,
+            $data['Name'],
+            $data['Age'],
+            $data['Gender'],
+            $data['Address'],
+            $data['Phone'],
+            $data['Nationality'],
+            1,
+            $data['Email'],
+            $data['Preference']
+        );
+        $donator->save();
+    }
+
+    public function editDonator($data){
         $donator = new Donator(
             $data['Id'],
             $data['Name'],
@@ -35,11 +50,23 @@ class DonatorController
             $data['Address'],
             $data['Phone'],
             $data['Nationality'],
-            $data['Type'],
+            1,
             $data['Email'],
-            $data['Preference'],
+            $data['Preference']
         );
-        $donator->save();
+        Donator::editById($data['Id'], $donator);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/donators');
+    }
+
+    public function edit($id){
+            $donator = Donator::findById($id);
+            require 'Views/EditDonatorView.php';
+    }
+    public function delete($id){
+        Donator::deleteById($id);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/donators');
     }
 
     public function findDonatorById($id)

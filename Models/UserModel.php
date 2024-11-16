@@ -1,4 +1,5 @@
 <?php
+require_once "SingletonDB.php";
 
 abstract class User
 {
@@ -8,13 +9,13 @@ abstract class User
     protected $Id;
     protected $Name;
     protected $Age;
-    protected $Gender;
+    protected $Gender; // 0 Male 1 Female
     protected $Address;
     protected $Phone;
     protected $Nationality;
-    protected $Type; // Could be 'refugee', 'volunteer', etc.
+    protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher  
     protected $Email;
-    protected $Preference; // Communication Preference (SMS, Email)
+    protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
 
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
@@ -122,22 +123,32 @@ abstract class User
     public function getFullAddress(){
         return $this->getFullAddressHelper($this->Address);
     }
-
+    /*
     private function getFullAddressHelper($address){
         // Load the file data
         if (file_exists(self::$Addressfile)) {
             $data = json_decode(file_get_contents(self::$Addressfile), true);
-            // Search for the Donator by ID
             foreach ($data as $Address) {
                 if ($Address['Id'] == $address) {
                     if ($Address['ParentId']==0){
                         return $Address['Name']. ".";
                     }
-                    // Create a new Refugee instance with the found data
                     return $Address['Name'] . ", " . self::getFullAddressHelper($Address['ParentId']);
                 }
             }
         }
         return "Error";
+    }
+    */
+    private function getFullAddressHelper($address){
+        $db = DbConnection::getInstance();
+        $sql = "SELECT * FROM Address WHERE Id = $address;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $Address){
+            if($Address['ParentId'] == null){
+                return $Address['Name'] . ".";
+            }
+            return $Address['Name'] . ", " . self::getFullAddressHelper($Address['ParentId']);
+        }
     }
 }
