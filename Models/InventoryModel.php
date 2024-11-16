@@ -1,7 +1,6 @@
 <?php
 class Inventory
 {
-    //private $InventoryID;
     private $Money;
     private $ClothesQuantity;
     private $FoodResourcesQuantity;
@@ -117,6 +116,26 @@ class Inventory
         return false;
     }
 
+    public function save(){
+        $db = DbConnection::getInstance();
+        $sql = "UPDATE Inventory
+        SET 
+        Money = $this->Money,
+        ClothesQuantity = $this->ClothesQuantity,
+        FoodResourcesQuantity = $this->FoodResourcesQuantity;";
+        $db->query($sql);
+    }
+    private function GetLatestUpdates(){
+        $db = DbConnection::getInstance();
+        $sql = "SELECT * FROM Inventory;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $data){
+            $this->Money = $data['Money'];
+            $this->ClothesQuantity = $data['ClothesQuantity'];
+            $this->FoodResourcesQuantity = $data['FoodResourcesQuantity'];
+        }
+    }
+/*
     // Save or update the inventory data in the text file
     public function save()
     {
@@ -153,5 +172,6 @@ class Inventory
                 $this->FoodResourcesQuantity = $inventory['FoodResourcesQuantity'];
         }
         }
-       
-    }
+    */
+
+}
