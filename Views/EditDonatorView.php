@@ -31,12 +31,27 @@
 
         <div class="form-group">
             <label for="Gender">Gender:</label>
-            <input type="text" value="<?php echo htmlspecialchars($donator->getGender()); ?>" name="Gender" id="Gender" class="form-control" required>
+            <select name="Gender" id="Gender" class="form-control" required>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+            </select>
+            <script>
+            document.getElementById('Gender').value = "<?php echo htmlspecialchars($donator->getGender()); ?>"; // Dynamically set to "Email"
+            </script>
         </div>
 
         <div class="form-group">
             <label for="Address">Address:</label>
-            <input type="text" value="<?php echo htmlspecialchars($donator->getAddress()); ?>" name="Address" id="Address" class="form-control" required>
+            <select name="Address" id="Address" class="form-control" required>
+                <option value="4">Madinet Nasr</option>
+                <option value="5">Masr Al Gadida</option>
+                <option value="6">New Cairo</option>
+                <option value="7">Sheikh Zayed</option>
+                <option value="8">Abbaseya</option>
+            </select>
+            <script>
+            document.getElementById('Address').value = "<?php echo htmlspecialchars($donator->getAddress()); ?>"; // Dynamically set to "Email"
+            </script>
         </div>
 
         <div class="form-group">
@@ -51,7 +66,7 @@
 
         <div class="form-group">
             <label for="Type">Type:</label>
-            <input readonly type="text" value="<?php echo htmlspecialchars($donator->getType()); ?>" name="Type" id="Type" class="form-control" required>
+            <input readonly type="text" value="Donator" name="Type" id="Type" class="form-control" required>
         </div>
 
         <div class="form-group">
@@ -61,7 +76,13 @@
 
         <div class="form-group">
             <label for="Preference">Preference:</label>
-            <input type="text" value="<?php echo htmlspecialchars($donator->getPreference()); ?>" name="Preference" id="Preference" class="form-control" required>
+           <select name="Preference" id="Preference" class="form-control" required>
+                <option value="0">Email</option>
+                <option value="1">SMS</option>
+            </select>
+            <script>
+            document.getElementById('Preference').value = "<?php echo htmlspecialchars($donator->getPreference()); ?>"; // Dynamically set to "Email"
+            </script>
         </div>
 
         
