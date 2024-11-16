@@ -20,10 +20,6 @@
             ?>
             <input hidden readonly type="text" name="DonatorId" id="DonatorId" value="<?php echo htmlspecialchars($DonatorId); ?>" class="form-control" required>
         </div>
-        <div class="form-group">
-            <label for="ID">ID:</label>
-            <input readonly type="text" name="Id" id="Id" value="<?php echo htmlspecialchars($id); ?>" class="form-control" required>
-        </div>
         
 
         <div class="form-group">
