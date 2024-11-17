@@ -1,7 +1,8 @@
 <?php
-require_once 'Models/UserModel.php';
-require_once 'SingeltonDB.php';
-class Refugee extends User {
+require_once 'UserModel.php';
+
+class Refugee extends User
+{
 
     private $RefugeeID;
     private $PassportNumber;
@@ -9,63 +10,121 @@ class Refugee extends User {
     private $Shelter; // Instance of Shelter
     private $HealthCare; // Instance of HealthcareStrategy
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare) {
+    private static $file = __DIR__ . '/../data/refugees.txt'; // Path to text file
+
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare)
+    {
         parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
-        $this->RefugeeID = $RefugeeID;
         $this->PassportNumber = $PassportNumber;
         $this->Advisor = $Advisor; // Pass an instance of SocialWorker
         $this->Shelter = $Shelter; // Pass an instance of Shelter
         $this->HealthCare = $HealthCare; // Pass an instance of HealthcareStrategy
     }
 
-    public function RegisterEvent() {
+
+    public function RegisterEvent()
+    {
         echo "An event has been registered by the Refugee user.";
     }
-    public function Update(){
+
+    public function Update()
+    {
         echo "Updating from the Refugee User class.";
     }
-         /*
-         This function is to save the Refugee details to the database
-        // Save refugee to the database
-        public function save() {
-            $db = DbConnection::getInstance();
-            $conn = $db->database_connect;
-    
-            $query = "INSERT INTO refugees (RefugeeID, PassportNumber, Advisor, Shelter, Healthcare) VALUES (?, ?, ?, ?, ?)";
-            $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, 'issss', $this->RefugeeID, $this->PassportNumber, $this->Advisor, $this->Shelter, $this->Healthcare);
-            
-            if (mysqli_stmt_execute($stmt)) {
-                echo "Refugee saved successfully.";
-            } else {
-                echo "Error saving refugee: " . mysqli_error($conn);
-            }
-    
-            mysqli_stmt_close($stmt);
+
+    // Save refugee details to the text file (JSON format)
+    public function save()
+    {
+        // Load existing data
+        $data = file_exists(self::$file) ? json_decode(file_get_contents(self::$file), true) : [];
+
+        // Add this refugee's data to the array
+        $data[] = [
+            "Id" => $this->Id,
+            "PassportNumber" => $this->PassportNumber,
+            "Advisor" => $this->Advisor,
+            "Shelter" => $this->Shelter,
+            "HealthCare" => $this->HealthCare,
+            "Name" => $this->Name,
+            "Age" => $this->Age,
+            "Gender" => $this->Gender,
+            "Address" => $this->Address,
+            "Phone" => $this->Phone,
+            "Nationality" => $this->Nationality,
+            "Type" => $this->Type,
+            "Email" => $this->Email,
+            "Preference" => $this->Preference
+        ];
+
+        // Write the updated data back to the file
+        if (file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT))) {
+            echo "Refugee saved successfully.";
+        } else {
+            echo "Error saving refugee.";
         }
-            */
-
-        /*
-        This function is to Search the Refugees based on their ID
-         // Find a refugee by ID
-        public static function findById($id) {
-            $db = DbConnection::getInstance();
-            $conn = $db->database_connect;
-
-             $query = "SELECT * FROM refugees WHERE RefugeeID = ?";
-            $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, 'i', $id);
-        
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-
-            if ($row = mysqli_fetch_assoc($result)) {
-                return new self($row['RefugeeID'], $row['PassportNumber'], $row['Advisor'], $row['Shelter'], $row['Healthcare']);
-            }
-
-            mysqli_stmt_close($stmt);
-            return null;
     }
-            */
+
+    // Find a refugee by ID from the text file
+    public static function findById($id)
+    {
+        // Load the file data
+        if (file_exists(self::$file)) {
+            $data = json_decode(file_get_contents(self::$file), true);
+
+            // Search for the refugee by ID
+            foreach ($data as $refugee) {
+                if ($refugee['RefugeeID'] == $id) {
+                    // Create a new Refugee instance with the found data
+                    return new self(
+                        $refugee['Id'] ?? null,
+                        $refugee['Name'] ?? null,
+                        $refugee['Age'] ?? null,
+                        $refugee['Gender'] ?? null,
+                        $refugee['Address'] ?? null,
+                        $refugee['Phone'] ?? null,
+                        $refugee['Nationality'] ?? null,
+                        $refugee['Type'] ?? null,
+                        $refugee['Email'] ?? null,
+                        $refugee['Preference'] ?? null,
+                        $refugee['PassportNumber'],
+                        $refugee['Advisor'],
+                        $refugee['Shelter'],
+                        $refugee['HealthCare']
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
+    // Get all refugees from the text file
+    public static function all()
+    {
+        // Load the file data
+        if (file_exists(self::$file)) {
+            $data = json_decode(file_get_contents(self::$file), true);
+
+            // Create an array of Refugee instances
+            $refugees = [];
+            foreach ($data as $refugee) {
+                $refugees[] = new self(
+                    $refugee['Id'] ?? null,
+                    $refugee['Name'] ?? null,
+                    $refugee['Age'] ?? null,
+                    $refugee['Gender'] ?? null,
+                    $refugee['Address'] ?? null,
+                    $refugee['Phone'] ?? null,
+                    $refugee['Nationality'] ?? null,
+                    $refugee['Type'] ?? null,
+                    $refugee['Email'] ?? null,
+                    $refugee['Preference'] ?? null,
+                    $refugee['PassportNumber'],
+                    $refugee['Advisor'],
+                    $refugee['Shelter'],
+                    $refugee['HealthCare']
+                );
+            }
+        }
+        return $refugees ?? [];
+    }
 }
-?>

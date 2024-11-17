@@ -1,5 +1,5 @@
 <?php
-require_once 'Models/UserModel.php';
+
 class Teacher extends User{
     private $TeacherID;
     private $Subject;
@@ -18,7 +18,6 @@ class Teacher extends User{
     public function setTeacherID ($TeacherID){
         $this->TeacherID = $TeacherID;
     }
-
     public function setSubject($Subject){
         $this->Subject = $Subject;
     }
