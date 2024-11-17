@@ -79,20 +79,16 @@ if ($segments[0] == 'donations') {
 if ($segments[0] == 'tasks') {
     $controller = new TaskController();
 
-    // Route for viewing the edit page of a task
     if (isset($segments[1]) && $segments[1] === 'edit' && isset($segments[2])) {
         $controller->edit($segments[2]);
     }
-    // Route for updating a task
     elseif (isset($segments[1]) && $segments[1] === 'update' && isset($_POST)) {
         $controller->update($_POST);
     }
-    // Default route to display tasks list
     else {
         $controller->index();
     }
 }
-
 
 
 else {

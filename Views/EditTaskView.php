@@ -1,27 +1,19 @@
-<?php
-// Check if the task is passed and exists
-if (isset($task)) :
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Task</title>
-    <link rel="stylesheet" href="/path/to/your/styles.css"> <!-- Update the path to your CSS file -->
 </head>
 <body>
     <h1>Edit Task</h1>
 
-    <!-- Check for any error messages -->
     <?php if (isset($errorMessage)) : ?>
         <div class="error-message">
             <?= htmlspecialchars($errorMessage) ?>
         </div>
     <?php endif; ?>
 
-    <!-- Form for editing the task -->
     <form action="/tasks/update/<?= $task->id ?>" method="POST">
     <input type="hidden" name="Id" value="<?= htmlspecialchars($task->id) ?>">
 
@@ -53,8 +45,4 @@ if (isset($task)) :
 </html>
 
 <?php
-else :
-    // If task is not found, show a message
-    echo "<p>Task not found.</p>";
-endif;
 ?>

@@ -20,8 +20,8 @@ class TaskController
                 $data['SkillRequired'],
                 $data['HoursOfWork'],
                 $data['AssignedVolunteerId'] ?? null,
-                $data['IsCompleted'] ?? 0,   // Default to 0 if not set
-                $data['IsDeleted'] ?? 0      // Default to 0 if not set
+                $data['IsCompleted'] ?? 0,   
+                $data['IsDeleted'] ?? 0      
             );
             $task->save();
             header('Location: /tasks');
@@ -36,7 +36,6 @@ class TaskController
         if ($task) {
             include __DIR__ . '/../Views/EditTaskView.php';
         } else {
-            // Redirect if no task is found
             header('Location: /tasks');
             exit;
         }
@@ -44,7 +43,6 @@ class TaskController
     
     
     public function update($data) {
-        // Make sure 'Id' is present and valid in the form submission
         if (isset($data['Id']) && !empty($data['Id'])) {
             $task = new Task(
                 $data['Id'],
@@ -59,7 +57,7 @@ class TaskController
             header('Location: /tasks');
             exit;
         } else {
-            // If no ID is passed, redirect back to tasks list
+            
             header('Location: /tasks');
             exit;
         }
