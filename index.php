@@ -101,7 +101,6 @@ if ($segments[0] == 'teachers') {
     else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
-/*
 if ($segments[0] == 'socialWorkers') {
     $controller = new SocialWorkerController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
@@ -111,7 +110,6 @@ if ($segments[0] == 'socialWorkers') {
     else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
-    */
 else {
     
 }
