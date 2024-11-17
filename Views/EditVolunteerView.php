@@ -8,7 +8,6 @@
 </head>
 
 <body>
-
     <div class="container">
         <h2 class="mt-4 mb-4">Edit Volunteer</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
@@ -33,12 +32,27 @@
 
             <div class="form-group">
                 <label for="Gender">Gender:</label>
-                <input type="text" value="<?php echo htmlspecialchars($volunteer->getGender()); ?>" name="Gender" id="Gender" class="form-control" required>
+                <select name="Gender" id="Gender" class="form-control" required>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+                <script>
+                    document.getElementById('Gender').value = "<?php echo htmlspecialchars($volunteer->getGender()); ?>";
+                </script>
             </div>
 
             <div class="form-group">
                 <label for="Address">Address:</label>
-                <input type="text" value="<?php echo htmlspecialchars($volunteer->getAddress()); ?>" name="Address" id="Address" class="form-control" required>
+                <select name="Address" id="Address" class="form-control" required>
+                    <option value="4">Madinet Nasr</option>
+                    <option value="5">Masr Al Gadida</option>
+                    <option value="6">New Cairo</option>
+                    <option value="7">Sheikh Zayed</option>
+                    <option value="8">Abbaseya</option>
+                </select>
+                <script>
+                    document.getElementById('Address').value = "<?php echo htmlspecialchars($volunteer->getAddress()); ?>";
+                </script>
             </div>
 
             <div class="form-group">
@@ -53,7 +67,7 @@
 
             <div class="form-group">
                 <label for="Type">Type:</label>
-                <input readonly type="text" value="<?php echo htmlspecialchars($volunteer->getType()); ?>" name="Type" id="Type" class="form-control" required>
+                <input readonly type="text" value="Volunteer" name="Type" id="Type" class="form-control" required>
             </div>
 
             <div class="form-group">
@@ -63,22 +77,54 @@
 
             <div class="form-group">
                 <label for="Preference">Preference:</label>
-                <input type="text" value="<?php echo htmlspecialchars($volunteer->getPreference()); ?>" name="Preference" id="Preference" class="form-control" required>
+                <select name="Preference" id="Preference" class="form-control" required>
+                    <option value="0">Email</option>
+                    <option value="1">SMS</option>
+                </select>
+                <script>
+                    document.getElementById('Preference').value = "<?php echo htmlspecialchars($volunteer->getPreference()); ?>";
+                </script>
+            </div>
+
+            <!-- <div class="form-group">
+                <label for="Skills">Skills:</label>
+                <input type="text" name="Skills" id="Skills" value="<?php echo htmlspecialchars($volunteer->getSkills()); ?>" class="form-control" required>
             </div>
 
             <div class="form-group">
-                <label for="Skills">Skill:</label>
-                <input type="text" value="<?php echo htmlspecialchars($volunteer->getSkills()); ?>" name="Skills" id="Skills" class="form-control" required>
+                <label for="Availability">Availability:</label>
+                <input type="text" name="Availability" id="Availability" value="<?php echo htmlspecialchars($volunteer->getAvailability()); ?>" class="form-control" required> -->
+            <!-- </div> -->
+
+            <div class="form-group">
+                <label for="Skills">Skills:</label>
+                <select name="Skills" id="Skills" class="form-control">
+                    <option value="Medical">Medical</option>
+                    <option value="Teaching">Teaching</option>
+                    <option value="Counseling">Counseling</option>
+                    <option value="Translation">Translation</option>
+                    <option value="Logistics">Logistics</option>
+                    <option value="Fundraising">Fundraising</option>
+                </select>
+                <script>
+                    document.getElementById('Skills').value = "<?php echo htmlspecialchars($volunteer->getSkills()); ?>";
+                </script>
             </div>
 
             <div class="form-group">
                 <label for="Availability">Availability:</label>
                 <select name="Availability" id="Availability" class="form-control" required>
-                    <option value="Full-time" <?php echo $volunteer->getAvailability() == 'Full-time' ? 'selected' : ''; ?>>Full-time</option>
-                    <option value="Part-time" <?php echo $volunteer->getAvailability() == 'Part-time' ? 'selected' : ''; ?>>Part-time</option>
-                    <option value="Weekends" <?php echo $volunteer->getAvailability() == 'Weekends' ? 'selected' : ''; ?>>Weekends</option>
-                    <option value="Evenings" <?php echo $volunteer->getAvailability() == 'Evenings' ? 'selected' : ''; ?>>Evenings</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
                 </select>
+                <script>
+                    document.getElementById('Availability').value = "<?php echo htmlspecialchars($volunteer->getAvailability()); ?>";
+                </script>
             </div>
 
             <button type="submit" class="btn btn-primary">Edit Volunteer</button>

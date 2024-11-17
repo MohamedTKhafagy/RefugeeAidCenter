@@ -33,6 +33,7 @@
             </thead>
             <tbody>
                 <?php foreach ($volunteers as $volunteer): ?>
+
                     <tr>
                         <td><?php echo htmlspecialchars($volunteer->getId()); ?></td>
                         <td><?php echo htmlspecialchars($volunteer->getName()); ?></td>
@@ -41,7 +42,7 @@
                         <td><?php echo htmlspecialchars($volunteer->getAvailability()); ?></td>
                         <td>
                             <a href="<?php echo $base_url; ?>/volunteers/edit/<?php echo $volunteer->getID(); ?>" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="<?php echo $base_url; ?>/volunteers/delete/<?php echo $volunteer->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                            <a href="<?php echo $base_url; ?>/volunteers/delete/<?php echo $volunteer->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this volunteer?');">Delete</a>
                             <a href="<?php echo $base_url; ?>/volunteers/view/<?php echo $volunteer->getID(); ?>" class="btn btn-primary btn-sm">View</a>
                         </td>
                     </tr>

@@ -19,8 +19,8 @@
                 <p><strong>ID:</strong> <?php echo $volunteer->getId(); ?></p>
                 <p><strong>Name:</strong> <?php echo $volunteer->getName(); ?></p>
                 <p><strong>Age:</strong> <?php echo $volunteer->getAge(); ?></p>
-                <p><strong>Gender:</strong> <?php echo $volunteer->getGender(); ?></p>
-                <p><strong>Address:</strong> <?php echo $volunteer->getAddress(); ?></p>
+                <p><strong>Gender:</strong> <?php echo $volunteer->getGender() == 0 ? 'Male' : 'Female'; ?></p>
+                <p><strong>Address:</strong> <?php echo $volunteer->getFullAddress($volunteer->getAddress()) ?></p>
                 <p><strong>Phone:</strong> <?php echo $volunteer->getPhone(); ?></p>
                 <p><strong>Nationality:</strong> <?php echo $volunteer->getNationality(); ?></p>
                 <p><strong>Email:</strong> <?php echo $volunteer->getEmail(); ?></p>
