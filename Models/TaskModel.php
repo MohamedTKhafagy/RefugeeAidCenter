@@ -5,23 +5,26 @@ include_once __DIR__ . '/../SingletonDB.php';
 
 class Task
 {
-    public $id, $name, $description, $skillRequired, $hoursOfWork, $assignedVolunteerId, $isDeleted, $isCompleted;
+    public $id;
+    public $name;
+    public $description;
+    public $skillRequired;
+    public $hoursOfWork;
+    public $assignedVolunteerId;
+    public $isCompleted;
 
-    public function __construct($id, $name, $description, $skillRequired, $hoursOfWork, $assignedVolunteerId = null, $isDeleted = 0, $isCompleted = 0)
-    {
+    public function __construct($id, $name, $description, $skillRequired, $hoursOfWork, $assignedVolunteerId, $isCompleted) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->skillRequired = $skillRequired;
         $this->hoursOfWork = $hoursOfWork;
         $this->assignedVolunteerId = $assignedVolunteerId;
-        $this->isDeleted = $isDeleted;
         $this->isCompleted = $isCompleted;
     }
 
     // Create and save a new task
-    public function save()
-    {
+    public function save() {
         $db = DbConnection::getInstance();
         $query = "INSERT INTO Task (Name, Description, SkillRequired, HoursOfWork, AssignedVolunteerId, IsDeleted, IsCompleted)
                   VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -39,21 +42,60 @@ class Task
     // Retrieve all tasks
     public static function all() {
         $db = DbConnection::getInstance();
-        $stmt = $db->query("SELECT * FROM Task WHERE isDeleted = 0");
-        return $stmt->fetchAll(PDO::FETCH_OBJ); // Changed to return objects
+        $sql = "SELECT * FROM Task WHERE isDeleted = 0";
+        $rows = $db->fetchAll($sql);  // Fetch the data
+    
+        $tasks = [];
+        if ($rows) {
+            foreach ($rows as $task) {
+                // Assign values correctly to Task objects
+                $tasks[] = new Task(
+                    $task['Id'], 
+                    $task['Name'], 
+                    $task['Description'], 
+                    $task['SkillRequired'], 
+                    $task['HoursOfWork'], 
+                    $task['AssignedVolunteerId'], 
+                    $task['IsCompleted'] // Make sure these are set correctly
+                );
+            }
+        }
+    
+        return $tasks; // Return the populated Task objects
     }
+    
+    
+    
+    
+    
+    
     
     // Retrieve a task by ID
     public static function findById($id)
     {
         $db = DbConnection::getInstance();
-        $result = $db->query("SELECT * FROM Task WHERE Id = ?", [$id]);
-        return $result->fetchObject('Task');
+        $result = $db->fetchAll("SELECT * FROM Task WHERE Id = ?", [$id]);
+    
+        if (empty($result)) {
+            return null; // Return null if no task is found
+        }
+    
+        // Assuming the result contains a single task
+        $task = $result[0]; 
+        return new self(
+            $task["id"] ?? null,
+            $task["name"] ?? null,
+            $task["description"] ?? null,
+            $task["skillRequired"] ?? null,
+            $task["hoursOfWork"] ?? null,
+            $task["assignedVolunteerId"] ?? null,
+            $task["isCompleted"] ?? 0
+        );
     }
+    
 
     // Update an existing task
-    public static function editById($id, $task)
-    {
+    public static function editById($id, $task) {
         $db = DbConnection::getInstance();
         $query = "UPDATE Task SET 
                   Name = ?, Description = ?, SkillRequired = ?, HoursOfWork = ?, 
@@ -70,6 +112,7 @@ class Task
             $id
         ]);
     }
+    
 
     // Soft delete a task
     public static function deleteById($id)

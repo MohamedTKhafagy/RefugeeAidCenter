@@ -1,32 +1,60 @@
+<?php
+// Check if the task is passed and exists
+if (isset($task)) :
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Task</title>
+    <link rel="stylesheet" href="/path/to/your/styles.css"> <!-- Update the path to your CSS file -->
 </head>
 <body>
     <h1>Edit Task</h1>
-    <form action="/tasks/update" method="post">
-        <input type="hidden" name="Id" value="<?= $task->id ?>">
 
-        <label for="name">Task Name:</label>
-        <input type="text" id="name" name="Name" value="<?= htmlspecialchars($task->name) ?>" required><br><br>
+    <!-- Check for any error messages -->
+    <?php if (isset($errorMessage)) : ?>
+        <div class="error-message">
+            <?= htmlspecialchars($errorMessage) ?>
+        </div>
+    <?php endif; ?>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="Description" required><?= htmlspecialchars($task->description) ?></textarea><br><br>
+    <!-- Form for editing the task -->
+    <form action="/tasks/update/<?= $task->id ?>" method="POST">
+    <input type="hidden" name="Id" value="<?= htmlspecialchars($task->id) ?>">
 
-        <label for="skill">Skill Required:</label>
-        <input type="text" id="skill" name="SkillRequired" value="<?= htmlspecialchars($task->skillRequired) ?>" required><br><br>
+    <label for="Name">Task Name:</label>
+    <input type="text" id="Name" name="Name" value="<?= htmlspecialchars($task->name) ?>" required>
 
-        <label for="hours">Hours of Work:</label>
-        <input type="number" id="hours" name="HoursOfWork" value="<?= $task->hoursOfWork ?>" min="1" required><br><br>
+    <label for="Description">Description:</label>
+    <textarea id="Description" name="Description" required><?= htmlspecialchars($task->description) ?></textarea>
 
-        <label for="volunteer">Assigned Volunteer ID:</label>
-        <input type="number" id="volunteer" name="AssignedVolunteerId" value="<?= $task->assignedVolunteerId ?>"><br><br>
+    <label for="SkillRequired">Skill Required:</label>
+    <input type="text" id="SkillRequired" name="SkillRequired" value="<?= htmlspecialchars($task->skillRequired) ?>" required>
 
-        <button type="submit">Update Task</button>
-    </form>
+    <label for="HoursOfWork">Hours of Work:</label>
+    <input type="number" id="HoursOfWork" name="HoursOfWork" value="<?= htmlspecialchars($task->hoursOfWork) ?>" required>
+
+    <label for="AssignedVolunteerId">Assigned Volunteer ID:</label>
+    <input type="number" id="AssignedVolunteerId" name="AssignedVolunteerId" value="<?= htmlspecialchars($task->assignedVolunteerId) ?>">
+
+    <label for="IsCompleted">Completed:</label>
+    <input type="checkbox" id="IsCompleted" name="IsCompleted" value="1" <?= $task->isCompleted ? 'checked' : '' ?>>
+
+    <button type="submit">Update Task</button>
+</form>
+
+
+    <br>
     <a href="/tasks">Back to Task List</a>
 </body>
 </html>
+
+<?php
+else :
+    // If task is not found, show a message
+    echo "<p>Task not found.</p>";
+endif;
+?>

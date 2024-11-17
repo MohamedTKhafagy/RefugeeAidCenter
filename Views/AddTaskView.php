@@ -22,6 +22,7 @@
 
         <button type="submit">Add Task</button>
     </form>
+    <br>
     <a href="/tasks">Back to Task List</a>
 </body>
 </html>

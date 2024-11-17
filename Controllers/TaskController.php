@@ -1,53 +1,90 @@
 <?php
-require_once __DIR__ . '/../Views/TaskListView.php';
+require_once __DIR__ . '/../Models/TaskModel.php';
 
 class TaskController
 {
     public function index() {
-        $tasks = Task::all(); 
-        include __DIR__ . '/../Views/TaskListView.php'; 
+        $tasks = Task::all();
+
+        include __DIR__ . '/../Views/TaskListView.php';
     }
     
+    
 
-    public function add($data = null)
-    {
-        if ($data) {
-            $task = new Task(null, $data['Name'], $data['Description'], $data['SkillRequired'], $data['HoursOfWork']);
+    public function add($data = null) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $task = new Task(
+                null,
+                $data['Name'],
+                $data['Description'],
+                $data['SkillRequired'],
+                $data['HoursOfWork'],
+                $data['AssignedVolunteerId'] ?? null,
+                $data['IsCompleted'] ?? 0,   // Default to 0 if not set
+                $data['IsDeleted'] ?? 0      // Default to 0 if not set
+            );
             $task->save();
             header('Location: /tasks');
+            exit;
         } else {
-            require 'Views/AddTaskView.php';
+            include __DIR__ . '/../Views/AddTaskView.php';
         }
     }
-
-    public function edit($id)
-    {
+    
+    public function edit($id) {
         $task = Task::findById($id);
-        require 'Views/EditTaskView.php';
+        if ($task) {
+            include __DIR__ . '/../Views/EditTaskView.php';
+        } else {
+            // Redirect if no task is found
+            header('Location: /tasks');
+            exit;
+        }
     }
-
-    public function update($data)
-    {
-        $task = new Task($data['Id'], $data['Name'], $data['Description'], $data['SkillRequired'], $data['HoursOfWork'], $data['AssignedVolunteerId']);
-        Task::editById($data['Id'], $task);
-        header('Location: /tasks');
+    
+    
+    public function update($data) {
+        // Make sure 'Id' is present and valid in the form submission
+        if (isset($data['Id']) && !empty($data['Id'])) {
+            $task = new Task(
+                $data['Id'],
+                $data['Name'],
+                $data['Description'],
+                $data['SkillRequired'],
+                $data['HoursOfWork'],
+                $data['AssignedVolunteerId'] ?? null,
+                $data['IsCompleted'] ?? 0
+            );
+            Task::editById($task->id, $task);
+            header('Location: /tasks');
+            exit;
+        } else {
+            // If no ID is passed, redirect back to tasks list
+            header('Location: /tasks');
+            exit;
+        }
     }
+    
+    
+    
 
-    public function delete($id)
-    {
+
+
+    public function delete($id) {
         Task::deleteById($id);
         header('Location: /tasks');
+        exit;
     }
 
-    public function assign($taskId, $volunteerId)
-    {
+    public function assign($taskId, $volunteerId) {
         Task::assignToVolunteer($taskId, $volunteerId);
         header('Location: /tasks');
+        exit;
     }
 
-    public function complete($taskId)
-    {
+    public function complete($taskId) {
         Task::markAsCompleted($taskId);
         header('Location: /tasks');
+        exit;
     }
 }
