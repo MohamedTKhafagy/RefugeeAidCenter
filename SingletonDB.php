@@ -7,7 +7,6 @@ class DbConnection {
     private $db_name="aidcenter";// database name 
     private  $database_connection; 
     private static $instance;
-public  static $Counter=0;
 
     private function __construct() {
       $this->database_connection = $this->database_connect($this->host, $this->username,$this->password,$this->db_name);
@@ -15,12 +14,7 @@ public  static $Counter=0;
     }
     public static function getInstance(){// create only one object for databse 
         if(self::$instance==null){
-          echo "Return New Instance";
             self::$instance=new DbConnection();
-        }
-        else 
-        {
-          echo "Object is there <br>";
         }
         return self::$instance;
     }
@@ -34,16 +28,33 @@ public  static $Counter=0;
             
         }
     }
-        /**
-     * select a db
-     *
-     * @param string $database_name
-     * @return mysql link
-     */
-    private function database_select($database_name) {
-      
-        return mysqli_select_db( $this->database_connection,$database_name)
-            or die("No database is selecteted");
-        
+
+    public function query($sql) {
+        $result = mysqli_query($this->database_connection, $sql);
+        if (!$result) {
+            die("Query failed: " . mysqli_error($this->database_connection));
+        }
+        return $result;
     }
+
+    //Fetch results of select Queries
+    public function fetchAll($sql) {
+        $result = $this->query($sql);
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+    
+    public function prepare($sql) {
+        $stmt = mysqli_prepare($this->database_connection, $sql);
+        if (!$stmt) {
+            die("Failed to prepare statement: " . mysqli_error($this->database_connection));
+        }
+        return $stmt;
+    }
+    
+    //Fetch One Item from Select Query
+    /*public function fetchOne($sql) {
+        $result = $this->query($sql);
+        return mysqli_fetch_assoc($result);
+    }
+    */  
 }
