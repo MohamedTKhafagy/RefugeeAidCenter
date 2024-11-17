@@ -1,7 +1,6 @@
 <?php
-require_once "SingletonDB.php";
 
-abstract class User
+abstract class User implements Observer 
 {
     private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
 
@@ -34,7 +33,7 @@ abstract class User
 
 
     abstract public function RegisterEvent();
-    abstract public function Update();
+    abstract public function Update($Message);
 
 
 

@@ -43,6 +43,14 @@ class DbConnection {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
     
+    public function prepare($sql) {
+        $stmt = mysqli_prepare($this->database_connection, $sql);
+        if (!$stmt) {
+            die("Failed to prepare statement: " . mysqli_error($this->database_connection));
+        }
+        return $stmt;
+    }
+    
     //Fetch One Item from Select Query
     /*public function fetchOne($sql) {
         $result = $this->query($sql);
