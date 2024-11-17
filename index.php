@@ -6,8 +6,12 @@ error_reporting(E_ALL);
 
 require_once 'Controllers/RefugeeController.php';
 require_once 'Controllers/HospitalController.php';
+require_once 'Controllers/RegisterController.php';
+require_once 'Controllers/LoginController.php';
 require_once 'Controllers/ShelterController.php';
 require_once 'Controllers/SchoolController.php';
+require_once 'Controllers/VolunteerController.php';
+
 require_once 'Controllers/InventoryController.php';
 require_once 'Controllers/DonatorController.php';
 require_once 'Controllers/DonationController.php';
@@ -29,7 +33,20 @@ $segments = explode('/', trim($path, '/'));
 
 if ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
+    if (isset($segments[1]) && $segments[1] === 'add') $controller->add();
+    else if (isset($segments[1]) && $segments[1] === 'editRefugee') {
+        parse_str($queryString, $queryArray);
+        $controller->edit((!empty($queryArray)) ? $queryArray : null);
+    }
+    else $controller->index();
+} 
+elseif ($segments[0] == 'volunteers') {
+    $controller = new VolunteerController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findVolunteerById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'editVolunteer') $controller->editVolunteer((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 
 }elseif ($segments[0] == 'hospitals') {
@@ -66,14 +83,14 @@ if ($segments[0] == 'refugees') {
  elseif ($segments[0] == 'shelters') {
 
     $controller = new ShelterController();
-    if (isset($segments[1]) && $segments[1] === 'shelterDetails') {
-        parse_str($queryString, $queryArray);
-        $controller->showShelter((!empty($queryArray)) ? $queryArray : null);
-    } else {
-        $controller->showAllShelters();
-    }
-} elseif ($segments[0] == 'schools') {
-
+    if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findShelterById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'editShelter') $controller->editShelter((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
+    else $controller->index();
+} 
+elseif ($segments[0] == 'schools') {
     $controller = new SchoolController();
     if (isset($segments[1]) && $segments[1] === 'schoolDetails') {
         parse_str($queryString, $queryArray);

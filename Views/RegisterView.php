@@ -4,12 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Refugee</title>
+    <title>User Registration</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -96,16 +92,17 @@
 
 <body>
     <div class="container">
-        <h2>Add Refugee</h2>
+        <h2>User Registration</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
-        <form id="registrationForm" action="<?php echo $base_url ?>/register/newAdmin" method="POST" onsubmit="return validateForm()">
+        <form id="registrationForm" action="<?php echo $base_url ?>/register/new" method="POST" onsubmit="return validateForm()">
             <!-- Common Fields -->
             <div class="form-group">
-                <label for="type">Refugee Type:</label>
+                <label for="type">User Type:</label>
                 <select name="type" id="type" required onchange="toggleFields()">
-                    <option value="">Select Refugee Type</option>
-                    <option value="adult">Adult</option>
-                    <option value="child">Child</option>
+                    <option value="">Select User Type</option>
+                    <option value="donator">Donator</option>
+                    <option value="refugee">Refugee</option>
+                    <option value="volunteer">Volunteer</option>
                 </select>
             </div>
 
@@ -168,16 +165,8 @@
                 </select>
             </div>
 
-            <!-- <div class="form-group">
-                <label for="advisor">Advisor:</label>
-                <select name="advisor" id="advisor" class="form-control" required>
-                    php foreach ($worker as $workers): ?>
-                        <option value="<php echo $worker->getID(); ?>"><php echo $worker->getName(); ?></option>
-                ?php endforeach; ?>
-                </select>
-            </div> -->
-
-            <div id="adultFields" class="hidden">
+            <!-- Refugee-Specific Fields -->
+            <div id="refugeeFields" class="hidden">
                 <div class="form-group">
                     <label for="profession">Profession:</label>
                     <select name="profession" id="profession" class="form-control" required>
@@ -188,66 +177,91 @@
                         <option value="driver">Driver</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="education">Education:</label>
-                <select name="education" id="education" class="form-control" required>
-                    <option value="none">No Formal Education</option>
-                    <option value="primary">Primary School</option>
-                    <option value="secondary">Secondary School</option>
-                    <option value="vocational">Vocational Training</option>
-                    <option value="bachelor">Bachelor's Degree</option>
-                </select>
-            </div>
-            <div class="form-group family">
-                <div style="display:flex;margin-bottom:10px;">
-                    <label>Family:</label>
-                    <button type="button" onclick="addFamily()" style="width:20px;height:20px;padding:0;border-radius:50%;margin-left:10px;">+</button>
-                </div>
-                <div id="family_members"></div>
-                <!-- <input type="text" id="family" name="family"> -->
-            </div>
-            <div id="childFields" class="hidden">
                 <div class="form-group">
-                    <label for="school">School:</label>
-                    <input type="text" id="school" name="school">
+                    <label for="education">Education:</label>
+                    <select name="education" id="education" class="form-control" required>
+                        <option value="none">No Formal Education</option>
+                        <option value="primary">Primary School</option>
+                        <option value="secondary">Secondary School</option>
+                        <option value="vocational">Vocational Training</option>
+                        <option value="bachelor">Bachelor's Degree</option>
+                    </select>
                 </div>
+            </div>
+
+            <!-- Volunteer-Specific Fields -->
+            <div id="volunteerFields" class="hidden">
                 <div class="form-group">
-                    <label for="level">Level:</label>
-                    <input type="text" id="level" name="level">
+                    <label for="skills">Skills:</label>
+                    <select name="skills" id="skills" class="form-control" required>
+                        <option value="Medical">Medical</option>
+                        <option value="Teaching">Teaching</option>
+                        <option value="Counseling">Counseling</option>
+                        <option value="Translation">Translation</option>
+                        <option value="Logistics">Logistics</option>
+                        <option value="Fundraising">Fundraising</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="guardian">Guardian:</label>
-                    <input type="text" id="guardian" name="guardian">
+                    <label>Availability:</label>
+                    <div class="days">
+                        <div class="day">
+                            <label for="Saturday">Sat</label>
+                            <input type="checkbox" name="availability[]" id="Saturday" value="Saturday">
+                        </div>
+                        <div class="day">
+                            <label for="Sunday">Sun</label>
+                            <input type="checkbox" name="availability[]" id="Sunday" value="Sunday">
+                        </div>
+                        <div class="day">
+                            <label for="Monday">Mon</label>
+                            <input type="checkbox" name="availability[]" id="Monday" value="Monday">
+                        </div>
+                        <div class="day">
+                            <label for="Tuesday">Tue</label>
+                            <input type="checkbox" name="availability[]" id="Tuesday" value="Tuesday">
+                        </div>
+                        <div class="day">
+                            <label for="Wednesday">Wed</label>
+                            <input type="checkbox" name="availability[]" id="Wednesday" value="Wednesday">
+                        </div>
+                        <div class="day">
+                            <label for="Thursday">Thu</label>
+                            <input type="checkbox" name="availability[]" id="Thursday" value="Thursday">
+                        </div>
+                        <div class="day">
+                            <label for="Friday">Fri</label>
+                            <input type="checkbox" name="availability[]" id="Friday" value="Friday">
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <button type="submit">Register</button>
-    </div>
-
-    </form>
-    <?php
-    if (isset($errors) && !empty($errors)) {
-        echo "<ul>";
-        foreach ($errors as $error) {
-            echo "<li style='color:red'>$error</li>";
+        </form>
+        <?php
+        if (isset($errors) && !empty($errors)) {
+            echo "<ul>";
+            foreach ($errors as $error) {
+                echo "<li style='color:red'>$error</li>";
+            }
+            echo "</ul>";
         }
-        echo "</ul>";
-    }
-    ?>
+        ?>
     </div>
 
     <script>
         function toggleFields() {
             const type = document.getElementById("type").value;
-            document.getElementById("adultFields").classList.toggle("hidden", type !== "adult");
-            document.getElementById("childFields").classList.toggle("hidden", type !== "child");
+            document.getElementById("refugeeFields").classList.toggle("hidden", type !== "refugee");
+            document.getElementById("volunteerFields").classList.toggle("hidden", type !== "volunteer");
         }
 
         function validateForm() {
             const type = document.getElementById("type").value;
             const passportNumber = document.getElementById("passportNumber");
 
+            console.log(type);
 
             if (type === "refugee") {
                 if (passportNumber.value.trim() === "") {
@@ -256,17 +270,14 @@
                     return false;
                 }
             }
-            return true;
-        }
 
-        function addFamily() {
-            const familyMembers = document.getElementById("family_members");
-            const input = document.createElement("input");
-            input.type = "text";
-            input.name = "family[]";
-            input.placeholder = "Family Member ID";
-            input.style.marginBottom = "10px";
-            familyMembers.appendChild(input);
+            const checkboxes = document.querySelectorAll('#volunteerFields input[type="checkbox"]');
+            if (type === "volunteer" && !Array.from(checkboxes).some(checkbox => checkbox.checked)) {
+                alert("Please select at least one availability day for Volunteers.");
+                return false;
+            }
+
+            return true;
         }
     </script>
 </body>

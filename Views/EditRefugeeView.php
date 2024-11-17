@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Refugee</title>
+    <title>Edit Refugee</title>
     <style>
         * {
             box-sizing: border-box;
@@ -96,37 +96,27 @@
 
 <body>
     <div class="container">
-        <h2>Add Refugee</h2>
+        <h2>Edit Refugee</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
         <form id="registrationForm" action="<?php echo $base_url ?>/register/newAdmin" method="POST" onsubmit="return validateForm()">
-            <!-- Common Fields -->
-            <div class="form-group">
-                <label for="type">Refugee Type:</label>
-                <select name="type" id="type" required onchange="toggleFields()">
-                    <option value="">Select Refugee Type</option>
-                    <option value="adult">Adult</option>
-                    <option value="child">Child</option>
-                </select>
-            </div>
-
-
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" value="<?php echo $refugee->getName() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="age">Age:</label>
-                <input type="number" id="age" name="age" min="0" required>
+                <input type="number" id="age" name="age" min="0" value="<?php echo $refugee->getAge() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="gender">Gender:</label>
                 <select id="gender" name="gender" required>
                     <option value="">Select Gender</option>
-                    <option value="0">Male</option>
-                    <option value="1">Female</option>
+                    <option value="0" <?= $refugee->getGender() === '0' ? 'selected' : '' ?>>Male</option>
+                    <option value="1" <?= $refugee->getGender() === '1' ? 'selected' : '' ?>>Female</option>
                 </select>
+
             </div>
 
             <div class="form-group">
@@ -142,22 +132,22 @@
 
             <div class="form-group">
                 <label for="phone">Phone:</label>
-                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required placeholder="10 digits">
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required value="<?php echo $refugee->getPhone() ?>" placeholder="10 digits">
             </div>
 
             <div class="form-group">
                 <label for="nationality">Nationality:</label>
-                <input type="text" id="nationality" name="nationality" required>
+                <input type="text" id="nationality" name="nationality" value="<?php echo $refugee->getNationality() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" value="<?php echo $refugee->getEmail() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="passportNumber">Passport Number:</label>
-                <input type="text" id="passportNumber" name="passportNumber">
+                <input type="text" id="passportNumber" name="passportNumber" value="<?php echo $refugee->getPassportNumber() ?>">
             </div>
 
             <div class="form-group">
@@ -167,15 +157,6 @@
                     <option value="1">SMS</option>
                 </select>
             </div>
-
-            <!-- <div class="form-group">
-                <label for="advisor">Advisor:</label>
-                <select name="advisor" id="advisor" class="form-control" required>
-                    php foreach ($worker as $workers): ?>
-                        <option value="<php echo $worker->getID(); ?>"><php echo $worker->getName(); ?></option>
-                ?php endforeach; ?>
-                </select>
-            </div> -->
 
             <div id="adultFields" class="hidden">
                 <div class="form-group">
@@ -188,25 +169,26 @@
                         <option value="driver">Driver</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="education">Education:</label>
-                <select name="education" id="education" class="form-control" required>
-                    <option value="none">No Formal Education</option>
-                    <option value="primary">Primary School</option>
-                    <option value="secondary">Secondary School</option>
-                    <option value="vocational">Vocational Training</option>
-                    <option value="bachelor">Bachelor's Degree</option>
-                </select>
-            </div>
-            <div class="form-group family">
-                <div style="display:flex;margin-bottom:10px;">
-                    <label>Family:</label>
-                    <button type="button" onclick="addFamily()" style="width:20px;height:20px;padding:0;border-radius:50%;margin-left:10px;">+</button>
+                <div class="form-group">
+                    <label for="education">Education:</label>
+                    <select name="education" id="education" class="form-control" required>
+                        <option value="none">No Formal Education</option>
+                        <option value="primary">Primary School</option>
+                        <option value="secondary">Secondary School</option>
+                        <option value="vocational">Vocational Training</option>
+                        <option value="bachelor">Bachelor's Degree</option>
+                    </select>
                 </div>
-                <div id="family_members"></div>
-                <!-- <input type="text" id="family" name="family"> -->
+                <div class="form-group family">
+                    <div style="display:flex;margin-bottom:10px;">
+                        <label>Family:</label>
+                        <button type="button" onclick="addFamily()" style="width:20px;height:20px;padding:0;border-radius:50%;margin-left:10px;">+</button>
+                    </div>
+                    <div id="family_members"></div>
+                    <!-- <input type="text" id="family" name="family"> -->
+                </div>
             </div>
+
             <div id="childFields" class="hidden">
                 <div class="form-group">
                     <label for="school">School:</label>
@@ -222,19 +204,17 @@
                 </div>
             </div>
 
-            <button type="submit">Register</button>
-    </div>
-
-    </form>
-    <?php
-    if (isset($errors) && !empty($errors)) {
-        echo "<ul>";
-        foreach ($errors as $error) {
-            echo "<li style='color:red'>$error</li>";
+            <button type="submit">Edit</button>
+        </form>
+        <?php
+        if (isset($errors) && !empty($errors)) {
+            echo "<ul>";
+            foreach ($errors as $error) {
+                echo "<li style='color:red'>$error</li>";
+            }
+            echo "</ul>";
         }
-        echo "</ul>";
-    }
-    ?>
+        ?>
     </div>
 
     <script>
