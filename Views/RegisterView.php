@@ -121,8 +121,8 @@
                 <label for="gender">Gender:</label>
                 <select id="gender" name="gender" required>
                     <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
                 </select>
             </div>
 
@@ -146,12 +146,13 @@
                 <input type="email" id="email" name="email" required>
             </div>
 
+            <div class="form-group">
+                <label for="passportNumber">Passport Number:</label>
+                <input type="text" id="passportNumber" name="passportNumber">
+            </div>
+            
             <!-- Refugee-Specific Fields -->
             <div id="refugeeFields" class="hidden">
-                <div class="form-group">
-                    <label for="passportNumber">Passport Number:</label>
-                    <input type="text" id="passportNumber" name="passportNumber">
-                </div>
                 <div class="form-group">
                     <label for="profession">Profession:</label>
                     <input type="text" id="profession" name="profession">

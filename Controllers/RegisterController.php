@@ -3,6 +3,8 @@
 require_once __DIR__ . '/../Models/Stratigies/VolunteerAuthentication.php';
 require_once __DIR__ . '/../Models/Stratigies/DonatorAuthentication.php';
 require_once __DIR__ . '/../Models/Stratigies/RefugeeAuthentication.php';
+require_once __DIR__ . '/../Models/Stratigies/ChildAuthentication.php';
+require_once __DIR__ . "/../Models/UserModel.php";
 
 class RegisterController
 {
@@ -12,14 +14,14 @@ class RegisterController
         require 'Views/RegisterView.php';
     }
 
-    public function register($data)
+    public function register($data, $admin = false)
     {
         $commonErrors = $this->validateUserData($data);
         $strategy = $this->getRegisterationStrategy($data['type']);
         $specificErrors = $strategy->validate($data);
         $errors = array_merge($commonErrors, $specificErrors);
         if (!empty($errors)) {
-            require 'Views/RegisterView.php';
+            require (!$admin ? 'Views/RegisterView.php' : 'Views/AddRefugeeView.php');
             return;
         }
         $strategy->register($data);
@@ -39,8 +41,7 @@ class RegisterController
             $errors['age'] = "Age is required and must be a valid number between 1 and 120.";
         }
 
-        $allowedGenders = ["Male", "Female"];
-        if (empty($data['gender']) || !in_array($data['gender'], $allowedGenders)) {
+        if ($data['gender'] !== "0" && $data['gender'] !== "1") {
             $errors['gender'] = "Gender is required and must be 'Male' or 'Female'.";
         }
 
@@ -60,6 +61,10 @@ class RegisterController
             $errors['email'] = "Email is required and should be a valid email address.";
         }
 
+        if(User::getBy('email', $data['email'])) {
+            $errors['email'] = "Email is already taken.";
+        }
+
         return $errors;
     }
 
@@ -71,9 +76,14 @@ class RegisterController
             case 'donator':
                 return new DonatorAuthentication();
             case 'refugee':
+            case 'adult':
                 return new RefugeeAuthentication();
+            case 'child':
+                return new ChildAuthentication();
             default:
                 throw new Exception("Invalid user type.");
         }
     }
 }
+
+?>

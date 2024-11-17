@@ -1,7 +1,7 @@
 <?php
-require_once 'SingeltonDB.php';
-require_once 'Model/RefugeeModel.php';
-require_once 'Model/AdultModel.php';
+require_once __DIR__ . "/../SingletonDB.php";
+// require_once 'Model/RefugeeModel.php';
+// require_once 'Model/AdultModel.php';
 class Child extends Refugee {
     private $ChildID;
     private $School; // Reference to School Class
@@ -9,39 +9,42 @@ class Child extends Refugee {
     private $Guardian; // Reference to Adult
 
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare, $ChildID, $School, $Level, $Guardian) {
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare);
         $this->ChildID = $ChildID;
         $this->School = $School;
         $this->Level = $Level;
         $this->Guardian = $Guardian;
     }
 
-    /*
-     // Save child to the database
-     public function save() {
+    public function save() {
+        $refugeeId = parent::save();
+        if($refugeeId == -1) echo "Error saving refugee.";
         $db = DbConnection::getInstance();
-        $conn = $db->database_connect;
-
-        $query = "INSERT INTO children (ChildID, School, Level, GuardianID) VALUES (?, ?,1, ?)";
-        $stmt = mysqli_prepare($conn, $query);
-        mysqli_stmt_bind_param($stmt, 'issi', $this->ChildID, $this->School, $this->Level, $this->Guardian->getAdultID());
-
-        if (mysqli_stmt_execute($stmt)) {
-            echo "Child saved successfully.";
-        } else {
-            echo "Error saving child: " . mysqli_error($conn);
+        $query = "INSERT INTO Child (SchoolId, Level, Guardian, RefugeeId) VALUES ('$this->School', '$this->Level', '$this->Guardian', $refugeeId)";
+        $db->query($query);
+        $sql = "SELECT LAST_INSERT_ID() AS last;";
+        $rows = $db->fetchAll($sql);
+        $lastId = -1;
+        foreach ($rows as $row) {
+            $lastId = $row["last"];
         }
-
-        mysqli_stmt_close($stmt);
+        if ($lastId == -1) echo "Error saving child.";
+        else {
+            $this->ChildID = $lastId;
+        }
     }
 
-    // Set Guardian
-    public function setGuardian(Adult $guardian) {
-        $this->Guardian = $guardian;
+    public function getSchool() {
+        return $this->School;
+    }
+
+    public function getLevel() {
+        return $this->Level;
     }
 
     public function getGuardian() {
         return $this->Guardian;
     }
-        */
+
 }
 ?>

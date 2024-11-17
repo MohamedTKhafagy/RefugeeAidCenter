@@ -21,6 +21,10 @@ $segments = explode('/', trim($path, '/'));
 if ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if (isset($segments[1]) && $segments[1] === 'edit') {
+        parse_str($queryString, $queryArray);
+        $controller->edit((!empty($queryArray)) ? $queryArray : null);
+    }
     else $controller->index();
 }
 else if($segments[0] == 'hospitals') {
@@ -31,6 +35,7 @@ else if($segments[0] == 'hospitals') {
 else if ($segments[0] == 'register') {
     $controller = new RegisterController();
     if (isset($segments[1]) && $segments[1] === 'new' && isset($_POST) && !empty($_POST)) $controller->register($_POST);
+    else if (isset($segments[1]) && $segments[1] === 'newAdmin' && isset($_POST) && !empty($_POST)) $controller->register($_POST, true);
     else $controller->index();
 }
 else if($segments[0] == 'login') {

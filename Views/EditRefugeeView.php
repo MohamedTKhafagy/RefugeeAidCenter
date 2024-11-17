@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Refugee</title>
+    <title>Edit Refugee</title>
     <style>
         * {
             box-sizing: border-box;
         }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -95,68 +96,58 @@
 
 <body>
     <div class="container">
-        <h2>Add Refugee</h2>
+        <h2>Edit Refugee</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
         <form id="registrationForm" action="<?php echo $base_url ?>/register/newAdmin" method="POST" onsubmit="return validateForm()">
-            <!-- Common Fields -->
-            <div class="form-group">
-                <label for="type">Refugee Type:</label>
-                <select name="type" id="type" required onchange="toggleFields()">
-                    <option value="">Select Refugee Type</option>
-                    <option value="adult">Adult</option>
-                    <option value="child">Child</option>
-                </select>
-            </div>
-            
-
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" value="<?php echo $refugee->getName() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="age">Age:</label>
-                <input type="number" id="age" name="age" min="0" required>
+                <input type="number" id="age" name="age" min="0" value="<?php echo $refugee->getAge() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="gender">Gender:</label>
                 <select id="gender" name="gender" required>
                     <option value="">Select Gender</option>
-                    <option value="0">Male</option>
-                    <option value="1">Female</option>
+                    <option value="0" <?= $refugee->getGender() === '0' ? 'selected' : '' ?>>Male</option>
+                    <option value="1" <?= $refugee->getGender() === '1' ? 'selected' : '' ?>>Female</option>
                 </select>
+
             </div>
 
             <div class="form-group">
                 <label for="address">Address:</label>
-                <input type="text" id="address" name="address" required>
+                <input type="text" id="address" name="address" value="<?php echo $refugee->getAddress() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="phone">Phone:</label>
-                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required placeholder="10 digits">
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required value="<?php echo $refugee->getPhone() ?>" placeholder="10 digits">
             </div>
 
             <div class="form-group">
                 <label for="nationality">Nationality:</label>
-                <input type="text" id="nationality" name="nationality" required>
+                <input type="text" id="nationality" name="nationality" value="<?php echo $refugee->getNationality() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" value="<?php echo $refugee->getEmail() ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="passportNumber">Passport Number:</label>
-                <input type="text" id="passportNumber" name="passportNumber">
+                <input type="text" id="passportNumber" name="passportNumber" value="<?php echo $refugee->getPassportNumber() ?>">
             </div>
-            
+
             <div id="adultFields" class="hidden">
                 <div class="form-group">
                     <label for="profession">Profession:</label>
-                    <input type="text" id="profession" name="profession">
+                    <input type="text" id="profession" name="profession"">
                 </div>
                 <div class="form-group">
                     <label for="education">Education:</label>
@@ -187,16 +178,16 @@
                 </div>
             </div>
 
-            <button type="submit">Register</button>
+            <button type="submit">Edit</button>
         </form>
         <?php
-            if (isset($errors) && !empty($errors)) {
-                echo "<ul>";
-                foreach ($errors as $error) {
-                    echo "<li style='color:red'>$error</li>";
-                }
-                echo "</ul>";
+        if (isset($errors) && !empty($errors)) {
+            echo "<ul>";
+            foreach ($errors as $error) {
+                echo "<li style='color:red'>$error</li>";
             }
+            echo "</ul>";
+        }
         ?>
     </div>
 
