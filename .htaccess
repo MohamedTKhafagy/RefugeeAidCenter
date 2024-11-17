@@ -3,3 +3,9 @@ RewriteBase /RefugeeAidCenter/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteRule ^tasks$ index.php?controller=TaskController&action=index [L]
+RewriteRule ^tasks/add$ index.php?controller=TaskController&action=add [L]
+RewriteRule ^tasks/edit/([0-9]+)$ index.php?controller=TaskController&action=edit&id=$1 [L]
+RewriteRule ^tasks/delete/([0-9]+)$ index.php?controller=TaskController&action=delete&id=$1 [L]
+RewriteRule ^tasks/assign/([0-9]+)$ index.php?controller=TaskController&action=assign&taskId=$1 [L]
+RewriteRule ^tasks/complete/([0-9]+)$ index.php?controller=TaskController&action=complete&taskId=$1 [L]

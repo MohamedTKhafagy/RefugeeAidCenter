@@ -11,7 +11,7 @@ require_once 'Controllers/LoginController.php';
 require_once 'Controllers/ShelterController.php';
 require_once 'Controllers/SchoolController.php';
 require_once 'Controllers/VolunteerController.php';
-
+require_once 'Controllers/TaskController.php';
 require_once 'Controllers/InventoryController.php';
 require_once 'Controllers/DonatorController.php';
 require_once 'Controllers/DonationController.php';
@@ -176,9 +176,20 @@ elseif ($segments[0] == 'shelters') {
     else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 } 
+if ($segments[0] == 'tasks') {
+    $controller = new TaskController();
+
+    if (isset($segments[1]) && $segments[1] === 'edit' && isset($segments[2])) {
+        $controller->edit($segments[2]);
+    }
+    elseif (isset($segments[1]) && $segments[1] === 'update' && isset($_POST)) {
+        $controller->update($_POST);
+    }
+    else {
+        $controller->index();
+    }
+}
 else {
     
 }
-?><?php
-
 ?>
