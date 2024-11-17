@@ -57,13 +57,83 @@ $db->query("
 $db->query("
     CREATE TABLE IF NOT EXISTS Facility (
      Id INT AUTO_INCREMENT PRIMARY KEY,
-     Name INT,
+     Name  VARCHAR(255),
      Address INT,
      Type INT,
      IsDeleted INT DEFAULT 0,
      FOREIGN KEY (Address) REFERENCES Address(Id)
 );
-"); 
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS Hospital (
+     HospitalId INT NOT NULL PRIMARY KEY,
+     MaxCapacity INT,
+     CurrentCapacity INT,
+     insuranceType INT,
+     Supervisor INT NOT NULL,
+     FOREIGN KEY (HospitalId) REFERENCES Facility(Id),
+     FOREIGN KEY (Supervisor) REFERENCES User(Id)
+);
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS School (
+     SchoolId INT NOT NULL PRIMARY KEY,
+     MaxCapacity INT,
+     CurrentCapacity INT,
+     Supervisor INT NOT NULL,
+     FOREIGN KEY (SchoolId) REFERENCES Facility(Id),
+     FOREIGN KEY (Supervisor) REFERENCES User(Id)
+);
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS Shelter (
+     ShelterId INT NOT NULL PRIMARY KEY,
+     MaxCapacity INT,
+     CurrentCapacity INT,
+     Supervisor INT NOT NULL,
+     FOREIGN KEY (ShelterId) REFERENCES Facility(Id),
+     FOREIGN KEY (Supervisor) REFERENCES User(Id)
+);
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS Doctor (
+     Id INT PRIMARY KEY,
+     Specialization VARCHAR(255),
+     Availability INT,
+     Hospital INT,
+     FOREIGN KEY (Id) REFERENCES User(Id),
+     FOREIGN KEY (HOSPITAL) REFERENCES Hospital(HospitalId)
+);
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS Nurse (
+     Id INT PRIMARY KEY,
+     Specialization VARCHAR(255),
+     Availability INT,
+     Hospital INT,
+     FOREIGN KEY (Id) REFERENCES User(Id),
+     FOREIGN KEY (Hospital) REFERENCES Hospital(HospitalId)
+);
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS Teacher (
+     Id INT PRIMARY KEY,
+     Subject VARCHAR(255),
+     Availability INT,
+     School INT,
+     FOREIGN KEY (Id) REFERENCES User(Id),
+     FOREIGN KEY (School) REFERENCES School(SchoolId)
+);
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS SocialWorker (
+     Id INT PRIMARY KEY,
+     Availability INT,
+     Shelter INT,
+     FOREIGN KEY (Id) REFERENCES User(Id),
+     FOREIGN KEY (Shelter) REFERENCES Shelter(ShelterId)
+);
+");  
 
 
 ?>
