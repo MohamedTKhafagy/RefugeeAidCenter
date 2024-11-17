@@ -31,11 +31,39 @@ if ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else $controller->index();
-} else if ($segments[0] == 'hospitals') {
+
+}elseif ($segments[0] == 'hospitals') {
     $controller = new HospitalController();
-    if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else $controller->index();
-} elseif ($segments[0] == 'shelters') {
+    if (isset($segments[1])) {
+        switch($segments[1]) {
+            case 'add':
+                $controller->add($_POST ?: null);
+                break;
+            case 'edit':
+                /*if (isset($segments[2])) {
+                    $controller->edit($segments[2]);
+                }*/
+                if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+                break;
+            case 'update':
+
+              
+                    $controller->editHospital((isset($_POST) && !empty($_POST)) ? $_POST:null);
+
+                break;
+            case 'delete':
+                if (isset($segments[2])) {
+                    $controller->delete($segments[2]);
+                }
+                break;
+            default:
+                $controller->index();
+        }
+    } else {
+        $controller->index();
+    }
+}
+ elseif ($segments[0] == 'shelters') {
 
     $controller = new ShelterController();
     if (isset($segments[1]) && $segments[1] === 'shelterDetails') {
