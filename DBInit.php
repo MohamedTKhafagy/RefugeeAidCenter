@@ -1,8 +1,7 @@
 <?php
 require_once "SingletonDB.php";
-//This file is to create the tables if running for the first time 
-$db = DbConnection::getInstance();
 
+$db = DbConnection::getInstance();
 $db->query("
    CREATE TABLE IF NOT EXISTS Address (
     Id INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,15 +54,18 @@ $db->query("
 );
 ");  
 
-// Modified Facility table to use VARCHAR for Name
 $db->query("
     CREATE TABLE IF NOT EXISTS Facility (
      Id INT AUTO_INCREMENT PRIMARY KEY,
+<<<<<<< HEAD
      Name  VARCHAR(255),
      Address INT,
+=======
+     Name VARCHAR(255),  
+     Address INT,  
+>>>>>>> origin/Osama
      Type INT,
-     IsDeleted INT DEFAULT 0,
-     FOREIGN KEY (Address) REFERENCES Address(Id)
+     IsDeleted INT DEFAULT 0
 );
 ");
 $db->query("

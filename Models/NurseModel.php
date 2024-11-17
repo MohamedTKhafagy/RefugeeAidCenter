@@ -37,7 +37,7 @@ class Nurse extends User{
     {
         // to be implemented
     }
-    public function Update()
+    public function Update($message)
     {
         // to be implemented
     }

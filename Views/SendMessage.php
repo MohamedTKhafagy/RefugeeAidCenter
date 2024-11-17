@@ -81,10 +81,10 @@
     </style>
 </head>
 <body>
-
+"../controllers/CommunicationController.php"
     <h1>Send Communication Message</h1>
-
-    <form action="../controllers/CommunicationController.php" method="POST">
+   
+    <form action= '<?php echo $base_url; ?>/communication/send' method="POST">
         <div class="form-group">
             <label for="MessageBody">Message:</label>
             <textarea name="MessageBody" id="MessageBody" required></textarea>

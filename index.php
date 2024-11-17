@@ -138,15 +138,18 @@ if ($segments[0] == 'socialWorkers') {
     else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
+if($segments[0]=='communication'){
+    if (isset($segments[1]) && $segments[1] === 'send') {
+    include_once "Controllers/CommunicationController.php";
+    $controller = new CommunicationController();
+    $controller->handleFormSubmit((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    } else {
+    include __DIR__ . '../Views/SendMessage.php';
+    }
+}
 else {
     
 }
 ?><?php
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    include_once "controllers/CommunicationController.php";
-    $controller = new CommunicationController();
-    $controller->handleFormSubmit();
-} else {
-    include_once "views/SendMessageView.php";
-}
+
 ?>

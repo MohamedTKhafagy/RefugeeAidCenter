@@ -1,5 +1,5 @@
 <?php
-
+require_once "Observer.php";
 abstract class User implements Observer 
 {
     private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
@@ -15,6 +15,8 @@ abstract class User implements Observer
     protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher  
     protected $Email;
     protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
+    protected $observer;
+    protected $message;
 
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)

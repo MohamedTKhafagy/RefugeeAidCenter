@@ -27,7 +27,7 @@ class Refugee extends User
         echo "An event has been registered by the Refugee user.";
     }
 
-    public function Update()
+    public function Update($message)
     {
         echo "Updating from the Refugee User class.";
     }
