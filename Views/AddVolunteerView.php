@@ -116,7 +116,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Add Volunteer</button>
-            <a href="volunteers" class="btn btn-secondary">Cancel</a>
+            <a href="<?php echo $base_url; ?>/volunteers" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </body>
