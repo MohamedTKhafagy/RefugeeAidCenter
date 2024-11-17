@@ -90,12 +90,7 @@ if ($segments[0] == 'refugees') {
 } elseif ($segments[0] == 'inventory') {
 
     $controller = new InventoryController();
-    if (isset($segments[1]) && $segments[1] === 'inventorydetails') {
-        parse_str($queryString, $queryArray);
-        $controller->showInventory((!empty($queryArray)) ? $queryArray : null);
-    } else {
-        $controller->showAllInventory();
-    }
+        $controller->showInventory();
 }
 if ($segments[0] == 'donators') {
     $controller = new DonatorController();

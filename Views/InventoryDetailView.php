@@ -12,7 +12,6 @@
     <p><strong>Money:</strong> <?= htmlspecialchars($inventory->getMoney()) ?></p>
     <p><strong>Clothes Quantity:</strong> <?= htmlspecialchars($inventory->getClothesQuantity()) ?></p>
     <p><strong>Food Resources Quantity:</strong> <?= htmlspecialchars($inventory->getFoodResources()) ?></p>
-    <a href="index.php">Back to Inventory List</a>
 </body>
 
 </html>

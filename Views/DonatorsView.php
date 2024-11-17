@@ -23,8 +23,8 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Age</th>
                 <th>Gender</th>
+                <th>Age</th>
                 <th>Nationality</th>
                 <th>Actions</th>
             </tr>

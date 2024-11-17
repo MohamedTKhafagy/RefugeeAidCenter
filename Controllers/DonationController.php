@@ -30,7 +30,6 @@ class DonationController
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/donations/view/' . $donation->getID());
         } else {
-            $id = Donation::getLatestId()+1;
             require 'Views/MakeDonationView.php';
         }
     }
@@ -38,14 +37,14 @@ class DonationController
     public function saveDonation($data)
     {
         $donation = new Donation(
-            $data['Id'] ?? null,
+            null,
             $data['Type'] ?? null,
             $data['Amount'] ?? null,
             $data['DirectedTo'] ?? null,
             $data['CollectionFee'] ?? null,
             $data['currency'] ?? null
         );
-        $donation->save();
+        $donation=$donation->save();
         return $donation;
     }
 
