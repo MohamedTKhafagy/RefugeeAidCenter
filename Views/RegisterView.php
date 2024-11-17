@@ -105,7 +105,7 @@
                     <option value="volunteer">Volunteer</option>
                 </select>
             </div>
-            
+
 
             <div class="form-group">
                 <label for="name">Name:</label>
@@ -127,8 +127,14 @@
             </div>
 
             <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address" required>
+                <label for="Address">Address:</label>
+                <select name="address" id="Address" class="form-control" required>
+                    <option value="4">Madinet Nasr</option>
+                    <option value="5">Masr Al Gadida</option>
+                    <option value="6">New Cairo</option>
+                    <option value="7">Sheikh Zayed</option>
+                    <option value="8">Abbaseya</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -150,51 +156,82 @@
                 <label for="passportNumber">Passport Number:</label>
                 <input type="text" id="passportNumber" name="passportNumber">
             </div>
-            
+
+            <div class="form-group">
+                <label for="preference">Preference:</label>
+                <select name="preference" id="preference" class="form-control" required>
+                    <option value="0">Email</option>
+                    <option value="1">SMS</option>
+                </select>
+            </div>
+
             <!-- Refugee-Specific Fields -->
             <div id="refugeeFields" class="hidden">
                 <div class="form-group">
                     <label for="profession">Profession:</label>
-                    <input type="text" id="profession" name="profession">
+                    <select name="profession" id="profession" class="form-control" required>
+                        <option value="farmer">Farmer</option>
+                        <option value="tailor">Tailor</option>
+                        <option value="carpenter">Carpenter</option>
+                        <option value="cook">Cook</option>
+                        <option value="driver">Driver</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="education">Education:</label>
-                    <input type="text" id="education" name="education">
+                    <select name="education" id="education" class="form-control" required>
+                        <option value="none">No Formal Education</option>
+                        <option value="primary">Primary School</option>
+                        <option value="secondary">Secondary School</option>
+                        <option value="vocational">Vocational Training</option>
+                        <option value="bachelor">Bachelor's Degree</option>
+                    </select>
                 </div>
             </div>
 
             <!-- Volunteer-Specific Fields -->
             <div id="volunteerFields" class="hidden">
                 <div class="form-group">
+                    <label for="skills">Skills:</label>
+                    <select name="skills" id="skills" class="form-control" required>
+                        <option value="Medical">Medical</option>
+                        <option value="Teaching">Teaching</option>
+                        <option value="Counseling">Counseling</option>
+                        <option value="Translation">Translation</option>
+                        <option value="Logistics">Logistics</option>
+                        <option value="Fundraising">Fundraising</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Availability:</label>
                     <div class="days">
                         <div class="day">
                             <label for="Saturday">Sat</label>
-                            <input type="checkbox" name="availability" id="Saturday" value="Saturday">
+                            <input type="checkbox" name="availability[]" id="Saturday" value="Saturday">
                         </div>
                         <div class="day">
                             <label for="Sunday">Sun</label>
-                            <input type="checkbox" name="availability" id="Sunday" value="Sunday">
+                            <input type="checkbox" name="availability[]" id="Sunday" value="Sunday">
                         </div>
                         <div class="day">
                             <label for="Monday">Mon</label>
-                            <input type="checkbox" name="availability" id="Monday" value="Monday">
+                            <input type="checkbox" name="availability[]" id="Monday" value="Monday">
                         </div>
                         <div class="day">
                             <label for="Tuesday">Tue</label>
-                            <input type="checkbox" name="availability" id="Tuesday" value="Tuesday">
+                            <input type="checkbox" name="availability[]" id="Tuesday" value="Tuesday">
                         </div>
                         <div class="day">
                             <label for="Wednesday">Wed</label>
-                            <input type="checkbox" name="availability" id="Wednesday" value="Wednesday">
+                            <input type="checkbox" name="availability[]" id="Wednesday" value="Wednesday">
                         </div>
                         <div class="day">
                             <label for="Thursday">Thu</label>
-                            <input type="checkbox" name="availability" id="Thursday" value="Thursday">
+                            <input type="checkbox" name="availability[]" id="Thursday" value="Thursday">
                         </div>
                         <div class="day">
                             <label for="Friday">Fri</label>
-                            <input type="checkbox" name="availability" id="Friday" value="Friday">
+                            <input type="checkbox" name="availability[]" id="Friday" value="Friday">
                         </div>
                     </div>
                 </div>
@@ -203,13 +240,13 @@
             <button type="submit">Register</button>
         </form>
         <?php
-            if (isset($errors) && !empty($errors)) {
-                echo "<ul>";
-                foreach ($errors as $error) {
-                    echo "<li style='color:red'>$error</li>";
-                }
-                echo "</ul>";
+        if (isset($errors) && !empty($errors)) {
+            echo "<ul>";
+            foreach ($errors as $error) {
+                echo "<li style='color:red'>$error</li>";
             }
+            echo "</ul>";
+        }
         ?>
     </div>
 

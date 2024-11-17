@@ -8,7 +8,7 @@ class DonatorAuthentication implements iUserAuthentication
     //$Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $DonatorID
     public function register($data)
     {
-        $donator = new Donator(123, $data['name'], $data['age'], $data['gender'], $data['address'], $data['phone'], $data['nationality'], 'donator', $data['email'], 'preference', 321);
+        $donator = new Donator(123, $data['name'], $data['age'], $data['gender'], $data['address'], $data['phone'], $data['nationality'], 'donator', $data['email'], $data["preference"], 321);
         $donator->save();
     }
 

@@ -9,6 +9,7 @@
         * {
             box-sizing: border-box;
         }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -107,7 +108,7 @@
                     <option value="child">Child</option>
                 </select>
             </div>
-            
+
 
             <div class="form-group">
                 <label for="name">Name:</label>
@@ -129,8 +130,14 @@
             </div>
 
             <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address" required>
+                <label for="Address">Address:</label>
+                <select name="address" id="Address" class="form-control" required>
+                    <option value="4">Madinet Nasr</option>
+                    <option value="5">Masr Al Gadida</option>
+                    <option value="6">New Cairo</option>
+                    <option value="7">Sheikh Zayed</option>
+                    <option value="8">Abbaseya</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -152,26 +159,54 @@
                 <label for="passportNumber">Passport Number:</label>
                 <input type="text" id="passportNumber" name="passportNumber">
             </div>
-            
+
+            <div class="form-group">
+                <label for="preference">Preference:</label>
+                <select name="preference" id="preference" class="form-control" required>
+                    <option value="0">Email</option>
+                    <option value="1">SMS</option>
+                </select>
+            </div>
+
+            <!-- <div class="form-group">
+                <label for="advisor">Advisor:</label>
+                <select name="advisor" id="advisor" class="form-control" required>
+                    php foreach ($worker as $workers): ?>
+                        <option value="<php echo $worker->getID(); ?>"><php echo $worker->getName(); ?></option>
+                ?php endforeach; ?>
+                </select>
+            </div> -->
+
             <div id="adultFields" class="hidden">
                 <div class="form-group">
                     <label for="profession">Profession:</label>
-                    <input type="text" id="profession" name="profession">
-                </div>
-                <div class="form-group">
-                    <label for="education">Education:</label>
-                    <input type="text" id="education" name="education">
-                </div>
-                <div class="form-group family">
-                    <div style="display:flex;margin-bottom:10px;">
-                        <label>Family:</label>
-                        <button type="button" onclick="addFamily()" style="width:20px;height:20px;padding:0;border-radius:50%;margin-left:10px;">+</button>
-                    </div>
-                    <div id="family_members"></div>
-                    <!-- <input type="text" id="family" name="family"> -->
+                    <select name="profession" id="profession" class="form-control" required>
+                        <option value="farmer">Farmer</option>
+                        <option value="tailor">Tailor</option>
+                        <option value="carpenter">Carpenter</option>
+                        <option value="cook">Cook</option>
+                        <option value="driver">Driver</option>
+                    </select>
                 </div>
             </div>
-
+            <div class="form-group">
+                <label for="education">Education:</label>
+                <select name="education" id="education" class="form-control" required>
+                    <option value="none">No Formal Education</option>
+                    <option value="primary">Primary School</option>
+                    <option value="secondary">Secondary School</option>
+                    <option value="vocational">Vocational Training</option>
+                    <option value="bachelor">Bachelor's Degree</option>
+                </select>
+            </div>
+            <div class="form-group family">
+                <div style="display:flex;margin-bottom:10px;">
+                    <label>Family:</label>
+                    <button type="button" onclick="addFamily()" style="width:20px;height:20px;padding:0;border-radius:50%;margin-left:10px;">+</button>
+                </div>
+                <div id="family_members"></div>
+                <!-- <input type="text" id="family" name="family"> -->
+            </div>
             <div id="childFields" class="hidden">
                 <div class="form-group">
                     <label for="school">School:</label>
@@ -188,16 +223,18 @@
             </div>
 
             <button type="submit">Register</button>
-        </form>
-        <?php
-            if (isset($errors) && !empty($errors)) {
-                echo "<ul>";
-                foreach ($errors as $error) {
-                    echo "<li style='color:red'>$error</li>";
-                }
-                echo "</ul>";
-            }
-        ?>
+    </div>
+
+    </form>
+    <?php
+    if (isset($errors) && !empty($errors)) {
+        echo "<ul>";
+        foreach ($errors as $error) {
+            echo "<li style='color:red'>$error</li>";
+        }
+        echo "</ul>";
+    }
+    ?>
     </div>
 
     <script>

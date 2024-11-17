@@ -1,22 +1,23 @@
 <?php
+require_once "SingletonDB.php";
 
 require_once __DIR__ . "/../SingletonDB.php";
 
 abstract class User
 {
+    // private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
 
     // User properties
     protected $Id;
     protected $Name;
     protected $Age;
-    protected $Gender;
+    protected $Gender; // 0 Male 1 Female
     protected $Address;
     protected $Phone;
     protected $Nationality;
-    protected $Type; // Could be 'refugee', 'volunteer', etc.
+    protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher  
     protected $Email;
-    protected $Preference; // Some preferences specific to the user
-    protected $Password;
+    protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
 
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
@@ -66,6 +67,11 @@ abstract class User
     }
 
     public function getUserId()
+    {
+        return $this->Id;
+    }
+
+    public function getID()
     {
         return $this->Id;
     }
@@ -122,4 +128,40 @@ abstract class User
         if($exist) return true;
         return false;
     }
+
+    public function getFullAddress(){
+        return $this->getFullAddressHelper($this->Address);
+    }
+
+    private function getFullAddressHelper($address){
+        $db = DbConnection::getInstance();
+        $sql = "SELECT * FROM Address WHERE Id = $address;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $Address){
+            if($Address['ParentId'] == null){
+                return $Address['Name'] . ".";
+            }
+            return $Address['Name'] . ", " . self::getFullAddressHelper($Address['ParentId']);
+        }
+    }
+
+    public function editUser($data){
+        $this->Name = $data['name'];
+        $this->Age = $data['age'];
+        $this->Gender = $data['gender'];
+        $this->Address = $data['address'];
+        $this->Phone = $data['phone'];
+        $this->Nationality = $data['nationality'];
+        $this->Type = $data['type'];
+        $this->Email = $data['email'];
+        $this->Preference = $data['preference'];
+        $db = DbConnection::getInstance();
+        $query = "UPDATE User SET Name = '$this->Name', Age = $this->Age, Gender = $this->Gender, Address = $this->Address, Phone = '$this->Phone', Nationality = '$this->Nationality', Type = $this->Type, Email = '$this->Email', Preference = $this->Preference WHERE Id = $this->Id;";
+        if($db->query($query)) return true;
+        return false;
+        
+    }
+
 }
+
+?>

@@ -1,0 +1,18 @@
+{
+    "1": {
+        "ShelterID": 2,
+        "Name": "Shelter B",
+        "Address": "456 Park Ave",
+        "Supervisor": "Bob Lee",
+        "MaxCapacity": 50,
+        "CurrentCapacity": 45
+    },
+    "2": {
+        "ShelterID": 1,
+        "Name": "Shelter A",
+        "Address": "123 Main St",
+        "Supervisor": "Alice Johnson",
+        "MaxCapacity": 100,
+        "CurrentCapacity": 77
+    }
+}

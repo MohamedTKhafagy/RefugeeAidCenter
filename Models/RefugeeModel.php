@@ -194,6 +194,19 @@ class Refugee extends User
         return $this->HealthCare;
     }
 
+    public function editRefugee($data) {
+        parent::editUser($data);
+        $this->PassportNumber = $data['passportNumber'];
+        $db = DbConnection::getInstance();
+        $sql = "UPDATE Refugee SET PassportNumber = '$this->PassportNumber' WHERE Id = $this->RefugeeID";
+        if($db->query($sql)) return true;
+        return false;
+    }
+
+    public function delete($id) {
+        $db = DbConnection::getInstance();
+    }
+
 }
 
 ?>

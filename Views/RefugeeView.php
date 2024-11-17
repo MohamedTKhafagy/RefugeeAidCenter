@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Refugee Management</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
 <body>
 <div class="container">
     <h1 class="mt-4 mb-4">Refugee Management</h1>
@@ -39,7 +41,7 @@
                     <td><?php echo htmlspecialchars($refugee->getNationality()); ?></td>
                     <td>
                         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
-                        <a href="<?php echo $base_url ?>/refugees/edit?id=<?php echo $refugee->getUserId(); ?>" class="btn btn-warning btn-sm">Update</a>
+                        <a href="<?php echo $base_url ?>/refugees/edit?id=<?php echo $refugee->getRefugeeId(); ?>" class="btn btn-warning btn-sm">Update</a>
                         <a href="delete_refugee.php?id=<?php echo $refugee->getUserId(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
                     </td>
                 </tr>
@@ -48,4 +50,5 @@
     </table>
 </div>
 </body>
+
 </html>

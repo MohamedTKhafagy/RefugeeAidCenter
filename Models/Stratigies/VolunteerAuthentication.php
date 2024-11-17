@@ -2,12 +2,28 @@
 
 require_once __DIR__ . '/iUserAuthentication.php';
 
+
 class VolunteerAuthentication implements iUserAuthentication
 {
     public function register($data)
     {
-        // $volunteer = new Volunteer(123, $data['name'], $data['age'], $data
         $availability = $this->convertAvailability($data['availability']);
+        $volunteer = new Volunteer(
+            null,
+            $data['name'],
+            $data['age'],
+            $data['gender'],
+            $data['address'],
+            $data['phone'],
+            $data['nationality'],
+            2,
+            $data['email'],
+            $data['preference'],
+            $data['skills'],
+            $availability
+        );
+
+        $volunteer->save();
     }
 
     public function validate($data)
@@ -30,20 +46,20 @@ class VolunteerAuthentication implements iUserAuthentication
         return $errors;
     }
 
-    function convertAvailability($availability) {
+    function convertAvailability($availability)
+    {
         // Define the days of the week in order, starting from Saturday (leftmost bit)
         $daysOfWeek = ['Friday', 'Thursday', 'Wednesday', 'Tuesday', 'Monday', 'Sunday', 'Saturday'];
         $daysOfWeek = array_reverse($daysOfWeek);
-    
+
         $bits = 0;
-    
+
         foreach ($availability as $day) {
             if (in_array($day, $daysOfWeek)) {
-                $bits |= (1 << array_search($day, $daysOfWeek)); 
+                $bits |= (1 << array_search($day, $daysOfWeek));
             }
         }
-    
+
         return $bits;
     }
-    
 }

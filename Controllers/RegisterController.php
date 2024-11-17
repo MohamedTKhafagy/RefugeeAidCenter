@@ -45,10 +45,6 @@ class RegisterController
             $errors['gender'] = "Gender is required and must be 'Male' or 'Female'.";
         }
 
-        if (empty($data['address']) || strlen($data['address']) < 5) {
-            $errors['address'] = "Address is required and should be at least 5 characters long.";
-        }
-
         if (empty($data['phone']) || !preg_match("/^\d{10}$/", $data['phone'])) {
             $errors['phone'] = "Phone is required and should be a valid 10-digit number.";
         }

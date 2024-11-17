@@ -120,8 +120,14 @@
             </div>
 
             <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address" value="<?php echo $refugee->getAddress() ?>" required>
+                <label for="Address">Address:</label>
+                <select name="address" id="Address" class="form-control" required>
+                    <option value="4">Madinet Nasr</option>
+                    <option value="5">Masr Al Gadida</option>
+                    <option value="6">New Cairo</option>
+                    <option value="7">Sheikh Zayed</option>
+                    <option value="8">Abbaseya</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -144,14 +150,34 @@
                 <input type="text" id="passportNumber" name="passportNumber" value="<?php echo $refugee->getPassportNumber() ?>">
             </div>
 
+            <div class="form-group">
+                <label for="preference">Preference:</label>
+                <select name="preference" id="preference" class="form-control" required>
+                    <option value="0">Email</option>
+                    <option value="1">SMS</option>
+                </select>
+            </div>
+
             <div id="adultFields" class="hidden">
                 <div class="form-group">
                     <label for="profession">Profession:</label>
-                    <input type="text" id="profession" name="profession"">
+                    <select name="profession" id="profession" class="form-control" required>
+                        <option value="farmer">Farmer</option>
+                        <option value="tailor">Tailor</option>
+                        <option value="carpenter">Carpenter</option>
+                        <option value="cook">Cook</option>
+                        <option value="driver">Driver</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="education">Education:</label>
-                    <input type="text" id="education" name="education">
+                    <select name="education" id="education" class="form-control" required>
+                        <option value="none">No Formal Education</option>
+                        <option value="primary">Primary School</option>
+                        <option value="secondary">Secondary School</option>
+                        <option value="vocational">Vocational Training</option>
+                        <option value="bachelor">Bachelor's Degree</option>
+                    </select>
                 </div>
                 <div class="form-group family">
                     <div style="display:flex;margin-bottom:10px;">

@@ -57,7 +57,7 @@ $db->query("
 $db->query("
     CREATE TABLE IF NOT EXISTS Facility (
      Id INT AUTO_INCREMENT PRIMARY KEY,
-     Name INT,
+     Name VARCHAR(255) NOT NULL, -- Facility name
      Address INT,
      Type INT,
      IsDeleted INT DEFAULT 0,
@@ -73,7 +73,9 @@ $db->query("
         Shelter INT,
         HealthCare INT,
         UserId INT,
-        FOREIGN KEY (UserId) REFERENCES User(Id) ON DELETE CASCADE
+        FOREIGN KEY (UserId) REFERENCES User(Id) ON DELETE CASCADE,
+        FOREIGN KEY (Advisor) REFERENCES User(Id)
+
     );
 ");
 
@@ -107,6 +109,37 @@ $db->query("
         FOREIGN KEY (AdultId) REFERENCES Adult(Id),
         FOREIGN KEY (FamilyId) REFERENCES Refugee(Id)
     );
+");
+
+// Volunteer Table (Extends User)
+$db->query("
+   CREATE TABLE IF NOT EXISTS Volunteer (
+    VolunteerId INT PRIMARY KEY, -- Matches User.Id
+    Skills ENUM('Medical', 'Teaching', 'Counseling', 'Translation', 'Logistics', 'Fundraising') NOT NULL,
+    Availability ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
+    FOREIGN KEY (VolunteerId) REFERENCES User(Id)
+);
+");
+$db->query("
+    CREATE TABLE IF NOT EXISTS Facility (
+     Id INT AUTO_INCREMENT PRIMARY KEY,
+     Name VARCHAR(255) NOT NULL, -- Facility name
+     Address INT,
+     Type INT,
+     IsDeleted INT DEFAULT 0,
+     FOREIGN KEY (Address) REFERENCES Address(Id)
+);
+");
+// Shelter Table (Extends Facility)
+$db->query("
+   CREATE TABLE IF NOT EXISTS Shelter (
+    ShelterID INT PRIMARY KEY, -- Matches Facility.Id
+    Supervisor INT, -- Supervisor linked to User.Id
+    MaxCapacity INT NOT NULL, -- Maximum capacity of the shelter
+    CurrentCapacity INT NOT NULL, -- Current occupancy
+    FOREIGN KEY (ShelterID) REFERENCES Facility(Id), -- Links Shelter to Facility
+    FOREIGN KEY (Supervisor) REFERENCES User(Id) -- Links Supervisor to a User
+);
 ");
 
 ?>

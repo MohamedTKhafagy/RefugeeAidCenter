@@ -8,7 +8,7 @@ class ChildAuthentication implements iUserAuthentication
     public function register($data)
     {
         //$Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare, $ChildID, $School, $Level, $Guardian
-        $childRefugee = new Child(null, $data['name'], $data['age'], $data['gender'], $data['address'], $data['phone'], $data['nationality'], 0, $data['email'], 99, null, $data['passportNumber'], 99, 99, 99, 99, 99, 99, 99);
+        $childRefugee = new Child(null, $data['name'], $data['age'], $data['gender'], $data['address'], $data['phone'], $data['nationality'], 0, $data['email'], $data["preference"], null, $data['passportNumber'], 99, 99, 99, 99, 99, 99, 99);
         $childRefugee->save();
     }
 

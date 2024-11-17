@@ -22,11 +22,11 @@ class DbConnection {
         }
         return self::$instance;
     }
-     private function database_connect($database_host, $database_username, $database_password,$db_name) {
-        if ($connection = mysqli_connect($database_host, $database_username, $database_password,$db_name)) {
-    
+    private function database_connect($database_host, $database_username, $database_password, $db_name)
+    {
+        if ($connection = mysqli_connect($database_host, $database_username, $database_password, $db_name)) {
+
             return $connection;
-            
         } else {
                 die("Database connection error");
             

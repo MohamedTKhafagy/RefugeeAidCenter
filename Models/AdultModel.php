@@ -70,6 +70,27 @@ class Adult extends Refugee {
     public function getFamily() {
         return $this->Family;
     }
+
+    public function editAdult($data) {
+        parent::editRefugee($data);
+        $this->Profession = $data["profession"];
+        $this->Education = $data["education"];
+        $this->Family = $data["family"];
+        $db = DbConnection::getInstance();
+        $query = "UPDATE Adult SET Profession = '$this->Profession', Education = '$this->Education' WHERE Id = '$this->AdultID'";
+        if($db->query($query)) {
+            $this->editFamily();
+            return true;
+        }
+        return false;
+    }
+
+    private function editFamily() {
+        $db = DbConnection::getInstance();
+        $query = "DELETE FROM adult_family WHERE AdultId = '$this->AdultID'";
+        $db->query($query);
+        $this->saveFamily();
+    }
     
 }
 ?>
