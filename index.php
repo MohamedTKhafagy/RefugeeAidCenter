@@ -27,28 +27,46 @@ if ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else $controller->index();
-} elseif ($segments[0] == 'hospitals') {
+}elseif ($segments[0] == 'hospitals') {
     $controller = new HospitalController();
 
-    if (isset($segments[1])) {
-        if ($segments[1] === 'add') {
-            $controller->add((!empty($_POST)) ? $_POST : null);
-        } elseif ($segments[1] === 'assignStrategy') {
-            parse_str($queryString, $queryArray);
-            $controller->assignStrategy($queryArray['hospitalId'], $queryArray['type']);
-        } elseif ($segments[1] === 'update' && isset($_GET['id'])) {
-            // Handle update functionality
-            $controller->update($_GET['id'], (!empty($_POST)) ? $_POST : null);
-        } elseif ($segments[1] === 'delete' && isset($_GET['id'])) {
-            // Handle delete functionality
-            $controller->delete($_GET['id']);
-        } else {
-            echo "Invalid action for hospitals.";
-        }
-    } else {
+    // Initialize hospital storage
+    Hospital::initStorage();
+
+    if (!isset($segments[1])) {
+        // Main hospital listing
         $controller->index();
+    } else {
+        switch ($segments[1]) {
+            case 'add':
+                $controller->add(!empty($_POST) ? $_POST : null);
+                break;
+
+            case 'update':
+                $id = $_GET['id'] ?? null;
+                if (!$id) {
+                    die("Error: No hospital ID provided");
+                }
+                $controller->update($id, !empty($_POST) ? $_POST : null);
+                break;
+
+            case 'delete':
+                $id = $_GET['id'] ?? null;
+                if (!$id) {
+                    die("Error: No hospital ID provided");
+                }
+                $controller->delete($id);
+                break;
+
+            default:
+                http_response_code(404);
+                echo "Page not found";
+                break;
+        }
     }
 }
+
+
 
 
  elseif ($segments[0] == 'shelters') {

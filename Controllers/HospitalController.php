@@ -54,26 +54,41 @@ class HospitalController {
         echo "Hospital not found.";
     }
     public function update($id, $data = null) {
-        $hospitals = Hospital::all();
-        foreach ($hospitals as $hospital) {
-            if ($hospital->getID() == $id) {
-                if ($data) {
-                    // Update hospital details
-                    $hospital->setName($data['Name']);
-                    $hospital->setAddress($data['Address']);
-                    $hospital->setSupervisor($data['Supervisor']);
-                    $hospital->setMaxCapacity($data['MaxCapacity']);
-                    $hospital->setCurrentCapacity($data['CurrentCapacity']);
-                    $hospital->setInsuranceType($data['insuranceType']);
-                    $this->saveToFile($hospitals);
-                    header("Location: /hospitals");
-                    return;
-                }
-                include __DIR__ . '/../Views/UpdateHospitalForm.php'; // Load the form view
-                return;
+        try {
+            if (!$id) {
+                throw new Exception("No ID provided.");
             }
+
+            $hospital = Hospital::getById($id);
+            if (!$hospital) {
+                throw new Exception("Hospital not found with ID: " . $id);
+            }
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
+                $hospital->setName($data['Name']);
+                $hospital->setAddress($data['Address']);
+                $hospital->setSupervisor($data['Supervisor']);
+                $hospital->setMaxCapacity($data['MaxCapacity']);
+                
+                // Handle strategy change if insurance type is changed
+                if (isset($data['insuranceType'])) {
+                    $strategy = strtolower($data['insuranceType']) === 'basic' ? 
+                               new BasicInsurance() : 
+                               new ComprehensiveInsurance();
+                    $hospital->setHealthcareStrategy($strategy);
+                }
+
+                if ($hospital->save()) {
+                    header("Location: /hospitals");
+                    exit();
+                }
+            }
+            
+            include __DIR__ . '/../Views/EditHospitalView.php';
+        } catch (Exception $e) {
+            error_log("Error in update method: " . $e->getMessage());
+            echo "Error: " . $e->getMessage();
         }
-        echo "Hospital not found.";
     }
     
     private function saveToFile($hospitals) {
@@ -104,11 +119,23 @@ class HospitalController {
     }
     
     
-    public function delete($id) {
-        $hospitals = Hospital::all();
-        $hospitals = array_filter($hospitals, fn($hospital) => $hospital->getID() != $id);
-        $this->saveToFile($hospitals);
+   /* public function delete($id) {
+        if (!$id) {
+            header("Location: /hospitals");
+            return;
+        }
+
+        $data = [];
+        if (file_exists(Hospital::$file)) {
+            $data = json_decode(file_get_contents(Hospital::$file), true) ?: [];
+            $data = array_filter($data, function($hospital) use ($id) {
+                return $hospital['HospitalID'] !== $id;
+            });
+            file_put_contents(Hospital::$file, json_encode(array_values($data), JSON_PRETTY_PRINT));
+        }
+
         header("Location: /hospitals");
-    }
+        exit();
+    }*/
     
 }

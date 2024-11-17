@@ -1,47 +1,29 @@
 [
     {
-        "HospitalID": "5f4eabf35d2e7",
-        "Name": "General Hospital",
-        "Address": "123 Health Street, City, Country",
-        "Supervisor": "Dr. Emily Johnson",
-        "MaxCapacity": 200,
-        "CurrentCapacity": 150,
-        "insuranceType":"Basic"
-    },
-    {
-        "HospitalID": "5f4eabf35d2e8",
-        "Name": "City Medical Center",
-        "Address": "456 Medical Avenue, City, Country",
-        "Supervisor": "Dr. John Smith",
-        "MaxCapacity": 300,
-        "CurrentCapacity": 250,
-        "insuranceType":"Basic"
-    },
-    {
-        "HospitalID": "5f4eabf35d2e9",
-        "Name": "Sunrise Clinic",
-        "Address": "789 Sunrise Road, City, Country",
-        "Supervisor": "Dr. Sarah Lee",
-        "MaxCapacity": 100,
-        "CurrentCapacity": 80,
-        "insuranceType":"Basic"
-    },
-    {
-        "HospitalID": "5f4eabf35d2ea",
-        "Name": "Green Valley Hospital",
-        "Address": "321 Valley Street, City, Country",
-        "Supervisor": "Dr. Ahmed Ali",
-        "MaxCapacity": 150,
-        "CurrentCapacity": 120,
-        "insuranceType":"Basic"
-    },
-    {
-        "HospitalID": "672fcdf8accb9",
-        "Name": "Mostashfa",
-        "Address": "orayeb",
-        "Supervisor": "Ahmed",
-        "MaxCapacity": "30",
+        "HospitalID": "HOSP_6739bc3a69ec9",
+        "Name": "Sample Hospital",
+        "Address": "123 Main St",
+        "Supervisor": "John Doe",
+        "MaxCapacity": "100",
         "CurrentCapacity": 0,
-        "insuranceType":"Basic"
+        "InsuranceType": "Comprehensive"
+    },
+    {
+        "HospitalID": "HOSP_6739bc6a178d8",
+        "Name": "jOSE",
+        "Address": "25AA",
+        "Supervisor": "DR.Khafagy",
+        "MaxCapacity": "10000",
+        "CurrentCapacity": 0,
+        "InsuranceType": "Basic"
+    },
+    {
+        "HospitalID": "HOSP_6739c00a89f8f",
+        "Name": "St Catherine ",
+        "Address": "437AA",
+        "Supervisor": "Dr.Shaun",
+        "MaxCapacity": "1111",
+        "CurrentCapacity": 0,
+        "InsuranceType": "Basic"
     }
 ]
