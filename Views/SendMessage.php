@@ -81,7 +81,6 @@
     </style>
 </head>
 <body>
-"../controllers/CommunicationController.php"
     <h1>Send Communication Message</h1>
    
     <form action= '<?php echo $base_url; ?>/communication/send' method="POST">

@@ -19,7 +19,7 @@ class Volunteer extends User
         echo "Volunteer has registered for an event.";
     }
 
-    public function Update()
+    public function Update($message)
     {
         echo "Updating volunteer information.";
     }

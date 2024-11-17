@@ -40,7 +40,7 @@ class Refugee extends User
         $userId = parent::save();
         if ($userId == -1) return -1;
         $db = DbConnection::getInstance();
-        $query = "INSERT INTO Refugee (PassportNumber, Advisor, Shelter, HealthCare, UserId) VALUES ('$this->PassportNumber', '$this->Advisor', '$this->Shelter', '$this->HealthCare', '$userId')";
+        $query = "INSERT INTO Refugee (PassportNumber, Advisor, Shelter, HealthCare, UserId) VALUES ('$this->PassportNumber', 1, 1, $this->HealthCare, $userId)";
         $db->query($query);
         $sql = "SELECT LAST_INSERT_ID() AS last;";
         $rows = $db->fetchAll($sql);

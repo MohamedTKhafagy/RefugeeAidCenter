@@ -10,7 +10,7 @@ class RefugeeAuthentication implements iUserAuthentication
     {
         //$Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare
         $family = (isset($data["family"])) ? $data["family"] : [];
-        $adultRefugee = new Adult(null, $data['name'], $data['age'], $data['gender'], $data['address'], $data['phone'], $data['nationality'], 0, $data['email'], $data["preference"], null, $data['passportNumber'], 99, 99, 99, 99, $data['profession'], $data['education'], $family);
+        $adultRefugee = new Adult(null, $data['name'], $data['age'], $data['gender'], $data['address'], $data['phone'], $data['nationality'], 0, $data['email'], $data["preference"], null, $data['passportNumber'], 1, 1, 1, 1, $data['profession'], $data['education'], $family);
         $adultRefugee->save();
     }
 

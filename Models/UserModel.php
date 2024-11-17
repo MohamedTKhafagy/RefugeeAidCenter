@@ -1,9 +1,9 @@
 <?php
 require_once "SingletonDB.php";
-
+require_once "Observer.php";
 require_once __DIR__ . "/../SingletonDB.php";
 
-abstract class User
+abstract class User  implements Observer
 {
 
     // User properties
@@ -46,30 +46,28 @@ abstract class User
     }
 
     public function getName()
-    public function getName()
     {
         return $this->Name;
     }
 
-    public function getAge()
+
     public function getAge()
     {
         return $this->Age;
     }
 
-    public function getGender()
+
     public function getGender()
     {
         return $this->Gender;
     }
 
-    public function getNationality()
+
     public function getNationality()
     {
         return $this->Nationality;
     }
 
-    public function getID()
     public function getUserId()
     {
         return $this->Id;

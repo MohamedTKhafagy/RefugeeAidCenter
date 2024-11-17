@@ -57,13 +57,8 @@ $db->query("
 $db->query("
     CREATE TABLE IF NOT EXISTS Facility (
      Id INT AUTO_INCREMENT PRIMARY KEY,
-<<<<<<< HEAD
      Name  VARCHAR(255),
      Address INT,
-=======
-     Name VARCHAR(255),  
-     Address INT,  
->>>>>>> origin/Osama
      Type INT,
      IsDeleted INT DEFAULT 0
 );
@@ -150,8 +145,6 @@ $db->query("
 );
 ");
 
-?>
-
 $db->query("
     CREATE TABLE IF NOT EXISTS Refugee (
         Id INT AUTO_INCREMENT PRIMARY KEY,
@@ -207,6 +200,8 @@ $db->query("
     FOREIGN KEY (VolunteerId) REFERENCES User(Id)
 );
 ");
+/*
+
 $db->query("
     CREATE TABLE IF NOT EXISTS Facility (
      Id INT AUTO_INCREMENT PRIMARY KEY,
@@ -229,4 +224,6 @@ $db->query("
 );
 ");
 
+?>
+*/
 ?>

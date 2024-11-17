@@ -22,6 +22,20 @@ class DbConnection {
         }
         return self::$instance;
     }
+    public function query($sql) {
+        $result = mysqli_query($this->database_connection, $sql);
+        if (!$result) {
+            die("Query failed: " . mysqli_error($this->database_connection));
+        }
+        return $result;
+    }
+
+    //Fetch results of select Queries
+    public function fetchAll($sql) {
+        $result = $this->query($sql);
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+
     private function database_connect($database_host, $database_username, $database_password, $db_name)
     {
         if ($connection = mysqli_connect($database_host, $database_username, $database_password, $db_name)) {
