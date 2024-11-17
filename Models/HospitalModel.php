@@ -2,45 +2,49 @@
 
 require_once "FacilityClassModel.php";
 require_once "HealthcareStrategy.php";
+require_once "SingletonDB.php";
 
 class Hospital extends Facility {
     private $healthcareStrategy;
-    private $HospitalID;
     private $Supervisor;
     private $MaxCapacity;
     private $CurrentCapacity;
     private $insuranceType;
-    private static $file = __DIR__ . '/../data/hospitals.txt';
 
-    public function __construct($name, $address, $supervisor, $maxCapacity, $currentCapacity = 0) {
-        $this->Name = $name;
-        $this->Address = $address;
+    public function __construct($Id,$name, $address, $type, $supervisor, $maxCapacity, $currentCapacity = 0) {
+        parent::__construct($Id,$name, $address,$type);
         $this->Supervisor = $supervisor;
         $this->MaxCapacity = $maxCapacity;
         $this->CurrentCapacity = $currentCapacity;
-        $this->HospitalID = uniqid('HOSP_'); // Generate ID on creation
     }
-    public function Assign(){
-        if($this->CurrentCapacity<$this->MaxCapacity){
+
+    // Basic getters and setters remain unchanged
+    public function Assign() {
+        if($this->CurrentCapacity < $this->MaxCapacity) {
             $this->CurrentCapacity++;
         }
     }
 
-    public function setMaxCapacity($MaxCapacity){
+    public function setMaxCapacity($MaxCapacity) {
         $this->MaxCapacity = $MaxCapacity;
     }
-    public function setSupervisor($Supervisor){
+
+    public function setSupervisor($Supervisor) {
         $this->Supervisor = $Supervisor;
     }
-    public function setName($Name){
+
+    public function setName($Name) {
         $this->Name = $Name;
     }
-    public function setAddress($Address){
+
+    public function setAddress($Address) {
         $this->Address = $Address;
     }
+
     public function setID($id) {
         $this->HospitalID = $id;
     }
+
     public function setCurrentCapacity($CurrentCapacity) {
         if ($CurrentCapacity > $this->MaxCapacity) {
             throw new Exception("Current capacity exceeds maximum capacity.");
@@ -50,161 +54,170 @@ class Hospital extends Facility {
             $this->CurrentCapacity = $CurrentCapacity;
         }
     }
-    
 
-
-    public function getName(){
+    public function getName() {
         return $this->Name;
     }
-    public function getSupervisor(){
+
+    public function getSupervisor() {
         return $this->Supervisor;
     }
-    public function getAddress(){
+
+    public function getAddress() {
         return $this->Address;
     }
-    /*public function getCurrentCapacity(){
-        return $this->CurrentCapacity;
-    }*/
-    public function getMaxCapacity(){
+
+    public function getMaxCapacity() {
         return $this->MaxCapacity;
     }
-    public function getID(){
-        return $this->HospitalID;
+
+    public function getID() {
+        return $this->ID;
     }
+
     public function getInsuranceType() {
-        return $this->insuranceType;
+        return $this->insuranceType == 0 ? 'Basic' : 'Comprehensive';
     }
 
-    public function setInsuranceType($insuranceType) {
-        $this->insuranceType = $insuranceType;
+    public function setInsuranceType($type) {
+        $this->insuranceType = strtolower($type) === 'basic' ? 0 : 1;
     }
 
-    public static function getById($id) {
-        if (!file_exists(self::$file)) {
-            return null;
-        }
+    public function getCurrentCapacity() {
+        return $this->CurrentCapacity ?? 0;
+    }
 
-        $fileContent = file_get_contents(self::$file);
-        if (!$fileContent) {
-            return null;
-        }
+    // Database operations
+    public static function findById($id) {
+        $db = DbConnection::getInstance();
+        $query = "SELECT f.Id AS Id, 
+                    f.Name AS Name,
+                    f.Address AS Address,
+                    h.MaxCapacity AS MaxCapacity,
+                    h.CurrentCapacity AS CurrentCapacity,
+                    h.Supervisor AS Supervisor,
+                    h.insuranceType AS InsuranceType 
+                 FROM Facility f 
+                 JOIN HOSPITAL h ON f.Id = h.HospitalId 
+                 WHERE f.Id=$id ;";  // Only show non-deleted hospitals
+        
+        $result = $db->fetchAll($query);
 
-        $data = json_decode($fileContent, true);
-        if (!$data) {
-            error_log("Failed to decode JSON data from file");
-            return null;
-        }
-
-        foreach ($data as $hospitalData) {
-            if ($hospitalData['HospitalID'] === $id) {
-                // Create new hospital instance
-                $hospital = new self(
-                    $hospitalData['Name'],
-                    $hospitalData['Address'],
-                    $hospitalData['Supervisor'],
-                    $hospitalData['MaxCapacity'],
-                    $hospitalData['CurrentCapacity'] ?? 0
-                );
-                
-                // Set additional properties
-                $hospital->HospitalID = $hospitalData['HospitalID'];
-                $hospital->insuranceType = $hospitalData['InsuranceType'] ?? 'Not Set';
-                
-                return $hospital;
-            }
+        foreach ($result as $row) {
+            $hospital = new self(
+                $row["Id"],
+                $row['Name'],
+                $row['Address'],
+                1,
+                $row['Supervisor'],
+                $row['MaxCapacity'],
+                $row['CurrentCapacity']
+            );
+            $hospital->insuranceType = $row['InsuranceType'];
+             
+            return $hospital;
         }
         
-        error_log("Hospital not found with ID: " . $id);
-        return null;
+        }
+
+    public static function updateById($id, $hospital) {
+        $db = DbConnection::getInstance();
+        
+        // Update Facility table
+        $facilitySQL = "UPDATE Facility 
+                       SET Name = '$hospital->Name', Address = $hospital->Address
+                       WHERE Id = $id;";
+        $db->query($facilitySQL);               
+        
+        // Update Hospital table
+        $hospital->insuranceType == 'Basic' ? 0 : 1;
+        $hospitalSQL = "UPDATE Hospital 
+                       SET MaxCapacity = $hospital->MaxCapacity, CurrentCapacity = $hospital->CurrentCapacity, 
+                           insuranceType = $hospital->insuranceType, Supervisor = '$hospital->Supervisor' 
+                       WHERE HospitalId = $id;";
+
+        $db->query($hospitalSQL);               
+
+        
     }
 
     public function save() {
-        try {
-            if (!file_exists(self::$file)) {
-                file_put_contents(self::$file, json_encode([]));
-            }
+        $db = DbConnection::getInstance();
+        
+        // First insert into Facility table
+        $facilitySQL = "INSERT INTO Facility (Name, Address, Type, IsDeleted) 
+                       VALUES ('$this->Name', $this->Address, 1, 0)";
+        $db->query($facilitySQL);
 
-            $fileContent = file_get_contents(self::$file);
-            $data = json_decode($fileContent, true) ?: [];
-
-            $hospitalData = [
-                'HospitalID' => $this->HospitalID,
-                'Name' => $this->Name,
-                'Address' => $this->Address,
-                'Supervisor' => $this->Supervisor,
-                'MaxCapacity' => $this->MaxCapacity,
-                'CurrentCapacity' => $this->CurrentCapacity ?? 0,
-                'InsuranceType' => $this->insuranceType ?? 'Not Set'
-            ];
-
-            $found = false;
-            foreach ($data as $key => $item) {
-                if ($item['HospitalID'] === $this->HospitalID) {
-                    $data[$key] = $hospitalData;
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
-                if (!$this->HospitalID) {
-                    $this->HospitalID = uniqid('HOSP_');
-                    $hospitalData['HospitalID'] = $this->HospitalID;
-                }
-                $data[] = $hospitalData;
-            }
-
-            $success = file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT));
-            if ($success === false) {
-                throw new Exception("Failed to write to file");
-            }
-
-            return true;
-        } catch (Exception $e) {
-            error_log("Error saving hospital: " . $e->getMessage());
-            return false;
+        $sql ="SELECT LAST_INSERT_ID() AS last;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $row){
+            $this->ID=$row['last'];
+            break;
         }
+        $this->insuranceType == 'Basic' ? 0 : 1;
+        
+        // Then insert into Hospital table
+        $hospitalSQL = "INSERT INTO Hospital (HospitalId, MaxCapacity, CurrentCapacity, 
+                                           insuranceType, Supervisor) 
+                       VALUES ($this->ID,$this->MaxCapacity,$this->CurrentCapacity,$this->insuranceType,'$this->Supervisor')";
+        $db->query($hospitalSQL);
     }
-
-
-    // Fixed getCurrentCapacity method
-    public function getCurrentCapacity() {
-        return $this->CurrentCapacity ?? 0; // Return 0 if null
-    }
-
-
-
+    
+    
+    
     public static function all() {
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true) ?: [];
+            $db = DbConnection::getInstance();
+            $query = "SELECT 
+                        f.Id AS Id, 
+                        f.Name AS Name,
+                        f.Address AS Address,
+                        h.MaxCapacity AS MaxCapacity,
+                        h.CurrentCapacity AS CurrentCapacity,
+                        h.Supervisor AS Supervisor,
+                        h.insuranceType AS InsuranceType
+                    FROM 
+                        Facility f 
+                    JOIN 
+                        HOSPITAL h ON f.Id = h.HospitalId 
+                    WHERE 
+                        f.IsDeleted = 0;";  
             
+            $result = $db->fetchAll($query);
             $hospitals = [];
-            foreach ($data as $hospital) {
-                // Create new hospital instance without insurance type in constructor
-                $newHospital = new self(
-                    $hospital['Name'],
-                    $hospital['Address'],
-                    $hospital['Supervisor'],
-                    $hospital['MaxCapacity'],
-                    $hospital['CurrentCapacity'] ?? 0
+            
+            foreach ($result as $row) {
+                $hospital = new self(
+                    $row["Id"],
+                    $row['Name'],
+                    $row['Address'],
+                    1,
+                    $row['Supervisor'],
+                    $row['MaxCapacity'],
+                    $row['CurrentCapacity']
                 );
-                
-                // Set the ID and insurance type after creation
-                $newHospital->HospitalID = $hospital['HospitalID'];
-                $newHospital->insuranceType = $hospital['InsuranceType'] ?? 'Not Set';
-                
-                $hospitals[] = $newHospital;
+                $hospital->insuranceType = $row['InsuranceType'];
+
+                $hospitals[] = $hospital;
             }
-            return $hospitals;
-        }
-        return [];
+            
+            return $hospitals ?? [];
+        
     }
-// Updated method to handle strategy assignment
+    
+
+    public static function deletebyId($id) {
+            $db = DbConnection::getInstance();
+            $query = "UPDATE Facility SET IsDeleted = 1 WHERE Id = $id ;";
+            $db->query($query);               
+        }
+
+    // Strategy pattern methods
     public function setHealthcareStrategy(HealthcareStrategy $strategy) {
-    $this->healthcareStrategy = $strategy;
-    $this->insuranceType = $strategy instanceof BasicInsurance ? 'Basic' : 'Comprehensive';
-    $this->save(); // Save the changes to file
-}
+        $this->healthcareStrategy = $strategy;
+        $this->insuranceType = $strategy instanceof BasicInsurance ? 'Basic' : 'Comprehensive';
+        $this->save();
+    }
     
     public function getHealthcareStrategy() {
         return $this->healthcareStrategy;
@@ -222,51 +235,6 @@ class Hospital extends Facility {
             echo "Hospital capacity reached. Cannot assign more.\n";
         }
     }
-    // Add this to your Hospital class constructor or in a init method
-public static function initStorage() {
-    self::$file = __DIR__ . '/../data/hospitals.txt';
-    $dir = dirname(self::$file);
+
     
-    if (!file_exists($dir)) {
-        mkdir($dir, 0777, true);
-    }
-    
-    if (!file_exists(self::$file)) {
-        file_put_contents(self::$file, json_encode([]));
-    }
-    
-    chmod(self::$file, 0666);
 }
-
-    // Add these debug methods
-    public static function debugFileContents() {
-        if (file_exists(self::$file)) {
-            $content = file_get_contents(self::$file);
-            error_log("File contents: " . $content);
-            return json_decode($content, true);
-        }
-        return null;
-    }
-
-    public static function validateFileStructure() {
-        if (!file_exists(self::$file)) {
-            error_log("Hospital data file does not exist");
-            return false;
-        }
-
-        $content = file_get_contents(self::$file);
-        if (!$content) {
-            error_log("Hospital data file is empty");
-            return false;
-        }
-
-        $data = json_decode($content, true);
-        if ($data === null) {
-            error_log("Invalid JSON in hospital data file");
-            return false;
-        }
-
-        return true;
-    }
-}
-

@@ -9,7 +9,12 @@
 <div class="container">
     <h2 class="mt-4 mb-4">Edit Hospital</h2>
     <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
-    <form action="<?php echo $base_url; ?>/hospitals/update?id=<?php echo htmlspecialchars($hospital->getID()); ?>" method="POST">
+    <form action="<?php echo $base_url; ?>/hospitals/update" method="POST">
+    <div class="form-group">
+            <label for="Id">Id:</label>
+            <input type="text" name="Id" id="Id" value="<?php echo htmlspecialchars($hospital->getID()); ?>" class="form-control" required hidden>
+        </div>
+
     <div class="form-group">
             <label for="Name">Hospital Name:</label>
             <input type="text" name="Name" id="Name" value="<?php echo htmlspecialchars($hospital->getName()); ?>" class="form-control" required>
@@ -31,12 +36,16 @@
         </div>
 
         <div class="form-group">
-        <label for="insuranceType">Insurance Type:</label>
-        <select name="insuranceType" id="insuranceType" class="form-control" required>
-            <option value="Basic" <?php echo $hospital->getInsuranceType() === 'Basic' ? 'selected' : ''; ?>>Basic</option>
-            <option value="Comprehensive" <?php echo $hospital->getInsuranceType() === 'Comprehensive' ? 'selected' : ''; ?>>Comprehensive</option>
-        </select>
-    </div>
+            <label for="insuranceType">Insurance Type:</label>
+            <select name="insuranceType" id="insuranceType" class="form-control" required>
+                <option value="Basic" <?php echo $hospital->getInsuranceType() === 'Basic' ? 'selected' : ''; ?>>
+                    Basic Insurance
+                </option>
+                <option value="Comprehensive" <?php echo $hospital->getInsuranceType() === 'Comprehensive' ? 'selected' : ''; ?>>
+                    Comprehensive Insurance
+                </option>
+            </select>
+        </div>
         
         <button type="submit" class="btn btn-primary">Update Hospital</button>
         <a href="<?php echo $base_url; ?>/hospitals" class="btn btn-secondary">Cancel</a>

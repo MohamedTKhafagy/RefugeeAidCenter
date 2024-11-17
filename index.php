@@ -27,48 +27,38 @@ if ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else $controller->index();
+
 }elseif ($segments[0] == 'hospitals') {
     $controller = new HospitalController();
-
-    // Initialize hospital storage
-    Hospital::initStorage();
-
-    if (!isset($segments[1])) {
-        // Main hospital listing
-        $controller->index();
-    } else {
-        switch ($segments[1]) {
+    if (isset($segments[1])) {
+        switch($segments[1]) {
             case 'add':
-                $controller->add(!empty($_POST) ? $_POST : null);
+                $controller->add($_POST ?: null);
                 break;
-
+            case 'edit':
+                /*if (isset($segments[2])) {
+                    $controller->edit($segments[2]);
+                }*/
+                if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+                break;
             case 'update':
-                $id = $_GET['id'] ?? null;
-                if (!$id) {
-                    die("Error: No hospital ID provided");
-                }
-                $controller->update($id, !empty($_POST) ? $_POST : null);
-                break;
 
+              
+                    $controller->editHospital((isset($_POST) && !empty($_POST)) ? $_POST:null);
+
+                break;
             case 'delete':
-                $id = $_GET['id'] ?? null;
-                if (!$id) {
-                    die("Error: No hospital ID provided");
+                if (isset($segments[2])) {
+                    $controller->delete($segments[2]);
                 }
-                $controller->delete($id);
                 break;
-
             default:
-                http_response_code(404);
-                echo "Page not found";
-                break;
+                $controller->index();
         }
+    } else {
+        $controller->index();
     }
 }
-
-
-
-
  elseif ($segments[0] == 'shelters') {
 
     $controller = new ShelterController();

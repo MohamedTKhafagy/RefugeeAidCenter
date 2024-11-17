@@ -5,7 +5,7 @@ class DbConnection {
     private $username="root";
     private $password="";
     private $db_name="aidcenter";// database name 
-    private  $database_connection; 
+    public  $database_connection; 
     private static $instance;
 
     private function __construct() {

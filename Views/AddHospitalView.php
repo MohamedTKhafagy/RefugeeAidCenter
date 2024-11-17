@@ -32,7 +32,10 @@
 
         <div class="form-group">
             <label for="insuranceType">Insurance Type:</label>
-            <input type="text" name="insuranceType" id="insuranceType" class="form-control" required>
+            <select name="insuranceType" id="insuranceType" class="form-control" required>
+                <option value="Basic">Basic Insurance</option>
+                <option value="Comprehensive">Comprehensive Insurance</option>
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Add Hospital</button>

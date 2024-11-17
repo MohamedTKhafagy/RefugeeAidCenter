@@ -43,9 +43,9 @@
                       <?php 
                          $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
                         ?>
-                        <a href="<?php echo $base_url . '/hospitals/update?id=' . $hospital->getID(); ?>" 
+                        <a href="hospitals/edit/<?php echo $hospital->getID();?>" 
                         class="btn btn-warning btn-sm">Update</a>
-                        <a href="<?php echo $base_url . '/hospitals/delete?id=' . $hospital->getID(); ?>" 
+                        <a href="<?php echo $base_url . '/hospitals/delete/' . $hospital->getID(); ?>" 
                         class="btn btn-danger btn-sm" 
                         onclick="return confirm('Are you sure you want to delete this hospital?');">Delete</a>
                     </td>
