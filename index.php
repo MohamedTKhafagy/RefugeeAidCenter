@@ -81,16 +81,17 @@ if ($segments[0] == 'doctors') {
     else if (isset($segments[1]) && $segments[1] === 'editDoctor') $controller->editDoctor((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
-}/*
-if ($segments[0] == 'Nurses') {
+}
+if ($segments[0] == 'nurses') {
     $controller = new NurseController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findNurseById($segments[2]);
     else if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
-    else if (isset($segments[1]) && $segments[1] === 'editDonator') $controller->editNurse((isset($_POST) && !empty($_POST)) ? $_POST : null);
+    else if (isset($segments[1]) && $segments[1] === 'editNurse') $controller->editNurse((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
+/*
 if ($segments[0] == 'teachers') {
     $controller = new TeacherController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
