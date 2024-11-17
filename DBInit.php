@@ -54,6 +54,16 @@ $db->query("
 );
 ");  
 
+$db->query("
+    CREATE TABLE IF NOT EXISTS Facility (
+     Id INT AUTO_INCREMENT PRIMARY KEY,
+     Name INT,
+     Address INT,
+     Type INT,
+     IsDeleted INT DEFAULT 0,
+     FOREIGN KEY (Address) REFERENCES Address(Id)
+);
+"); 
 
 
 ?>
