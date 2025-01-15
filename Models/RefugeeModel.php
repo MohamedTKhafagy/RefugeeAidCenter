@@ -14,13 +14,14 @@ class Refugee extends User
 
     private static $file = __DIR__ . '/../data/refugees.txt'; // Path to text file
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare, $RefugeeID = null)
     {
         parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
         $this->PassportNumber = $PassportNumber;
         $this->Advisor = $Advisor; // Pass an instance of SocialWorker
         $this->Shelter = $Shelter; // Pass an instance of Shelter
         $this->HealthCare = $HealthCare; // Pass an instance of HealthcareStrategy
+        $this->RefugeeID = $RefugeeID;
     }
 
 
@@ -30,10 +31,6 @@ class Refugee extends User
         echo "An event has been registered by the Refugee user.";
     }
 
-    public function Update($message)
-    {
-        echo "Updating from the Refugee User class.";
-    }
 
     // Save refugee details to the text file (JSON format)
     public function save()
@@ -106,11 +103,11 @@ class Refugee extends User
             $data['Type'],
             $data['Email'],
             $data['Preference'],
-            $data['RefugeeId'],
             $data['PassportNumber'],
             $data['Advisor'],
             $data['Shelter'],
-            $data['HealthCare']
+            $data['HealthCare'],
+            $id
         );
 
         return $refugee;
@@ -134,6 +131,8 @@ class Refugee extends User
         Refugee
     INNER JOIN 
         User ON Refugee.UserId = User.Id
+    WHERE
+        User.IsDeleted = 0
     ";
 
         $rows = $db->fetchAll($query);
@@ -156,11 +155,11 @@ class Refugee extends User
                 $data['Type'],
                 $data['Email'],
                 $data['Preference'],
-                $data['RefugeeId'],
                 $data['PassportNumber'],
                 $data['Advisor'],
                 $data['Shelter'],
-                $data['HealthCare']
+                $data['HealthCare'],
+                $data['RefugeeId']
             );
 
             $refugees[] = $refugee;
@@ -194,8 +193,8 @@ class Refugee extends User
         return $this->HealthCare;
     }
 
-    public function editRefugee($data) {
-        parent::editUser($data);
+    public function Update($data) {
+        parent::Update($data);
         $this->PassportNumber = $data['passportNumber'];
         $db = DbConnection::getInstance();
         $sql = "UPDATE Refugee SET PassportNumber = '$this->PassportNumber' WHERE Id = $this->RefugeeID";
@@ -203,8 +202,10 @@ class Refugee extends User
         return false;
     }
 
-    public function delete($id) {
+    public function delete() {
         $db = DbConnection::getInstance();
+        $sql = "UPDATE user SET IsDeleted = 1 WHERE Id = $this->Id";
+        $db->query($sql);
     }
 
 }

@@ -223,19 +223,19 @@
             </div>
 
             <button type="submit">Register</button>
+        </form>
+        <?php
+        if (isset($errors) && !empty($errors)) {
+            echo "<ul>";
+            foreach ($errors as $error) {
+                echo "<li style='color:red'>$error</li>";
+            }
+            echo "</ul>";
+        }
+        ?>
+        </div>
     </div>
 
-    </form>
-    <?php
-    if (isset($errors) && !empty($errors)) {
-        echo "<ul>";
-        foreach ($errors as $error) {
-            echo "<li style='color:red'>$error</li>";
-        }
-        echo "</ul>";
-    }
-    ?>
-    </div>
 
     <script>
         function toggleFields() {

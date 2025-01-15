@@ -98,7 +98,8 @@
     <div class="container">
         <h2>Edit Refugee</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
-        <form id="registrationForm" action="<?php echo $base_url ?>/register/newAdmin" method="POST" onsubmit="return validateForm()">
+        <form id="registrationForm" action="<?php echo $base_url ?>/refugees/edit" method="POST" onsubmit="return validateForm()">
+            <input type="hidden" name="id" value="<?php echo $refugee->getRefugeeId() ?>">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" value="<?php echo $refugee->getName() ?>" required>

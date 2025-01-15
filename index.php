@@ -145,6 +145,9 @@ if ($segments[0] == 'refugees') {
         parse_str($queryString, $queryArray);
         $controller->edit((!empty($queryArray)) ? $queryArray : null);
     }
+    else if (isset($segments[1]) && $segments[1] === 'edit') $controller->update($_POST);
+    else if (isset($segments[1]) && $segments[1] === 'delete' && isset($segments[2])) $controller->delete($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'view' && isset($segments[2])) $controller->view($segments[2]);
     else $controller->index();
 } 
 elseif ($segments[0] == 'volunteers') {

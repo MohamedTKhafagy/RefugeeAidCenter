@@ -36,15 +36,16 @@
         <tbody>
             <?php foreach ($refugees as $refugee): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($refugee->getUserId()); ?></td>
+                    <td><?php echo htmlspecialchars($refugee->getRefugeeId()); ?></td>
                     <td><?php echo htmlspecialchars($refugee->getName()); ?></td>
                     <td><?php echo htmlspecialchars($refugee->getAge()); ?></td>
                     <td><?php echo $refugee->getGender() == 0 ? "Male" : "Female"; ?></td>
                     <td><?php echo htmlspecialchars($refugee->getNationality()); ?></td>
                     <td>
                         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
-                        <a href="<?php echo $base_url ?>/refugees/edit?id=<?php echo $refugee->getRefugeeId(); ?>" class="btn btn-warning btn-sm">Update</a>
-                        <a href="delete_refugee.php?id=<?php echo $refugee->getUserId(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                        <a href="<?php echo $base_url ?>/refugees/editRefugee?id=<?php echo $refugee->getRefugeeId(); ?>" class="btn btn-warning btn-sm">Update</a>
+                        <a href="<?php echo $base_url ?>/refugees/delete/<?php echo $refugee->getRefugeeId(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                        <a href="<?php echo $base_url ?>/refugees/view/<?php echo $refugee->getRefugeeId(); ?>" class="btn btn-primary btn-sm">View</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -23,4 +23,8 @@ class ChildAuthentication implements iUserAuthentication
         return $errors;
     }
 
+    public function update($user, $data) {
+        $user->update($data);
+    }
+
 }

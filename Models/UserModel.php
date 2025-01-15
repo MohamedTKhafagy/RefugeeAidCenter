@@ -35,7 +35,6 @@ abstract class User implements Observer
 
 
     abstract public function RegisterEvent();
-    abstract public function Update($Message);
 
 
 
@@ -178,14 +177,13 @@ abstract class User implements Observer
         if($exist) return true;
         return false;
     }
-    public function editUser($data){
+    public function Update($data){
         $this->Name = $data['name'];
         $this->Age = $data['age'];
         $this->Gender = $data['gender'];
         $this->Address = $data['address'];
         $this->Phone = $data['phone'];
         $this->Nationality = $data['nationality'];
-        $this->Type = $data['type'];
         $this->Email = $data['email'];
         $this->Preference = $data['preference'];
         $db = DbConnection::getInstance();

@@ -72,7 +72,7 @@ class Adult extends Refugee {
     }
 
     public function editAdult($data) {
-        parent::editRefugee($data);
+        parent::Update($data);
         $this->Profession = $data["profession"];
         $this->Education = $data["education"];
         $this->Family = $data["family"];
