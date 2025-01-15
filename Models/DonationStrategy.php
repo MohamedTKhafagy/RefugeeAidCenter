@@ -1,4 +1,5 @@
 <?php
+include_once "InventoryModel.php";
 
 interface DonationStrategy{
     public function Donate() : bool;
@@ -17,7 +18,7 @@ class ClothesDonation implements DonationStrategy{
     }
     public function Description()
     {
-        return "You donated " + $this->Quantity + " articles of clothes";
+        return "You donated " . $this->Quantity . " articles of clothes.";
     }
 }
 class FoodResourceDonation implements DonationStrategy{
@@ -32,6 +33,6 @@ class FoodResourceDonation implements DonationStrategy{
     }
     public function Description()
     {
-        return "You donated " + $this->Quantity + " food resources";
+        return "You donated " . $this->Quantity . " food resources.";
     }
 }

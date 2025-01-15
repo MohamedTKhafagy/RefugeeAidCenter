@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../Models/RefugeeModel.php';
+// require_once __DIR__ . '/../Models/VolunteerModel.php';
 
 
 class RefugeeController
@@ -13,13 +14,18 @@ class RefugeeController
 
     public function add($data = null)
     {
+        $workers = [];
+        require 'Views/AddRefugeeView.php';
+    }
+
+    public function edit($data = null)
+    {
         if ($data) {
-            //validation
-            $this->saveRefugee($data);
+            $refugee = Refugee::findById($data['id']);
+            require 'Views/EditRefugeeView.php';
+        } else {
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/refugees');
-        } else {
-            require 'Views/AddRefugeeView.php';
         }
     }
 
@@ -36,7 +42,6 @@ class RefugeeController
             $data['Type'],
             $data['Email'],
             $data['Preference'],
-            $data['RefugeeID'],
             $data['PassportNumber'],
             $data['Advisor'],
             $data['Shelter'],

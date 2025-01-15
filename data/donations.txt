@@ -1,0 +1,82 @@
+[
+    {
+        "Id": "1",
+        "Type": "0",
+        "Amount": "3000",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "2",
+        "Type": "1",
+        "Amount": "400",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "3",
+        "Type": "0",
+        "Amount": "5000",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "4",
+        "Type": "2",
+        "Amount": "20",
+        "DirectedTo": "1",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "5",
+        "Type": "1",
+        "Amount": "200",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "6",
+        "Type": "1",
+        "Amount": "3000",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "7",
+        "Type": "2",
+        "Amount": "400",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "8",
+        "Type": "0",
+        "Amount": "2000",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "9",
+        "Type": "0",
+        "Amount": "2000",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    },
+    {
+        "Id": "10",
+        "Type": "1",
+        "Amount": "400",
+        "DirectedTo": "0",
+        "Collection": "1",
+        "Currency": "0"
+    }
+]

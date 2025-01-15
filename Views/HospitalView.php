@@ -26,6 +26,7 @@
                 <th>Address</th>
                 <th>Capacity</th>
                 <th>Max Capacity</th>
+                <th>Insurance Type</th> <!-- New Column -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -37,9 +38,16 @@
                     <td><?php echo htmlspecialchars($hospital->getAddress()); ?></td>
                     <td><?php echo htmlspecialchars($hospital->getCurrentCapacity()); ?></td>
                     <td><?php echo htmlspecialchars($hospital->getMaxCapacity()); ?></td>
+                    <td><?php echo htmlspecialchars($hospital->getInsuranceType() ?? 'Not Specified'); ?></td>
                     <td>
-                        <a href="update_hospital.php?id=<?php echo $hospital->getID(); ?>" class="btn btn-warning btn-sm">Update</a>
-                        <a href="delete_hospital.php?id=<?php echo $hospital->getID(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this refugee?');">Delete</a>
+                      <?php 
+                         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+                        ?>
+                        <a href="hospitals/edit/<?php echo $hospital->getID();?>" 
+                        class="btn btn-warning btn-sm">Update</a>
+                        <a href="<?php echo $base_url . '/hospitals/delete/' . $hospital->getID(); ?>" 
+                        class="btn btn-danger btn-sm" 
+                        onclick="return confirm('Are you sure you want to delete this hospital?');">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -48,3 +56,5 @@
 </div>
 </body>
 </html>
+
+

@@ -1,45 +1,41 @@
 <?php
 class Inventory
 {
-    private $InventoryID;
     private $Money;
     private $ClothesQuantity;
     private $FoodResourcesQuantity;
 
-    private static $file = __DIR__ . '/../data/inventories.txt';
+    private static $file = __DIR__ . '/../data/inventory.txt';
 
-    public function __construct($InventoryID, $money = 0, $clothes = 0, $food = 0)
+    public function __construct()
     {
-        $this->InventoryID = $InventoryID;
-        $this->Money = $money;
-        $this->ClothesQuantity = $clothes;
-        $this->FoodResourcesQuantity = $food;
+        $this->GetLatestUpdates();
     }
 
     // Getter Methods
-    public function getInventoryID()
-    {
-        return $this->InventoryID;
-    }
 
     public function getMoney()
     {
+        $this->GetLatestUpdates();
         return $this->Money;
     }
 
     public function getClothesQuantity()
     {
+        $this->GetLatestUpdates();
         return $this->ClothesQuantity;
     }
 
     public function getFoodResources()
     {
+        $this->GetLatestUpdates();
         return $this->FoodResourcesQuantity;
     }
 
     // Setter Methods
     public function setMoney($Money)
     {
+        $this->GetLatestUpdates();
         $this->Money = max(0, $Money); // Ensure non-negative values
         $this->save();
         return true;
@@ -47,6 +43,7 @@ class Inventory
 
     public function setClothesQuantity($ClothesQuantity)
     {
+        $this->GetLatestUpdates();
         $this->ClothesQuantity = max(0, $ClothesQuantity);
         $this->save();
         return true;
@@ -54,6 +51,7 @@ class Inventory
 
     public function setFoodResourcesQuantity($FoodResourcesQuantity)
     {
+        $this->GetLatestUpdates();
         $this->FoodResourcesQuantity = max(0, $FoodResourcesQuantity);
         $this->save();
         return true;
@@ -62,6 +60,7 @@ class Inventory
     // Incrementation Methods
     public function addMoney($Money)
     {
+        $this->GetLatestUpdates();
         $this->Money += $Money;
         $this->save();
         return true;
@@ -69,6 +68,7 @@ class Inventory
 
     public function addClothesQuantity($ClothesQuantity)
     {
+        $this->GetLatestUpdates();
         $this->ClothesQuantity += $ClothesQuantity;
         $this->save();
         return true;
@@ -76,6 +76,7 @@ class Inventory
 
     public function addFoodResourceQuantity($FoodResourcesQuantity)
     {
+        $this->GetLatestUpdates();
         $this->FoodResourcesQuantity += $FoodResourcesQuantity;
         $this->save();
         return true;
@@ -84,6 +85,7 @@ class Inventory
     // Decrementation Methods
     public function removeMoney($Money)
     {
+        $this->GetLatestUpdates();
         if ($this->Money >= $Money) {
             $this->Money -= $Money;
             $this->save();
@@ -94,6 +96,7 @@ class Inventory
 
     public function removeClothesQuantity($ClothesQuantity)
     {
+        $this->GetLatestUpdates();
         if ($this->ClothesQuantity >= $ClothesQuantity) {
             $this->ClothesQuantity -= $ClothesQuantity;
             $this->save();
@@ -104,6 +107,7 @@ class Inventory
 
     public function removeFoodResourceQuantity($FoodResourcesQuantity)
     {
+        $this->GetLatestUpdates();
         if ($this->FoodResourcesQuantity >= $FoodResourcesQuantity) {
             $this->FoodResourcesQuantity -= $FoodResourcesQuantity;
             $this->save();
@@ -112,20 +116,34 @@ class Inventory
         return false;
     }
 
+    public function save(){
+        $db = DbConnection::getInstance();
+        $sql = "UPDATE Inventory
+        SET 
+        Money = $this->Money,
+        ClothesQuantity = $this->ClothesQuantity,
+        FoodResourcesQuantity = $this->FoodResourcesQuantity;";
+        $db->query($sql);
+    }
+    private function GetLatestUpdates(){
+        $db = DbConnection::getInstance();
+        $sql = "SELECT * FROM Inventory;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $data){
+            $this->Money = $data['Money'];
+            $this->ClothesQuantity = $data['ClothesQuantity'];
+            $this->FoodResourcesQuantity = $data['FoodResourcesQuantity'];
+        }
+    }
+/*
     // Save or update the inventory data in the text file
     public function save()
     {
         // Load existing data
         $data = file_exists(self::$file) ? json_decode(file_get_contents(self::$file), true) : [];
 
-        // Remove any existing entry with the same InventoryID
-        $data = array_filter($data, function ($inventory) {
-            return $inventory['InventoryID'] !== $this->InventoryID;
-        });
-
         // Add the current inventory data
-        $data[] = [
-            "InventoryID" => $this->InventoryID,
+        $data= [
             "Money" => $this->Money,
             "ClothesQuantity" => $this->ClothesQuantity,
             "FoodResourcesQuantity" => $this->FoodResourcesQuantity,
@@ -145,19 +163,15 @@ class Inventory
     }
 
     // Static method to find an inventory by ID
-    public static function findById($InventoryID)
+    private function GetLatestUpdates()
     {
-        $inventories = self::getAll();
-        foreach ($inventories as $inventory) {
-            if ($inventory['InventoryID'] == $InventoryID) {
-                return new self(
-                    $inventory['InventoryID'],
-                    $inventory['Money'],
-                    $inventory['ClothesQuantity'],
-                    $inventory['FoodResourcesQuantity']
-                );
-            }
+        $inventory = self::getAll();
+        if($inventory != null){
+                $this->Money =  $inventory['Money'];
+                $this->ClothesQuantity = $inventory['ClothesQuantity'];
+                $this->FoodResourcesQuantity = $inventory['FoodResourcesQuantity'];
         }
-        return null;
-    }
+        }
+    */
+
 }

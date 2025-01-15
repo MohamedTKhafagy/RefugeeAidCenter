@@ -1,21 +1,22 @@
 <?php
 require_once 'UserModel.php';
+require_once __DIR__ . '/../SingletonDB.php';
 
 class Refugee extends User
 {
 
-    private $RefugeeID;
-    private $PassportNumber;
-    private $Advisor; // Instance of SocialWorker
-    private $Shelter; // Instance of Shelter
-    private $HealthCare; // Instance of HealthcareStrategy
+
+    protected $RefugeeID;
+    protected $PassportNumber;
+    protected $Advisor; // Instance of SocialWorker
+    protected $Shelter; // Instance of Shelter
+    protected $HealthCare; // Instance of HealthcareStrategy
 
     private static $file = __DIR__ . '/../data/refugees.txt'; // Path to text file
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare)
     {
         parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
-        $this->RefugeeID = $RefugeeID;
         $this->PassportNumber = $PassportNumber;
         $this->Advisor = $Advisor; // Pass an instance of SocialWorker
         $this->Shelter = $Shelter; // Pass an instance of Shelter
@@ -23,12 +24,13 @@ class Refugee extends User
     }
 
 
+
     public function RegisterEvent()
     {
         echo "An event has been registered by the Refugee user.";
     }
 
-    public function Update()
+    public function Update($message)
     {
         echo "Updating from the Refugee User class.";
     }
@@ -36,98 +38,175 @@ class Refugee extends User
     // Save refugee details to the text file (JSON format)
     public function save()
     {
-        // Load existing data
-        $data = file_exists(self::$file) ? json_decode(file_get_contents(self::$file), true) : [];
+        $userId = parent::save();
+        if ($userId == -1) return -1;
+        $db = DbConnection::getInstance();
+        $query = "INSERT INTO Refugee (PassportNumber, Advisor, Shelter, HealthCare, UserId) VALUES ('$this->PassportNumber', 1, 1, $this->HealthCare, $userId)";
+        $db->query($query);
+        $sql = "SELECT LAST_INSERT_ID() AS last;";
+        $rows = $db->fetchAll($sql);
+        foreach ($rows as $row) {
+            return $row["last"];
+        }
+        return -1;
+    }
 
-        // Add this refugee's data to the array
-        $data[] = [
-            "Id" => $this->Id,
+    private function getProperties($newProperty = null)
+    {
+        $properties = [
+            "RefugeeID" => $this->RefugeeID,
             "PassportNumber" => $this->PassportNumber,
             "Advisor" => $this->Advisor,
             "Shelter" => $this->Shelter,
-            "HealthCare" => $this->HealthCare,
-            "Name" => $this->Name,
-            "Age" => $this->Age,
-            "Gender" => $this->Gender,
-            "Address" => $this->Address,
-            "Phone" => $this->Phone,
-            "Nationality" => $this->Nationality,
-            "Type" => $this->Type,
-            "Email" => $this->Email,
-            "Preference" => $this->Preference
+            "HealthCare" => $this->HealthCare
         ];
 
-        // Write the updated data back to the file
-        if (file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT))) {
-            echo "Refugee saved successfully.";
-        } else {
-            echo "Error saving refugee.";
+        if ($newProperty) {
+            $properties = array_merge($properties, $newProperty);
         }
+
+        return $properties;
     }
 
     // Find a refugee by ID from the text file
     public static function findById($id)
     {
-        // Load the file data
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true);
+        $db = DbConnection::getInstance();
 
-            // Search for the refugee by ID
-            foreach ($data as $refugee) {
-                if ($refugee['RefugeeID'] == $id) {
-                    // Create a new Refugee instance with the found data
-                    return new self(
-                        $refugee['Id'] ?? null,
-                        $refugee['Name'] ?? null,
-                        $refugee['Age'] ?? null,
-                        $refugee['Gender'] ?? null,
-                        $refugee['Address'] ?? null,
-                        $refugee['Phone'] ?? null,
-                        $refugee['Nationality'] ?? null,
-                        $refugee['Type'] ?? null,
-                        $refugee['Email'] ?? null,
-                        $refugee['Preference'] ?? null,
-                        $refugee['RefugeeID'],
-                        $refugee['PassportNumber'],
-                        $refugee['Advisor'],
-                        $refugee['Shelter'],
-                        $refugee['HealthCare']
-                    );
-                }
-            }
+        $query = "
+        SELECT 
+            User.Id AS UserId, User.Name, User.Age, User.Gender, User.Address, 
+            User.Phone, User.Nationality, User.Type, User.Email, User.Preference,
+            Refugee.Id AS RefugeeId, Refugee.PassportNumber, Refugee.Advisor, 
+            Refugee.Shelter, Refugee.HealthCare
+        FROM 
+            Refugee
+        INNER JOIN 
+            User ON Refugee.UserId = User.Id
+        WHERE 
+            Refugee.Id = '$id'
+    ";
+
+        $rows = $db->fetchAll($query);
+
+        if (empty($rows)) {
+            return null;
         }
-        return null;
+
+        $data = $rows[0];
+
+        $refugee = new self(
+            $data['UserId'],
+            $data['Name'],
+            $data['Age'],
+            $data['Gender'],
+            $data['Address'],
+            $data['Phone'],
+            $data['Nationality'],
+            $data['Type'],
+            $data['Email'],
+            $data['Preference'],
+            $data['RefugeeId'],
+            $data['PassportNumber'],
+            $data['Advisor'],
+            $data['Shelter'],
+            $data['HealthCare']
+        );
+
+        return $refugee;
     }
 
-    // Get all refugees from the text file
+
+
+
     public static function all()
     {
-        // Load the file data
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true);
+        $db = DbConnection::getInstance();
 
-            // Create an array of Refugee instances
-            $refugees = [];
-            foreach ($data as $refugee) {
-                $refugees[] = new self(
-                    $refugee['Id'] ?? null,
-                    $refugee['Name'] ?? null,
-                    $refugee['Age'] ?? null,
-                    $refugee['Gender'] ?? null,
-                    $refugee['Address'] ?? null,
-                    $refugee['Phone'] ?? null,
-                    $refugee['Nationality'] ?? null,
-                    $refugee['Type'] ?? null,
-                    $refugee['Email'] ?? null,
-                    $refugee['Preference'] ?? null,
-                    $refugee['RefugeeID'],
-                    $refugee['PassportNumber'],
-                    $refugee['Advisor'],
-                    $refugee['Shelter'],
-                    $refugee['HealthCare']
-                );
-            }
+        // Query to get all refugees along with their user data
+        $query = "
+    SELECT 
+        User.Id AS UserId, User.Name, User.Age, User.Gender, User.Address, 
+        User.Phone, User.Nationality, User.Type, User.Email, User.Preference,
+        Refugee.Id AS RefugeeId, Refugee.PassportNumber, Refugee.Advisor, 
+        Refugee.Shelter, Refugee.HealthCare
+    FROM 
+        Refugee
+    INNER JOIN 
+        User ON Refugee.UserId = User.Id
+    ";
+
+        $rows = $db->fetchAll($query);
+
+        if (empty($rows)) {
+            return null;
         }
-        return $refugees ?? [];
+
+        $refugees = [];
+
+        foreach ($rows as $data) {
+            $refugee = new self(
+                $data['UserId'],
+                $data['Name'],
+                $data['Age'],
+                $data['Gender'],
+                $data['Address'],
+                $data['Phone'],
+                $data['Nationality'],
+                $data['Type'],
+                $data['Email'],
+                $data['Preference'],
+                $data['RefugeeId'],
+                $data['PassportNumber'],
+                $data['Advisor'],
+                $data['Shelter'],
+                $data['HealthCare']
+            );
+
+            $refugees[] = $refugee;
+        }
+
+        return $refugees;
     }
+
+    public function getRefugeeID()
+    {
+        return $this->RefugeeID;
+    }
+
+    public function getPassportNumber()
+    {
+        return $this->PassportNumber;
+    }
+
+    public function getAdvisor()
+    {
+        return $this->Advisor;
+    }
+
+    public function getShelter()
+    {
+        return $this->Shelter;
+    }
+
+    public function getHealthCare()
+    {
+        return $this->HealthCare;
+    }
+
+    public function editRefugee($data) {
+        parent::editUser($data);
+        $this->PassportNumber = $data['passportNumber'];
+        $db = DbConnection::getInstance();
+        $sql = "UPDATE Refugee SET PassportNumber = '$this->PassportNumber' WHERE Id = $this->RefugeeID";
+        if($db->query($sql)) return true;
+        return false;
+    }
+
+    public function delete($id) {
+        $db = DbConnection::getInstance();
+    }
+
 }
+
+?>
