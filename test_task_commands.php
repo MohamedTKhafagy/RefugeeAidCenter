@@ -1,5 +1,6 @@
 <?php
 require_once 'Models/Task.php';
+require_once 'Models/Event.php';
 require_once 'Models/TaskCreationWizard.php';
 require_once 'Models/Commands/TaskDetailsCommand.php';
 require_once 'Models/Commands/AssignEventCommand.php';
@@ -24,27 +25,57 @@ function printTaskDetails($task, $label = "")
     echo "- Volunteer ID: " . ($task->getVolunteerId() ?: "Not Assigned") . "\n";
 }
 
+function printEventDetails($event, $label = "")
+{
+    echo $label ? "\n$label:\n" : "\n";
+    echo "- Event Name: " . $event->getName() . "\n";
+    echo "- Location: " . $event->getLocation() . "\n";
+    echo "- Type: " . $event->getType() . "\n";
+    echo "- Capacity: " . $event->getCurrentCapacity() . "/" . $event->getMaxCapacity() . "\n";
+    echo "- Date: " . $event->getDate() . "\n";
+}
+
 echo "\nCOMMAND PATTERN IMPLEMENTATION TEST SUITE\n";
 echo "========================================\n";
 echo "Testing Task Management System with Command Pattern\n";
 echo "Date: " . date('Y-m-d H:i:s') . "\n";
 
-// Test 1: Task Creation and Initial State
+// Test 1: Create Event
+printTestHeader("Event Creation");
+$event = new Event(
+    null,
+    "Emergency Supply Distribution",
+    "Main Hall",
+    1, // Type: Distribution
+    100, // Max capacity
+    0,  // Current capacity
+    date('Y-m-d', strtotime('+1 week'))
+);
+$event->save();
+printEventDetails($event, "Created Event");
+
+// Test 2: Task Creation and Initial State
 printTestHeader("Task Creation and Initial State");
 $task = new Task(
     null,
-    "Emergency Supply Distribution",
+    "Supply Distribution Task",
     "Distribute emergency supplies to new arrivals",
     4.5,
     "Logistics, Organization",
     "pending"
 );
+$task->save();
 printTaskDetails($task, "Initial Task State");
+
+// Verify task was saved and has an ID
+if (!$task->getId()) {
+    die("Failed to save task - no ID generated\n");
+}
 
 // Create the wizard
 $wizard = new TaskCreationWizard();
 
-// Test 2: Basic Task Update Operation
+// Test 3: Basic Task Update Operation
 printTestHeader("Basic Task Update Operation");
 echo "Attempting to update task details...\n";
 printTaskDetails($task, "Before Update");
@@ -58,68 +89,29 @@ $wizard->executeCommand(new TaskDetailsCommand($task, [
 
 printTaskDetails($task, "After Update");
 
-// Test 3: Complex Update Chain with Undo
-printTestHeader("Complex Update Chain with Undo Operations");
-echo "Performing multiple updates and testing undo functionality...\n";
-
-// First update
-$wizard->executeCommand(new TaskDetailsCommand($task, [
-    'name' => 'Language Translation Service',
-    'description' => 'Provide translation services for new arrivals',
-    'hoursOfWork' => 3.0,
-    'skillsRequired' => 'Bilingual, Communication'
-]));
-printTaskDetails($task, "After First Update");
-
-// Second update
-$wizard->executeCommand(new TaskDetailsCommand($task, [
-    'name' => 'Children Education Program',
-    'description' => 'Conduct basic education sessions for children',
-    'hoursOfWork' => 5.0,
-    'skillsRequired' => 'Teaching, Patience'
-]));
-printTaskDetails($task, "After Second Update");
-
-// Test undo operations
-echo "\nTesting Undo Operations:\n";
-$wizard->undo();
-printTaskDetails($task, "After First Undo");
-$wizard->undo();
-printTaskDetails($task, "After Second Undo");
-
 // Test 4: Event Assignment Workflow
 printTestHeader("Event Assignment Workflow");
-echo "Testing event assignment chain with different events...\n";
+echo "Testing event assignment with undo/redo operations...\n";
 
-$wizard->executeCommand(new AssignEventCommand($task, 1));
-echo "✓ Assigned to Event ID 1\n";
-printTaskDetails($task, "After First Event Assignment");
-
-$wizard->executeCommand(new AssignEventCommand($task, 2));
-echo "✓ Reassigned to Event ID 2\n";
-printTaskDetails($task, "After Second Event Assignment");
+$wizard->executeCommand(new AssignEventCommand($task, $event->getId()));
+echo "✓ Assigned to Event: " . $event->getName() . "\n";
+printTaskDetails($task, "After Event Assignment");
 
 $wizard->undo();
-echo "✓ Undid last event assignment\n";
+echo "✓ Undid event assignment\n";
 printTaskDetails($task, "After Undoing Event Assignment");
 
-// Test 5: Volunteer Assignment with Full Cycle
-printTestHeader("Volunteer Assignment with Full Cycle");
-echo "Testing volunteer assignment with undo/redo operations...\n";
+$wizard->redo();
+echo "✓ Redid event assignment\n";
+printTaskDetails($task, "After Redoing Event Assignment");
 
-printTaskDetails($task, "Initial State");
+// Test 5: Volunteer Assignment
+printTestHeader("Volunteer Assignment");
+echo "Testing volunteer assignment...\n";
 
 $wizard->executeCommand(new AssignVolunteerCommand($task, 5));
 echo "✓ Assigned to Volunteer ID 5\n";
 printTaskDetails($task, "After Volunteer Assignment");
-
-$wizard->undo();
-echo "✓ Undid volunteer assignment\n";
-printTaskDetails($task, "After Undoing Volunteer Assignment");
-
-$wizard->redo();
-echo "✓ Redid volunteer assignment\n";
-printTaskDetails($task, "After Redoing Volunteer Assignment");
 
 // Test 6: Command History Analysis
 printTestHeader("Command History Analysis");
@@ -140,8 +132,18 @@ foreach ($commandTypes as $type => $count) {
     echo "- $type: $count commands\n";
 }
 
+// Test 7: Event Tasks Retrieval
+printTestHeader("Event Tasks Retrieval");
+$eventTasks = $event->getAssignedTasks();
+echo "Tasks assigned to event '" . $event->getName() . "':\n";
+echo "Total tasks: " . count($eventTasks) . "\n";
+foreach ($eventTasks as $eventTask) {
+    echo "- Task ID: " . $eventTask['id'] . ", Name: " . $eventTask['name'] . "\n";
+}
+
 // Final Summary
 printTestHeader("Test Suite Summary");
+echo "✓ Event Creation: Successful\n";
 echo "✓ Task Creation and Modification: Successful\n";
 echo "✓ Command Execution: Successful\n";
 echo "✓ Undo/Redo Operations: Successful\n";

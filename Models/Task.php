@@ -114,35 +114,53 @@ class Task
     public function save()
     {
         $db = DbConnection::getInstance();
-        $sql = "INSERT INTO Tasks (name, description, hours_of_work, skills_required, status, event_id, volunteer_id, created_at) 
-                VALUES ('$this->name', '$this->description', $this->hoursOfWork, '$this->skillsRequired', 
-                        '$this->status', " . ($this->eventId ? $this->eventId : "NULL") . ", 
-                        " . ($this->volunteerId ? $this->volunteerId : "NULL") . ", 
-                        '$this->createdAt')";
-
-        return $db->query($sql);
+        if ($this->id === null) {
+            // Insert new task
+            $sql = "INSERT INTO Tasks (name, description, hours_of_work, skills_required, status, event_id, volunteer_id, created_at) 
+                    VALUES ('$this->name', '$this->description', $this->hoursOfWork, '$this->skillsRequired', 
+                            '$this->status', " . ($this->eventId ? $this->eventId : "NULL") . ", 
+                            " . ($this->volunteerId ? $this->volunteerId : "NULL") . ", 
+                            '$this->createdAt')";
+            $result = $db->query($sql);
+            $sql = "SELECT LAST_INSERT_ID() as id";
+            $lastId = $db->fetchAll($sql);
+            $this->id = $lastId[0]['id'];
+            return $result;
+        } else {
+            // Update existing task
+            $sql = "UPDATE Tasks 
+                    SET name = '$this->name', 
+                        description = '$this->description', 
+                        hours_of_work = $this->hoursOfWork, 
+                        skills_required = '$this->skillsRequired', 
+                        status = '$this->status', 
+                        event_id = " . ($this->eventId ? $this->eventId : "NULL") . ", 
+                        volunteer_id = " . ($this->volunteerId ? $this->volunteerId : "NULL") . " 
+                    WHERE id = $this->id AND is_deleted = 0";
+            return $db->query($sql);
+        }
     }
 
     public static function findById($id)
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT * FROM Tasks WHERE id = ? AND is_deleted = 0";
-        $rows = $db->fetchAll($sql);
+        $sql = "SELECT * FROM Tasks WHERE id = $id AND is_deleted = 0";
+        $result = $db->fetchAll($sql);
 
-        if (empty($rows)) {
+        if (empty($result)) {
             return null;
         }
 
-        $result = $rows[0];
+        $task = $result[0];
         return new self(
-            $result['id'],
-            $result['name'],
-            $result['description'],
-            $result['hours_of_work'],
-            $result['skills_required'],
-            $result['status'],
-            $result['event_id'],
-            $result['volunteer_id']
+            $task['id'],
+            $task['name'],
+            $task['description'],
+            $task['hours_of_work'],
+            $task['skills_required'],
+            $task['status'],
+            $task['event_id'],
+            $task['volunteer_id']
         );
     }
 }

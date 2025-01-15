@@ -200,40 +200,35 @@ $db->query("
     FOREIGN KEY (VolunteerId) REFERENCES User(Id)
 );
 ");
-$db->query("
-    CREATE TABLE IF NOT EXISTS Task (
-        Id INT AUTO_INCREMENT PRIMARY KEY,
-        Name VARCHAR(255) NOT NULL,
-        Description TEXT,
-        SkillRequired VARCHAR(255),
-        HoursOfWork INT,
-        AssignedVolunteerId INT,
-        IsDeleted BOOLEAN DEFAULT 0,
-        IsCompleted BOOLEAN DEFAULT 0,
-        FOREIGN KEY (AssignedVolunteerId) REFERENCES User(Id)
-    );
-");
-/*
 
 $db->query("
-    CREATE TABLE IF NOT EXISTS Facility (
-     Id INT AUTO_INCREMENT PRIMARY KEY,
-     Name VARCHAR(255) NOT NULL, -- Facility name
-     Address INT,
-     Type INT,
-     IsDeleted INT DEFAULT 0,
-     FOREIGN KEY (Address) REFERENCES Address(Id)
+   CREATE TABLE IF NOT EXISTS Tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    hours_of_work DECIMAL(5,2) NOT NULL,
+    skills_required TEXT,
+    status VARCHAR(50) DEFAULT 'pending',
+    event_id INT,
+    volunteer_id INT,
+    created_at DATETIME,
+    is_deleted TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (volunteer_id) REFERENCES User(Id),
+    FOREIGN KEY (event_id) REFERENCES Events(id)
 );
 ");
-// Shelter Table (Extends Facility)
+
 $db->query("
-   CREATE TABLE IF NOT EXISTS Shelter (
-    ShelterID INT PRIMARY KEY, -- Matches Facility.Id
-    Supervisor INT, -- Supervisor linked to User.Id
-    MaxCapacity INT NOT NULL, -- Maximum capacity of the shelter
-    CurrentCapacity INT NOT NULL, -- Current occupancy
-    FOREIGN KEY (ShelterID) REFERENCES Facility(Id), -- Links Shelter to Facility
-    FOREIGN KEY (Supervisor) REFERENCES User(Id) -- Links Supervisor to a User
+   CREATE TABLE IF NOT EXISTS Events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    type INT NOT NULL,
+    max_capacity INT NOT NULL,
+    current_capacity INT NOT NULL DEFAULT 0,
+    date DATE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_deleted TINYINT(1) DEFAULT 0
 );
 ");
 
