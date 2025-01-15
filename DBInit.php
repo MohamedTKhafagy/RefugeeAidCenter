@@ -87,3 +87,19 @@ $db->query("
      FoodResourcesQuantity INT NOT NULL
 );
 ");
+
+$db->query("
+   CREATE TABLE IF NOT EXISTS Tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    hours_of_work DECIMAL(5,2) NOT NULL,
+    skills_required TEXT,
+    status VARCHAR(50) DEFAULT 'pending',
+    event_id INT,
+    volunteer_id INT,
+    created_at DATETIME,
+    is_deleted TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (volunteer_id) REFERENCES User(Id)
+);
+");
