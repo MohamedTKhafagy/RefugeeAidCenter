@@ -1,10 +1,10 @@
 <?php
-require_once 'Models/Task.php';
-require_once 'Models/Event.php';
-require_once 'Models/TaskCreationWizard.php';
-require_once 'Models/Commands/TaskDetailsCommand.php';
-require_once 'Models/Commands/AssignEventCommand.php';
-require_once 'Models/Commands/AssignVolunteerCommand.php';
+require_once __DIR__ . '/../Models/Task.php';
+require_once __DIR__ . '/../Models/Event.php';
+require_once __DIR__ . '/../Models/TaskCreationWizard.php';
+require_once __DIR__ . '/../Models/Commands/TaskDetailsCommand.php';
+require_once __DIR__ . '/../Models/Commands/AssignEventCommand.php';
+require_once __DIR__ . '/../Models/Commands/AssignVolunteerCommand.php';
 
 function printTestHeader($testName)
 {

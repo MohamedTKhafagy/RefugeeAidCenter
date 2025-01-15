@@ -1,5 +1,7 @@
 <?php
 require_once 'DBInit.php';
+require_once 'States/TaskStates.php';
+require_once 'States/PendingState.php';
 
 class Task
 {
@@ -12,6 +14,7 @@ class Task
     private $eventId;
     private $volunteerId;
     private $createdAt;
+    private $currentState;
 
     public function __construct(
         $id = null,
@@ -32,6 +35,28 @@ class Task
         $this->eventId = $eventId;
         $this->volunteerId = $volunteerId;
         $this->createdAt = date('Y-m-d H:i:s');
+        $this->currentState = new PendingState();
+    }
+
+    // State pattern methods
+    public function setState(TaskStates $state): void
+    {
+        $this->currentState = $state;
+    }
+
+    public function nextState(): void
+    {
+        $this->currentState->nextState($this);
+    }
+
+    public function previousState(): void
+    {
+        $this->currentState->previousState($this);
+    }
+
+    public function getCurrentState(): string
+    {
+        return $this->currentState->getCurrentState();
     }
 
     // Getters
