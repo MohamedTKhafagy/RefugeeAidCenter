@@ -12,7 +12,7 @@
 <body>
 <div class="container">
     <h1 class="mt-4 mb-4">Refugee Management</h1>
-    
+
     <!-- Add New Refugee Button -->
     <div class="mb-3">
     <?php
