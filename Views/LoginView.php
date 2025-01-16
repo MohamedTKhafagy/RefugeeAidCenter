@@ -77,13 +77,13 @@
 
 <body>
     <div class="container">
-        <h2>User Registration</h2>
+        <h2>Login</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
         <form id="loginForm" action="<?php echo $base_url ?>/login/new" method="POST">
             <!-- Common Fields -->
             <div class="form-group">
                 <label for="type">User Type:</label>
-                <select name="type" id="type" required onchange="toggleFields()">
+                <select name="type" id="type" required>
                     <option value="">Select User Type</option>
                     <option value="donator">Donator</option>
                     <option value="refugee">Refugee</option>
@@ -102,7 +102,7 @@
                 <input type="password" id="password" name="password" min="0" required>
             </div>
 
-            <button type="submit">Register</button>
+            <button type="submit">Login</button>
         </form>
         <?php
             if (isset($commonErrors) && !empty($commonErrors)) {
@@ -114,14 +114,6 @@
             }
         ?>
     </div>
-
-    <script>
-        function toggleFields() {
-            const type = document.getElementById("type").value;
-            document.getElementById("refugeeFields").classList.toggle("hidden", type !== "refugee");
-            document.getElementById("volunteerFields").classList.toggle("hidden", type !== "volunteer");
-        }
-    </script>
 </body>
 
 </html>

@@ -83,6 +83,7 @@ class Volunteer extends User
                 $volunteer["Nationality"],
                 $volunteer["Type"],
                 $volunteer["Email"],
+                null,
                 $volunteer["Preference"],
                 $volunteer["Skills"],
                 $volunteer["Availability"]

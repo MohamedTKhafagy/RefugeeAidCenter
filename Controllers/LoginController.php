@@ -7,6 +7,12 @@ class LoginController
 
     public function index()
     {
+        session_start();
+        if (isset($_SESSION['user'])) {
+            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+            header('Location: ' . $base_url . '/dashboard/' . $_SESSION['user']['type']);
+            return;
+        }
         require 'Views/LoginView.php';
     }
 
@@ -17,14 +23,19 @@ class LoginController
             require 'Views/LoginView.php';
             return;
         }
-        $exist = User::login($data);
-        if (!$exist) {
+        $user = User::login($data);
+        if (!$user['exist']) {
             $commonErrors['email'] = "Email or password is incorrect";
             require 'Views/LoginView.php';
             return;
         }
+        session_start();
+        $_SESSION['user'] = [
+            'id' => $user['id'],
+            'type' => $data['type']
+        ];
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        header('Location: ' . $base_url . '/refugees');
+        header('Location: ' . $base_url . '/dashboard/' . $data['type']);
     }
 
     function validateUserData($data)

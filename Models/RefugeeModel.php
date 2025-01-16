@@ -14,9 +14,9 @@ class Refugee extends User
 
     private static $file = __DIR__ . '/../data/refugees.txt'; // Path to text file
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare, $RefugeeID = null)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare, $RefugeeID = null)
     {
-        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference);
         $this->PassportNumber = $PassportNumber;
         $this->Advisor = $Advisor; // Pass an instance of SocialWorker
         $this->Shelter = $Shelter; // Pass an instance of Shelter
@@ -102,6 +102,7 @@ class Refugee extends User
             $data['Nationality'],
             $data['Type'],
             $data['Email'],
+            null,
             $data['Preference'],
             $data['PassportNumber'],
             $data['Advisor'],
@@ -154,6 +155,7 @@ class Refugee extends User
                 $data['Nationality'],
                 $data['Type'],
                 $data['Email'],
+                null,
                 $data['Preference'],
                 $data['PassportNumber'],
                 $data['Advisor'],

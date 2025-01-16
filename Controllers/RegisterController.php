@@ -12,6 +12,12 @@ class RegisterController
 
     public function index()
     {
+        session_start();
+        if (isset($_SESSION['user'])) {
+            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+            header('Location: ' . $base_url . '/dashboard/' . $_SESSION['user']['type']);
+            return;
+        }
         require 'Views/RegisterView.php';
     }
 
@@ -28,7 +34,7 @@ class RegisterController
         }
         $strategy->register($data);
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        header('Location: ' . $base_url . '/refugees');
+        header('Location: ' . $base_url . '/dashboard/' . $data['type']);
     }
 
 }

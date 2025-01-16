@@ -84,7 +84,7 @@ class Donator extends User{
         $db=DbConnection::getInstance();
         $sql = "
         INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference)
-        VALUES ('$this->Name', $this->Age, $this->Gender, $this->Address, '$this->Phone', '$this->Nationality', $this->Type, '$this->Email', $this->Preference)
+        VALUES ('$this->Name', $this->Age, $this->Gender, $this->Address, '$this->Phone', '$this->Nationality', 1, '$this->Email', $this->Preference)
         ";
         $db->query($sql);
     }

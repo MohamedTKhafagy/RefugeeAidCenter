@@ -14,13 +14,15 @@ abstract class User implements Observer
     protected $Nationality;
     protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher  
     protected $Email;
+    protected $Password;
     protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
     protected $observer;
     protected $message;
 
     // Constructor to initialize user data
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference)
     {
+        $hashedPassword = $Password != null ? password_hash($Password, PASSWORD_DEFAULT) : null;
         $this->Id = $Id;
         $this->Name = $Name;
         $this->Age = $Age;
@@ -30,6 +32,7 @@ abstract class User implements Observer
         $this->Nationality = $Nationality;
         $this->Type = $Type;
         $this->Email = $Email;
+        $this->Password = $hashedPassword;
         $this->Preference = $Preference;
     }
 
@@ -154,7 +157,7 @@ abstract class User implements Observer
     public function save() {
         echo $this->Age;
         $db = DbConnection::getInstance();
-        $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference) VALUES ('$this->Name', '$this->Age', '$this->Gender', '1', '$this->Phone', '$this->Nationality', '$this->Type', '$this->Email', '$this->Preference')";
+        $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Password, Preference) VALUES ('$this->Name', '$this->Age', '$this->Gender', '1', '$this->Phone', '$this->Nationality', '$this->Type', '$this->Email', '$this->Password', '$this->Preference')";
         $db->query($query);
         $sql ="SELECT LAST_INSERT_ID() AS last;";
         $rows=$db->fetchAll($sql);
@@ -173,9 +176,19 @@ abstract class User implements Observer
     }
 
     public static function login($data) {
-        $exist = DB::findBy("/data/users.txt", "Email", $data['email']);
-        if($exist) return true;
-        return false;
+        $db = DbConnection::getInstance();
+        $email = $db->escape($data['email']);
+        $password = $db->escape($data['password']);
+        $types = ["refugee", "donator", "volunteer"];
+        $Type = array_search($data['type'], $types);
+        $sql = "SELECT * FROM User WHERE Email = '$email' AND Type = $Type;";
+        $rows = $db->fetchAll($sql);
+        foreach($rows as $row){
+            if(password_verify($password, $row['Password'])){
+                return ["exist" => true, "Id" => $row['Id']];
+            }
+        }
+        return ["exist" => false];
     }
     public function Update($data){
         $this->Name = $data['name'];

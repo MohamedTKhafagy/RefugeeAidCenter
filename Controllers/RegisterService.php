@@ -35,10 +35,14 @@ class RegisterService
             $errors['email'] = "Email is required and should be a valid email address.";
         }
 
+        if (!$update && (empty($data['password']) || strlen($data['password']) < 8)) {
+            $errors['password'] = "Password is required and should be at least 8 characters long.";
+        }
+
         if(!$update && User::getBy('email', $data['email'])) {
             $errors['email'] = "Email is already taken.";
         }
-
+        
         return $errors;
     }
 

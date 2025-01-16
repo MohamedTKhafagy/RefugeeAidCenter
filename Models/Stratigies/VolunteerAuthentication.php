@@ -18,6 +18,7 @@ class VolunteerAuthentication implements iUserAuthentication
             $data['nationality'],
             2,
             $data['email'],
+            $data['password'],
             $data['preference'],
             $data['skills'],
             $availability

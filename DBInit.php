@@ -21,6 +21,7 @@ $db->query("
     Nationality VARCHAR(30),
     Type INT, 
     Email VARCHAR(255) UNIQUE,
+    Password VARCHAR(255) NOT NULL,
     Preference INT,
     IsDeleted INT DEFAULT 0,
     FOREIGN KEY (Address) REFERENCES Address(Id)

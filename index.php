@@ -192,6 +192,20 @@ if ($segments[0] == 'tasks') {
         $controller->index();
     }
 }
+if ($segments[0] == 'dashboard') {
+    if (isset($segments[1]) && $segments[1] === 'donator') {
+        include_once 'Views/DonatorDashboard.php';
+    }
+    else if (isset($segments[1]) && $segments[1] === 'refugee') {
+        include_once 'Views/RefugeeDashboard.php';
+    }
+    else if (isset($segments[1]) && $segments[1] === 'volunteer') {
+        include_once 'Views/VolunteerDashboard.php';
+    }
+    else if (isset($segments[1]) && $segments[1] === 'admin') {
+        include_once 'Views/AdminDashboard.php';
+    }
+}
 else {
     
 }
