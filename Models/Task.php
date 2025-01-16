@@ -2,6 +2,8 @@
 require_once 'DBInit.php';
 require_once 'States/TaskStates.php';
 require_once 'States/PendingState.php';
+require_once 'States/InProgressState.php';
+require_once 'States/CompletedState.php';
 
 class Task
 {
@@ -15,6 +17,7 @@ class Task
     private $createdAt;
     private $currentState;
     private $skills = [];
+    private $volunteerName;
 
     public function __construct(
         $name,
@@ -33,9 +36,24 @@ class Task
         $this->eventId = $eventId;
         $this->volunteerId = $volunteerId;
         $this->createdAt = date('Y-m-d H:i:s');
-        $this->currentState = new PendingState();
+
+        // Initialize the correct state based on status
+        switch ($status) {
+            case 'completed':
+                $this->currentState = new CompletedState();
+                break;
+            case 'in_progress':
+                $this->currentState = new InProgressState();
+                break;
+            default:
+                $this->currentState = new PendingState();
+        }
+
         if ($id) {
             $this->loadSkills();
+            if ($volunteerId) {
+                $this->loadVolunteerName();
+            }
         }
     }
 
@@ -50,7 +68,24 @@ class Task
         $this->skills = $db->fetchAll($sql);
     }
 
-    public function addSkill($skillId)
+    private function loadVolunteerName()
+    {
+        if (!$this->volunteerId) return;
+
+        $db = DbConnection::getInstance();
+        $sql = "SELECT Name FROM User WHERE Id = ? AND IsDeleted = 0";
+        $result = $db->fetchAll($sql, [$this->volunteerId]);
+        if (!empty($result)) {
+            $this->volunteerName = $result[0]['Name'];
+        }
+    }
+
+    public function getVolunteerName()
+    {
+        return $this->volunteerName;
+    }
+
+    public function addSkill($skillId, $proficiencyLevel = null)
     {
         if (!$this->id) {
             throw new Exception("Task must be saved before adding skills");
@@ -81,16 +116,19 @@ class Task
     public function setState(TaskStates $state): void
     {
         $this->currentState = $state;
+        $this->status = $this->currentState->getCurrentState();
     }
 
     public function nextState(): void
     {
         $this->currentState->nextState($this);
+        $this->status = $this->currentState->getCurrentState();
     }
 
     public function previousState(): void
     {
         $this->currentState->previousState($this);
+        $this->status = $this->currentState->getCurrentState();
     }
 
     public function getCurrentState(): string
@@ -167,38 +205,56 @@ class Task
 
     public function save()
     {
-        $db = DbConnection::getInstance();
-        if ($this->id === null) {
-            // Insert new task
-            $sql = "INSERT INTO Tasks (name, description, hours_of_work, status, event_id, volunteer_id, created_at) 
-                    VALUES ('$this->name', '$this->description', $this->hoursOfWork, 
-                            '$this->status', " . ($this->eventId ? $this->eventId : "NULL") . ", 
-                            " . ($this->volunteerId ? $this->volunteerId : "NULL") . ", 
-                            '$this->createdAt')";
-            $result = $db->query($sql);
-            $sql = "SELECT LAST_INSERT_ID() as id";
-            $lastId = $db->fetchAll($sql);
-            $this->id = $lastId[0]['id'];
-            return $result;
-        } else {
-            // Update existing task
-            $sql = "UPDATE Tasks 
-                    SET name = '$this->name', 
-                        description = '$this->description', 
-                        hours_of_work = $this->hoursOfWork, 
-                        status = '$this->status', 
-                        event_id = " . ($this->eventId ? $this->eventId : "NULL") . ", 
-                        volunteer_id = " . ($this->volunteerId ? $this->volunteerId : "NULL") . " 
-                    WHERE id = $this->id AND is_deleted = 0";
-            return $db->query($sql);
+        try {
+            $db = DbConnection::getInstance();
+            if ($this->id) {
+                // Update existing task
+                $sql = "UPDATE Tasks SET 
+                    name = ?, 
+                    description = ?, 
+                    hours_of_work = ?,
+                    status = ?,
+                    event_id = ?,
+                    volunteer_id = ?
+                    WHERE id = ?";
+                $db->query($sql, [
+                    $this->name,
+                    $this->description,
+                    $this->hoursOfWork,
+                    $this->status,
+                    $this->eventId,
+                    $this->volunteerId,
+                    $this->id
+                ]);
+                return true;
+            } else {
+                // Insert new task
+                $sql = "INSERT INTO Tasks (name, description, hours_of_work, status, event_id, volunteer_id) 
+                        VALUES (?, ?, ?, ?, ?, ?)";
+                $db->query($sql, [
+                    $this->name,
+                    $this->description,
+                    $this->hoursOfWork,
+                    $this->status,
+                    $this->eventId,
+                    $this->volunteerId
+                ]);
+
+                // Get the last inserted ID
+                $result = $db->fetchAll("SELECT LAST_INSERT_ID() as id");
+                $this->id = $result[0]['id'];
+                return true;
+            }
+        } catch (Exception $e) {
+            return false;
         }
     }
 
     public static function findById($id)
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT * FROM Tasks WHERE id = $id AND is_deleted = 0";
-        $result = $db->fetchAll($sql);
+        $sql = "SELECT * FROM Tasks WHERE id = ? AND is_deleted = 0";
+        $result = $db->fetchAll($sql, [$id]);
 
         if (empty($result)) {
             return null;
@@ -206,13 +262,13 @@ class Task
 
         $task = $result[0];
         return new self(
-            $task['id'],
             $task['name'],
             $task['description'],
-            $task['hours_of_work'],
+            floatval($task['hours_of_work']),
             $task['status'],
             $task['event_id'],
-            $task['volunteer_id']
+            $task['volunteer_id'],
+            $task['id']
         );
     }
 }

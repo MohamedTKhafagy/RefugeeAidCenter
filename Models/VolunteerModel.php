@@ -22,22 +22,23 @@ class Volunteer extends User
         if (!$this->Id) return;
 
         $db = DbConnection::getInstance();
-        $sql = "SELECT s.*, vs.proficiency_level FROM Skills s 
+        $sql = "SELECT s.id, s.name, sc.name as category 
+                FROM Skills s 
                 JOIN Volunteer_Skills vs ON s.id = vs.skill_id 
-                WHERE vs.volunteer_id = $this->Id";
-        $this->skills = $db->fetchAll($sql);
+                JOIN SkillCategories sc ON s.category_id = sc.id
+                WHERE vs.volunteer_id = ?";
+        $this->skills = $db->fetchAll($sql, [$this->Id]);
     }
 
-    public function addSkill($skillId, $proficiencyLevel = 'Beginner')
+    public function addSkill($skillId)
     {
         if (!$this->Id) {
             throw new Exception("Volunteer must be saved before adding skills");
         }
 
         $db = DbConnection::getInstance();
-        $sql = "INSERT INTO Volunteer_Skills (volunteer_id, skill_id, proficiency_level) 
-                VALUES ($this->Id, $skillId, '$proficiencyLevel')
-                ON DUPLICATE KEY UPDATE proficiency_level = '$proficiencyLevel'";
+        $sql = "INSERT IGNORE INTO Volunteer_Skills (volunteer_id, skill_id) 
+                VALUES ($this->Id, $skillId)";
         $db->query($sql);
         $this->loadSkills();
     }
@@ -160,10 +161,28 @@ class Volunteer extends User
     public static function deleteById($id)
     {
         $db = DbConnection::getInstance();
-        $sql = "UPDATE User
-                SET IsDeleted = 1
-                WHERE Id = $id";
-        $db->query($sql);
+
+        try {
+            // Start transaction
+            $db->query("START TRANSACTION");
+
+            // Delete volunteer's skills
+            $db->query("DELETE FROM Volunteer_Skills WHERE volunteer_id = ?", [$id]);
+
+            // Mark volunteer as deleted in User table
+            $db->query("UPDATE User SET IsDeleted = 1 WHERE Id = ?", [$id]);
+
+            // Mark volunteer as deleted in Volunteer table
+            $db->query("UPDATE Volunteer SET IsDeleted = 1 WHERE VolunteerId = ?", [$id]);
+
+            // Commit transaction
+            $db->query("COMMIT");
+            return true;
+        } catch (Exception $e) {
+            // Rollback on error
+            $db->query("ROLLBACK");
+            throw $e;
+        }
     }
 
     public static function all()

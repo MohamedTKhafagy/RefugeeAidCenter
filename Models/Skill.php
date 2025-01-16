@@ -5,21 +5,35 @@ class Skill
 {
     private $id;
     private $name;
-    private $category;
+    private $category_id;
     private $description;
     private $createdAt;
+    private $categoryName; // To store the category name
 
     public function __construct(
         $name,
-        $category,
+        $category_id,
         $description = null,
         $id = null
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->category = $category;
+        $this->category_id = $category_id;
         $this->description = $description;
         $this->createdAt = date('Y-m-d H:i:s');
+        $this->loadCategoryName();
+    }
+
+    private function loadCategoryName()
+    {
+        if ($this->category_id) {
+            $db = DbConnection::getInstance();
+            $sql = "SELECT name FROM SkillCategories WHERE id = ?";
+            $result = $db->fetchAll($sql, [$this->category_id]);
+            if (!empty($result)) {
+                $this->categoryName = $result[0]['name'];
+            }
+        }
     }
 
     // Getters
@@ -31,9 +45,13 @@ class Skill
     {
         return $this->name;
     }
-    public function getCategory()
+    public function getCategoryId()
     {
-        return $this->category;
+        return $this->category_id;
+    }
+    public function getCategoryName()
+    {
+        return $this->categoryName;
     }
     public function getDescription()
     {
@@ -49,9 +67,10 @@ class Skill
     {
         $this->name = $name;
     }
-    public function setCategory($category)
+    public function setCategoryId($category_id)
     {
-        $this->category = $category;
+        $this->category_id = $category_id;
+        $this->loadCategoryName();
     }
     public function setDescription($description)
     {
@@ -60,34 +79,50 @@ class Skill
 
     public function save()
     {
-        $db = DbConnection::getInstance();
-        if ($this->id === null) {
-            // Insert new skill
-            $sql = "INSERT INTO Skills (name, category, description, created_at) 
-                    VALUES ('$this->name', '$this->category', " .
-                ($this->description ? "'$this->description'" : "NULL") .
-                ", '$this->createdAt')";
-            $result = $db->query($sql);
-            $sql = "SELECT LAST_INSERT_ID() as id";
-            $lastId = $db->fetchAll($sql);
-            $this->id = $lastId[0]['id'];
-            return $result;
-        } else {
-            // Update existing skill
-            $sql = "UPDATE Skills 
-                    SET name = '$this->name', 
-                        category = '$this->category', 
-                        description = " . ($this->description ? "'$this->description'" : "NULL") . " 
-                    WHERE id = $this->id";
-            return $db->query($sql);
+        try {
+            $db = DbConnection::getInstance();
+
+            if ($this->id) {
+                // Update existing skill
+                $sql = "UPDATE Skills SET 
+                        name = ?,
+                        category_id = ?,
+                        description = ?
+                        WHERE id = ?";
+                $db->query($sql, [
+                    $this->name,
+                    $this->category_id,
+                    $this->description,
+                    $this->id
+                ]);
+            } else {
+                // Insert new skill
+                $sql = "INSERT INTO Skills (name, category_id, description) 
+                        VALUES (?, ?, ?)";
+                $db->query($sql, [
+                    $this->name,
+                    $this->category_id,
+                    $this->description
+                ]);
+
+                // Get the last inserted ID
+                $result = $db->fetchAll("SELECT LAST_INSERT_ID() as id");
+                $this->id = $result[0]['id'];
+            }
+            return true;
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 
     public static function findById($id)
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT * FROM Skills WHERE id = $id";
-        $result = $db->fetchAll($sql);
+        $sql = "SELECT s.*, sc.name as category_name 
+                FROM Skills s 
+                JOIN SkillCategories sc ON s.category_id = sc.id 
+                WHERE s.id = ?";
+        $result = $db->fetchAll($sql, [$id]);
 
         if (empty($result)) {
             return null;
@@ -96,7 +131,7 @@ class Skill
         $skill = $result[0];
         return new self(
             $skill['name'],
-            $skill['category'],
+            $skill['category_id'],
             $skill['description'],
             $skill['id']
         );
@@ -105,33 +140,39 @@ class Skill
     public static function findByName($name)
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT * FROM Skills WHERE name = '$name'";
-        $result = $db->fetchAll($sql);
+        $sql = "SELECT s.*, sc.name as category_name 
+                FROM Skills s 
+                JOIN SkillCategories sc ON s.category_id = sc.id 
+                WHERE s.name = ?";
+        $result = $db->fetchAll($sql, [$name]);
 
         if (empty($result)) {
             return null;
         }
 
-        $skill = $result[0];
+        $data = $result[0];
         return new self(
-            $skill['name'],
-            $skill['category'],
-            $skill['description'],
-            $skill['id']
+            $data['name'],
+            $data['category_id'],
+            $data['description'],
+            $data['id']
         );
     }
 
     public static function all()
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT * FROM Skills ORDER BY category, name";
+        $sql = "SELECT s.*, sc.name as category_name 
+                FROM Skills s 
+                JOIN SkillCategories sc ON s.category_id = sc.id 
+                ORDER BY sc.name, s.name";
         $results = $db->fetchAll($sql);
 
         $skills = [];
         foreach ($results as $skill) {
             $skills[] = new self(
                 $skill['name'],
-                $skill['category'],
+                $skill['category_id'],
                 $skill['description'],
                 $skill['id']
             );
@@ -139,22 +180,41 @@ class Skill
         return $skills;
     }
 
-    public static function findByCategory($category)
+    public static function findByCategory($category_id)
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT * FROM Skills WHERE category = '$category' ORDER BY name";
-        $results = $db->fetchAll($sql);
+        $sql = "SELECT s.*, sc.name as category_name 
+                FROM Skills s 
+                JOIN SkillCategories sc ON s.category_id = sc.id 
+                WHERE s.category_id = ? 
+                ORDER BY s.name";
+        $results = $db->fetchAll($sql, [$category_id]);
 
         $skills = [];
         foreach ($results as $skill) {
             $skills[] = new self(
                 $skill['name'],
-                $skill['category'],
+                $skill['category_id'],
                 $skill['description'],
                 $skill['id']
             );
         }
         return $skills;
+    }
+
+    public static function getAllCategories()
+    {
+        $db = DbConnection::getInstance();
+        $sql = "SELECT * FROM SkillCategories ORDER BY name";
+        return $db->fetchAll($sql);
+    }
+
+    public static function getCategoryIdByName($categoryName)
+    {
+        $db = DbConnection::getInstance();
+        $sql = "SELECT id FROM SkillCategories WHERE name = ?";
+        $result = $db->fetchAll($sql, [$categoryName]);
+        return !empty($result) ? $result[0]['id'] : null;
     }
 
     public function getTasksWithSkill()
