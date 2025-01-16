@@ -21,7 +21,7 @@ class RegisterController
         $specificErrors = $strategy->validate($data);
         $errors = array_merge($commonErrors, $specificErrors);
         if (!empty($errors)) {
-            require (!$admin ? 'Views/RegisterView.php' : 'Views/AddRefugeeView.php');
+            require(!$admin ? 'Views/RegisterView.php' : 'Views/AddRefugeeView.php');
             return;
         }
         $strategy->register($data);
@@ -57,7 +57,7 @@ class RegisterController
             $errors['email'] = "Email is required and should be a valid email address.";
         }
 
-        if(User::getBy('email', $data['email'])) {
+        if (User::getBy('email', $data['email'])) {
             $errors['email'] = "Email is already taken.";
         }
 
@@ -81,5 +81,3 @@ class RegisterController
         }
     }
 }
-
-?>

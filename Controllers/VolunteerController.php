@@ -28,42 +28,54 @@ class VolunteerController
     // Save volunteer data
     public function saveVolunteer($data)
     {
-        $db = DbConnection::getInstance();
+        try {
+            // Create and save the volunteer
+            $volunteer = new Volunteer(
+                null,
+                $data['Name'],
+                $data['Age'],
+                $data['Gender'],
+                $data['Address'],
+                $data['Phone'],
+                $data['Nationality'],
+                2,
+                $data['Email'],
+                $data['Preference'],
+                $data['Availability']
+            );
+            $volunteer->save();
 
-        // Create and save the volunteer
-        $volunteer = new Volunteer(
-            null,
-            $data['Name'],
-            $data['Age'],
-            $data['Gender'],
-            $data['Address'],
-            $data['Phone'],
-            $data['Nationality'],
-            2,
-            $data['Email'],
-            $data['Preference'],
-            $data['Availability']
-        );
-        $volunteer->save();
+            // Handle skills
+            if (isset($data['skills'])) {
+                foreach ($data['skills'] as $skillName) {
+                    if (empty($skillName)) continue;
 
-        // Handle skills
-        if (isset($data['skills']) && isset($data['proficiency_levels'])) {
-            foreach ($data['skills'] as $index => $skillName) {
-                if (empty($skillName)) continue;
+                    // Find or create the skill
+                    $skill = Skill::findByName($skillName);
+                    if (!$skill) {
+                        // Get the category ID first
+                        $categoryId = Skill::getCategoryIdByName($skillName);
+                        if (!$categoryId) {
+                            // If category doesn't exist, use 'Other' category
+                            $categoryId = Skill::getCategoryIdByName('Other');
+                        }
 
-                // Find or create the skill
-                $skill = Skill::findByName($skillName);
-                if (!$skill) {
-                    $skill = new Skill($skillName, $skillName, 'Skill for ' . $skillName);
-                    $skill->save();
+                        $skill = new Skill($skillName, $categoryId, 'Skill for ' . $skillName);
+                        $skill->save();
+                    }
+
+                    // Add the skill to the volunteer
+                    $volunteer->addSkill($skill->getId());
                 }
-
-                // Add the skill to the volunteer with proficiency
-                $volunteer->addSkill($skill->getId(), $data['proficiency_levels'][$index]);
             }
-        }
 
-        return $volunteer;
+            $_SESSION['success'] = "Volunteer added successfully";
+            return $volunteer;
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            header('Location: ' . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/volunteers/add');
+            exit;
+        }
     }
 
     // Show details of a specific volunteer by ID
@@ -94,23 +106,30 @@ class VolunteerController
         Volunteer::editById($data['Id'], $volunteer);
 
         // Handle skills
-        if (isset($data['skills']) && isset($data['proficiency_levels'])) {
+        if (isset($data['skills'])) {
             // First remove all existing skills
             $db->query("DELETE FROM Volunteer_Skills WHERE volunteer_id = " . $data['Id']);
 
             // Then add the new skills
-            foreach ($data['skills'] as $index => $skillName) {
+            foreach ($data['skills'] as $skillName) {
                 if (empty($skillName)) continue;
 
                 // Find or create the skill
                 $skill = Skill::findByName($skillName);
                 if (!$skill) {
-                    $skill = new Skill($skillName, $skillName, 'Skill for ' . $skillName);
+                    // Get the category ID first
+                    $categoryId = Skill::getCategoryIdByName($skillName);
+                    if (!$categoryId) {
+                        // If category doesn't exist, use 'Other' category
+                        $categoryId = Skill::getCategoryIdByName('Other');
+                    }
+
+                    $skill = new Skill($skillName, $categoryId, 'Skill for ' . $skillName);
                     $skill->save();
                 }
 
-                // Add the skill to the volunteer with proficiency
-                $volunteer->addSkill($skill->getId(), $data['proficiency_levels'][$index]);
+                // Add the skill to the volunteer
+                $volunteer->addSkill($skill->getId());
             }
         }
 
@@ -126,7 +145,19 @@ class VolunteerController
 
     public function delete($id)
     {
-        Volunteer::deleteById($id);
+        $db = DbConnection::getInstance();
+
+        // Check if volunteer has any assigned tasks
+        $sql = "SELECT COUNT(*) as count FROM Tasks WHERE volunteer_id = ? AND is_deleted = 0";
+        $result = $db->fetchAll($sql, [$id]);
+
+        if ($result[0]['count'] > 0) {
+            $_SESSION['error'] = "Cannot delete volunteer: They have assigned tasks";
+        } else {
+            Volunteer::deleteById($id);
+            $_SESSION['success'] = "Volunteer deleted successfully";
+        }
+
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         header('Location: ' . $base_url . '/volunteers');
     }
