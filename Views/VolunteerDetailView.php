@@ -24,7 +24,24 @@
                 <p><strong>Phone:</strong> <?php echo $volunteer->getPhone(); ?></p>
                 <p><strong>Nationality:</strong> <?php echo $volunteer->getNationality(); ?></p>
                 <p><strong>Email:</strong> <?php echo $volunteer->getEmail(); ?></p>
-                <p><strong>Skills:</strong> <?php echo $volunteer->getSkills(); ?></p>
+                <p><strong>Skills:</strong>
+                    <?php
+                    $skills = $volunteer->getSkills();
+                    if (empty($skills)) {
+                        echo "No skills assigned";
+                    } else {
+                        echo "<ul class='list-unstyled mb-0'>";
+                        foreach ($skills as $skill) {
+                            echo "<li><span class='badge badge-info mr-2'>" .
+                                htmlspecialchars($skill['name']) . "</span> - " .
+                                "<span class='text-muted'>" .
+                                htmlspecialchars($skill['proficiency_level']) .
+                                "</span></li>";
+                        }
+                        echo "</ul>";
+                    }
+                    ?>
+                </p>
                 <p><strong>Availability:</strong> <?php echo $volunteer->getAvailability(); ?></p>
                 <a href="<?php echo $base_url; ?>/volunteers" class="btn btn-primary mt-3">Back to List</a>
             </div>

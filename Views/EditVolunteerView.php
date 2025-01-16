@@ -97,18 +97,75 @@
             <!-- </div> -->
 
             <div class="form-group">
-                <label for="Skills">Skills:</label>
-                <select name="Skills" id="Skills" class="form-control">
-                    <option value="Medical">Medical</option>
-                    <option value="Teaching">Teaching</option>
-                    <option value="Counseling">Counseling</option>
-                    <option value="Translation">Translation</option>
-                    <option value="Logistics">Logistics</option>
-                    <option value="Fundraising">Fundraising</option>
-                </select>
-                <script>
-                    document.getElementById('Skills').value = "<?php echo htmlspecialchars($volunteer->getSkills()); ?>";
-                </script>
+                <label>Skills:</label>
+                <div id="skillsContainer">
+                    <?php
+                    $skills = $volunteer->getSkills();
+                    if (empty($skills)) {
+                        // Show one empty skill entry if no skills exist
+                    ?>
+                        <div class="skill-entry mb-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select name="skills[]" class="form-control" required>
+                                        <option value="">Select a skill</option>
+                                        <option value="Medical">Medical</option>
+                                        <option value="Teaching">Teaching</option>
+                                        <option value="Counseling">Counseling</option>
+                                        <option value="Translation">Translation</option>
+                                        <option value="Logistics">Logistics</option>
+                                        <option value="Fundraising">Fundraising</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select name="proficiency_levels[]" class="form-control" required>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                        <option value="Expert">Expert</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-sm remove-skill">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    } else {
+                        foreach ($skills as $skill) {
+                        ?>
+                            <div class="skill-entry mb-2">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select name="skills[]" class="form-control" required>
+                                            <option value="">Select a skill</option>
+                                            <option value="Medical" <?php echo $skill['category'] == 'Medical' ? 'selected' : ''; ?>>Medical</option>
+                                            <option value="Teaching" <?php echo $skill['category'] == 'Teaching' ? 'selected' : ''; ?>>Teaching</option>
+                                            <option value="Counseling" <?php echo $skill['category'] == 'Counseling' ? 'selected' : ''; ?>>Counseling</option>
+                                            <option value="Translation" <?php echo $skill['category'] == 'Translation' ? 'selected' : ''; ?>>Translation</option>
+                                            <option value="Logistics" <?php echo $skill['category'] == 'Logistics' ? 'selected' : ''; ?>>Logistics</option>
+                                            <option value="Fundraising" <?php echo $skill['category'] == 'Fundraising' ? 'selected' : ''; ?>>Fundraising</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select name="proficiency_levels[]" class="form-control" required>
+                                            <option value="Beginner" <?php echo $skill['proficiency_level'] == 'Beginner' ? 'selected' : ''; ?>>Beginner</option>
+                                            <option value="Intermediate" <?php echo $skill['proficiency_level'] == 'Intermediate' ? 'selected' : ''; ?>>Intermediate</option>
+                                            <option value="Advanced" <?php echo $skill['proficiency_level'] == 'Advanced' ? 'selected' : ''; ?>>Advanced</option>
+                                            <option value="Expert" <?php echo $skill['proficiency_level'] == 'Expert' ? 'selected' : ''; ?>>Expert</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger btn-sm remove-skill">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                    <?php
+                        }
+                    }
+                    ?>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm mt-2" id="addSkill">Add Another Skill</button>
             </div>
 
             <div class="form-group">
@@ -127,10 +184,37 @@
                 </script>
             </div>
 
-            <button type="submit" class="btn btn-primary">Edit Volunteer</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
             <a href="<?php echo $base_url; ?>/volunteers" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
+
+    <script>
+        document.getElementById('addSkill').addEventListener('click', function() {
+            const container = document.getElementById('skillsContainer');
+            const skillEntries = container.querySelectorAll('.skill-entry');
+            const newSkill = skillEntries[0].cloneNode(true);
+
+            // Clear selections in the new element
+            newSkill.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+
+            // Add remove button functionality
+            newSkill.querySelector('.remove-skill').addEventListener('click', function() {
+                this.closest('.skill-entry').remove();
+            });
+
+            container.appendChild(newSkill);
+        });
+
+        // Add remove functionality to all existing skill entries
+        document.querySelectorAll('.remove-skill').forEach(button => {
+            button.addEventListener('click', function() {
+                if (document.querySelectorAll('.skill-entry').length > 1) {
+                    this.closest('.skill-entry').remove();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

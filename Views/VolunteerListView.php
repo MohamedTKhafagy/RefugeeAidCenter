@@ -38,7 +38,14 @@
                         <td><?php echo htmlspecialchars($volunteer->getId()); ?></td>
                         <td><?php echo htmlspecialchars($volunteer->getName()); ?></td>
                         <td><?php echo htmlspecialchars($volunteer->getAge()); ?></td>
-                        <td><?php echo htmlspecialchars($volunteer->getSkills()); ?></td>
+                        <td><?php
+                            $skills = $volunteer->getSkills();
+                            $skillDisplay = [];
+                            foreach ($skills as $skill) {
+                                $skillDisplay[] = $skill['name'] . ' (' . $skill['proficiency_level'] . ')';
+                            }
+                            echo htmlspecialchars(implode(', ', $skillDisplay));
+                            ?></td>
                         <td><?php echo htmlspecialchars($volunteer->getAvailability()); ?></td>
                         <td>
                             <a href="<?php echo $base_url; ?>/volunteers/edit/<?php echo $volunteer->getID(); ?>" class="btn btn-warning btn-sm">Edit</a>
