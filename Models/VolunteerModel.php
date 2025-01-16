@@ -1,17 +1,65 @@
 <?php
 require_once 'UserModel.php';
 require_once 'DBInit.php';
+require_once 'Skill.php';
 
 class Volunteer extends User
 {
-    private $Skills;
-    private $Availability;
+    private $availability;
+    private $skills = [];
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $Skills, $Availability)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $Availability)
     {
         parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
-        $this->Skills = $Skills;
-        $this->Availability = $Availability;
+        $this->availability = $Availability;
+        if ($Id) {
+            $this->loadSkills();
+        }
+    }
+
+    private function loadSkills()
+    {
+        if (!$this->Id) return;
+
+        $db = DbConnection::getInstance();
+        $sql = "SELECT s.*, vs.proficiency_level FROM Skills s 
+                JOIN Volunteer_Skills vs ON s.id = vs.skill_id 
+                WHERE vs.volunteer_id = $this->Id";
+        $this->skills = $db->fetchAll($sql);
+    }
+
+    public function addSkill($skillId, $proficiencyLevel = 'Beginner')
+    {
+        if (!$this->Id) {
+            throw new Exception("Volunteer must be saved before adding skills");
+        }
+
+        $db = DbConnection::getInstance();
+        $sql = "INSERT INTO Volunteer_Skills (volunteer_id, skill_id, proficiency_level) 
+                VALUES ($this->Id, $skillId, '$proficiencyLevel')
+                ON DUPLICATE KEY UPDATE proficiency_level = '$proficiencyLevel'";
+        $db->query($sql);
+        $this->loadSkills();
+    }
+
+    public function removeSkill($skillId)
+    {
+        if (!$this->Id) return;
+
+        $db = DbConnection::getInstance();
+        $sql = "DELETE FROM Volunteer_Skills WHERE volunteer_id = $this->Id AND skill_id = $skillId";
+        $db->query($sql);
+        $this->loadSkills();
+    }
+
+    public function getSkills()
+    {
+        return $this->skills;
+    }
+
+    public function getAvailability()
+    {
+        return $this->availability;
     }
 
     public function RegisterEvent()
@@ -24,129 +72,87 @@ class Volunteer extends User
         echo "Updating volunteer information.";
     }
 
-    // Getter for Skills
-    public function getSkills()
-    {
-        return $this->Skills;
-    }
-
-    // Getter for Availability
-    public function getAvailability()
-    {
-        return $this->Availability;
-    }
-
-    public static function findById($id)
-    {
-        $db = DbConnection::getInstance();
-        $sql = "SELECT u.*, v.Skills, v.Availability 
-                FROM User u 
-                JOIN Volunteer v ON u.Id = v.VolunteerId 
-                WHERE u.Id = $id AND u.Type = 2 AND u.IsDeleted = 0;";
-        $rows = $db->fetchAll($sql);
-        foreach ($rows as $volunteer) {
-            return new self(
-                $volunteer["Id"],
-                $volunteer["Name"],
-                $volunteer["Age"],
-                $volunteer["Gender"],
-                $volunteer["Address"],
-                $volunteer["Phone"],
-                $volunteer["Nationality"],
-                $volunteer["Type"],
-                $volunteer["Email"],
-                $volunteer["Preference"],
-                $volunteer["Skills"],
-                $volunteer["Availability"]
-            );
-        }
-        return null;
-    }
-
-    public static function all()
-    {
-        $db = DbConnection::getInstance();
-        $sql = "SELECT u.*, v.Skills, v.Availability 
-                FROM User u 
-                JOIN Volunteer v ON u.Id = v.VolunteerId 
-                WHERE u.Type = 2 AND u.IsDeleted = 0;";
-        $rows = $db->fetchAll($sql);
-        $volunteers = [];
-        foreach ($rows as $volunteer) {
-            $volunteers[] = new self(
-                $volunteer["Id"],
-                $volunteer["Name"],
-                $volunteer["Age"],
-                $volunteer["Gender"],
-                $volunteer["Address"],
-                $volunteer["Phone"],
-                $volunteer["Nationality"],
-                $volunteer["Type"],
-                $volunteer["Email"],
-                $volunteer["Preference"],
-                $volunteer["Skills"],
-                $volunteer["Availability"]
-            );
-        }
-        return $volunteers ?? [];
-    }
-
     public function save()
     {
-        $db = DbConnection::getInstance();
-        // $db->beginTransaction();
         try {
-            $sql = "
-            INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference)
-            VALUES ('$this->Name', $this->Age, '$this->Gender', '$this->Address', '$this->Phone', '$this->Nationality', $this->Type, '$this->Email', '$this->Preference')
-            ";
-            $db->query($sql);
+            $db = DbConnection::getInstance();
 
-            $sql = "SELECT LAST_INSERT_ID() AS last;";
-            $rows = $db->fetchAll($sql);
-            foreach ($rows as $row) {
-                $userId = $row["last"];
+            // First save/update the user data
+            parent::save();
+
+            if (!$this->Id) {
+                $sql = "SELECT LAST_INSERT_ID() as last";
+                $rows = $db->fetchAll($sql);
+                foreach ($rows as $row) {
+                    $this->Id = $row["last"];
+                }
             }
 
-            $sql = "
-            INSERT INTO Volunteer (VolunteerId, Skills, Availability)
-            VALUES ($userId, '$this->Skills', '$this->Availability')
-            ";
+            // Then save/update the volunteer data
+            $sql = "INSERT INTO Volunteer (VolunteerId, Availability)
+                    VALUES ($this->Id, '$this->availability')
+                    ON DUPLICATE KEY UPDATE Availability = '$this->availability'";
             $db->query($sql);
 
-            return $this->findById($userId);
+            return $this;
         } catch (Exception $e) {
             throw $e;
         }
     }
 
+    public static function findById($id)
+    {
+        $db = DbConnection::getInstance();
+        $sql = "SELECT u.*, v.Availability 
+                FROM User u 
+                JOIN Volunteer v ON u.Id = v.VolunteerId 
+                WHERE u.Id = $id AND u.IsDeleted = 0";
+        $result = $db->fetchAll($sql);
+
+        if (empty($result)) {
+            return null;
+        }
+
+        $data = $result[0];
+        return new self(
+            $data['Id'],
+            $data['Name'],
+            $data['Age'],
+            $data['Gender'],
+            $data['Address'],
+            $data['Phone'],
+            $data['Nationality'],
+            $data['Type'],
+            $data['Email'],
+            $data['Preference'],
+            $data['Availability']
+        );
+    }
+
     public static function editById($id, $volunteer)
     {
         $db = DbConnection::getInstance();
-        // $db->beginTransaction();
         try {
+            // Update user data
             $sql = "UPDATE User
-            SET 
-            Name = '$volunteer->Name',
-            Age = $volunteer->Age,
-            Gender = '$volunteer->Gender',
-            Address = '$volunteer->Address',
-            Phone = '$volunteer->Phone',
-            Nationality = '$volunteer->Nationality',
-            Type = $volunteer->Type,
-            Email = '$volunteer->Email',
-            Preference = '$volunteer->Preference'
-            WHERE Id = $id;";
+                    SET Name = '$volunteer->Name',
+                        Age = $volunteer->Age,
+                        Gender = '$volunteer->Gender',
+                        Address = '$volunteer->Address',
+                        Phone = '$volunteer->Phone',
+                        Nationality = '$volunteer->Nationality',
+                        Type = $volunteer->Type,
+                        Email = '$volunteer->Email',
+                        Preference = '$volunteer->Preference'
+                    WHERE Id = $id";
             $db->query($sql);
 
+            // Update volunteer data
             $sql = "UPDATE Volunteer
-            SET 
-            Skills = '$volunteer->Skills',
-            Availability = '$volunteer->Availability'
-            WHERE VolunteerId = $id;";
+                    SET Availability = '$volunteer->availability'
+                    WHERE VolunteerId = $id";
             $db->query($sql);
         } catch (Exception $e) {
-
             throw $e;
         }
     }
@@ -155,10 +161,37 @@ class Volunteer extends User
     {
         $db = DbConnection::getInstance();
         $sql = "UPDATE User
-        SET
-        IsDeleted = 1
-        WHERE Id = $id;";
+                SET IsDeleted = 1
+                WHERE Id = $id";
         $db->query($sql);
     }
+
+    public static function all()
+    {
+        $db = DbConnection::getInstance();
+        $sql = "SELECT u.*, v.Availability 
+                FROM User u 
+                JOIN Volunteer v ON u.Id = v.VolunteerId 
+                WHERE u.Type = 2 AND u.IsDeleted = 0
+                ORDER BY u.Name";
+        $results = $db->fetchAll($sql);
+
+        $volunteers = [];
+        foreach ($results as $data) {
+            $volunteers[] = new self(
+                $data['Id'],
+                $data['Name'],
+                $data['Age'],
+                $data['Gender'],
+                $data['Address'],
+                $data['Phone'],
+                $data['Nationality'],
+                $data['Type'],
+                $data['Email'],
+                $data['Preference'],
+                $data['Availability']
+            );
+        }
+        return $volunteers;
+    }
 }
-?>

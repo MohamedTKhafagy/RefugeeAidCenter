@@ -9,33 +9,72 @@ class Task
     private $name;
     private $description;
     private $hoursOfWork;
-    private $skillsRequired;
     private $status;
     private $eventId;
     private $volunteerId;
     private $createdAt;
     private $currentState;
+    private $skills = [];
 
     public function __construct(
-        $id = null,
         $name,
         $description,
         $hoursOfWork,
-        $skillsRequired,
         $status = 'pending',
         $eventId = null,
-        $volunteerId = null
+        $volunteerId = null,
+        $id = null
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->hoursOfWork = $hoursOfWork;
-        $this->skillsRequired = $skillsRequired;
         $this->status = $status;
         $this->eventId = $eventId;
         $this->volunteerId = $volunteerId;
         $this->createdAt = date('Y-m-d H:i:s');
         $this->currentState = new PendingState();
+        if ($id) {
+            $this->loadSkills();
+        }
+    }
+
+    private function loadSkills()
+    {
+        if (!$this->id) return;
+
+        $db = DbConnection::getInstance();
+        $sql = "SELECT s.* FROM Skills s 
+                JOIN Task_Skills ts ON s.id = ts.skill_id 
+                WHERE ts.task_id = $this->id";
+        $this->skills = $db->fetchAll($sql);
+    }
+
+    public function addSkill($skillId)
+    {
+        if (!$this->id) {
+            throw new Exception("Task must be saved before adding skills");
+        }
+
+        $db = DbConnection::getInstance();
+        $sql = "INSERT IGNORE INTO Task_Skills (task_id, skill_id) VALUES ($this->id, $skillId)";
+        $db->query($sql);
+        $this->loadSkills();
+    }
+
+    public function removeSkill($skillId)
+    {
+        if (!$this->id) return;
+
+        $db = DbConnection::getInstance();
+        $sql = "DELETE FROM Task_Skills WHERE task_id = $this->id AND skill_id = $skillId";
+        $db->query($sql);
+        $this->loadSkills();
+    }
+
+    public function getSkills()
+    {
+        return $this->skills;
     }
 
     // State pattern methods
@@ -80,11 +119,6 @@ class Task
         return $this->hoursOfWork;
     }
 
-    public function getSkillsRequired()
-    {
-        return $this->skillsRequired;
-    }
-
     public function getStatus()
     {
         return $this->status;
@@ -116,11 +150,6 @@ class Task
         $this->hoursOfWork = $hours;
     }
 
-    public function setSkillsRequired($skills)
-    {
-        $this->skillsRequired = $skills;
-    }
-
     public function setStatus($status)
     {
         $this->status = $status;
@@ -141,8 +170,8 @@ class Task
         $db = DbConnection::getInstance();
         if ($this->id === null) {
             // Insert new task
-            $sql = "INSERT INTO Tasks (name, description, hours_of_work, skills_required, status, event_id, volunteer_id, created_at) 
-                    VALUES ('$this->name', '$this->description', $this->hoursOfWork, '$this->skillsRequired', 
+            $sql = "INSERT INTO Tasks (name, description, hours_of_work, status, event_id, volunteer_id, created_at) 
+                    VALUES ('$this->name', '$this->description', $this->hoursOfWork, 
                             '$this->status', " . ($this->eventId ? $this->eventId : "NULL") . ", 
                             " . ($this->volunteerId ? $this->volunteerId : "NULL") . ", 
                             '$this->createdAt')";
@@ -157,7 +186,6 @@ class Task
                     SET name = '$this->name', 
                         description = '$this->description', 
                         hours_of_work = $this->hoursOfWork, 
-                        skills_required = '$this->skillsRequired', 
                         status = '$this->status', 
                         event_id = " . ($this->eventId ? $this->eventId : "NULL") . ", 
                         volunteer_id = " . ($this->volunteerId ? $this->volunteerId : "NULL") . " 
@@ -182,7 +210,6 @@ class Task
             $task['name'],
             $task['description'],
             $task['hours_of_work'],
-            $task['skills_required'],
             $task['status'],
             $task['event_id'],
             $task['volunteer_id']
