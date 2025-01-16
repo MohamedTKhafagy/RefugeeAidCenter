@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "type": 0,
+    "recipient": "+201001234567",
+    "subject": null,
+    "messageBody": "Reminder: Health Checkup Camp at Clinic on 2024-12-01",
+    "status": "Sent",
+    "sentAt": "2024-11-20T10:00:00",
+    "is_deleted": 0
+  },
+  {
+    "id": 2,
+    "type": 1,
+    "recipient": "refugee1@example.com",
+    "subject": "Food Distribution Drive Invitation",
+    "messageBody": "Join us for the Food Drive on 2024-11-25 at the Warehouse",
+    "status": "Sent",
+    "sentAt": "2024-11-18T09:00:00",
+    "is_deleted": 0
+  },
+  {
+    "id": 3,
+    "type": 1,
+    "recipient": "volunteer1@example.com",
+    "subject": "Volunteer Needed for Winter Clothing Giveaway",
+    "messageBody": "We need your help for the Winter Giveaway on 2024-12-15.",
+    "status": "Failed",
+    "sentAt": "2024-11-19T15:00:00",
+    "is_deleted": 0
+  },
+  {
+    "id": 4,
+    "type": 0,
+    "recipient": "+201002345678",
+    "subject": null,
+    "messageBody": "Thank you for attending the Education Workshop!",
+    "status": "Sent",
+    "sentAt": "2024-11-30T17:30:00",
+    "is_deleted": 0
+  },
+  {
+    "id": 5,
+    "type": 1,
+    "recipient": "attendee1@example.com",
+    "subject": "Housing Assistance Program Details",
+    "messageBody": "Details about the Housing Assistance Program on 2024-12-05.",
+    "status": "Scheduled",
+    "sentAt": "2024-11-22T14:00:00",
+    "is_deleted": 0
+  }
+]

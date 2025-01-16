@@ -1,0 +1,30 @@
+[
+    {
+        "DonationId": "1",
+        "DonatorId": "1"
+    },
+    {
+        "DonationId": "2",
+        "DonatorId": "1"
+    },
+    {
+        "DonationId": "3",
+        "DonatorId": "1"
+    },
+    {
+        "DonationId": "4",
+        "DonatorId": "2"
+    },
+    {
+        "DonationId": "5",
+        "DonatorId": "1"
+    },
+    {
+        "DonationId": "9",
+        "DonatorId": "1"
+    },
+    {
+        "DonationId": "10",
+        "DonatorId": "1"
+    }
+]

@@ -1,0 +1,29 @@
+[
+    {
+        "HospitalID": "HOSP_6739bc3a69ec9",
+        "Name": "Sample Hospital",
+        "Address": "123 Main St",
+        "Supervisor": "John Doe",
+        "MaxCapacity": "100",
+        "CurrentCapacity": 0,
+        "InsuranceType": "Comprehensive"
+    },
+    {
+        "HospitalID": "HOSP_6739bc6a178d8",
+        "Name": "jOSE",
+        "Address": "25AA",
+        "Supervisor": "DR.Khafagy",
+        "MaxCapacity": "10000",
+        "CurrentCapacity": 0,
+        "InsuranceType": "Basic"
+    },
+    {
+        "HospitalID": "HOSP_6739c00a89f8f",
+        "Name": "St Catherine ",
+        "Address": "437AA",
+        "Supervisor": "Dr.Shaun",
+        "MaxCapacity": "1111",
+        "CurrentCapacity": 0,
+        "InsuranceType": "Basic"
+    }
+]

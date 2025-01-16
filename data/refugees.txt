@@ -1,0 +1,58 @@
+[
+    {
+        "RefugeeID": 1,
+        "PassportNumber": "aa3329fjk",
+        "Advisor": null,
+        "Shelter": null,
+        "HealthCare": null,
+        "userId": 1
+    },
+    {
+        "RefugeeID": 2,
+        "PassportNumber": "aa3329fjk",
+        "Advisor": null,
+        "Shelter": null,
+        "HealthCare": null,
+        "userId": 2
+    },
+    {
+<<<<<<< HEAD
+        "RefugeeID": 3,
+        "PassportNumber": "aa3329fjk",
+        "Advisor": null,
+        "Shelter": null,
+        "HealthCare": null,
+        "userId": 3
+=======
+        "Id": "R11223",
+        "PassportNumber": "P5566778899",
+        "Advisor": "Mohammed Al Farsi",
+        "Shelter": "Shelter C",
+        "HealthCare": "Basic Healthcare Plan",
+        "Name": "Ibrahim Mustafa",
+        "Age": 40,
+        "Gender": "Male",
+        "Address": "789 New Street, City, Country",
+        "Phone": "+1122334455",
+        "Nationality": "Country C",
+        "Type": "Asylum Seeker",
+        "Email": "ibrahim.mustafa@example.com",
+        "Preference": "Prefer Arabic-speaking advisor"
+    },
+    {
+        "Id": "4",
+        "PassportNumber": "11111111",
+        "Advisor": "adasD",
+        "Shelter": "asda",
+        "HealthCare": "ASDdsa",
+        "Name": "Mohamed Amin",
+        "Age": "22",
+        "Gender": "male",
+        "Address": "new cairo-5th settlement narges",
+        "Phone": "01126982442",
+        "Nationality": "egypt",
+        "Type": "volunteer",
+        "Email": "mamin7522@gmail.com",
+        "Preference": "gsdfSDF"
+    }
+]
