@@ -28,6 +28,9 @@ class VolunteerController
     // Save volunteer data
     public function saveVolunteer($data)
     {
+        $db = DbConnection::getInstance();
+
+        // Create and save the volunteer
         $volunteer = new Volunteer(
             null,
             $data['Name'],
@@ -39,23 +42,42 @@ class VolunteerController
             2,
             $data['Email'],
             $data['Preference'],
-            $data['Skills'],
             $data['Availability']
         );
-
-
         $volunteer->save();
+
+        // Handle skills
+        if (isset($data['skills']) && isset($data['proficiency_levels'])) {
+            foreach ($data['skills'] as $index => $skillName) {
+                if (empty($skillName)) continue;
+
+                // Find or create the skill
+                $skill = Skill::findByName($skillName);
+                if (!$skill) {
+                    $skill = new Skill($skillName, $skillName, 'Skill for ' . $skillName);
+                    $skill->save();
+                }
+
+                // Add the skill to the volunteer with proficiency
+                $volunteer->addSkill($skill->getId(), $data['proficiency_levels'][$index]);
+            }
+        }
+
+        return $volunteer;
     }
 
     // Show details of a specific volunteer by ID
     public function showVolunteer($id)
     {
         $volunteer = Volunteer::findById($id);
-        require 'Views/VolunteerDetailView.php'; // Load view to display volunteer details
+        require 'Views/VolunteerDetailView.php';
     }
+
     public function editVolunteer($data)
     {
-        echo var_dump($data);
+        $db = DbConnection::getInstance();
+
+        // Create and update the volunteer
         $volunteer = new Volunteer(
             $data['Id'],
             $data['Name'],
@@ -67,10 +89,31 @@ class VolunteerController
             2,
             $data['Email'],
             $data['Preference'],
-            $data['Skills'],
             $data['Availability']
         );
         Volunteer::editById($data['Id'], $volunteer);
+
+        // Handle skills
+        if (isset($data['skills']) && isset($data['proficiency_levels'])) {
+            // First remove all existing skills
+            $db->query("DELETE FROM Volunteer_Skills WHERE volunteer_id = " . $data['Id']);
+
+            // Then add the new skills
+            foreach ($data['skills'] as $index => $skillName) {
+                if (empty($skillName)) continue;
+
+                // Find or create the skill
+                $skill = Skill::findByName($skillName);
+                if (!$skill) {
+                    $skill = new Skill($skillName, $skillName, 'Skill for ' . $skillName);
+                    $skill->save();
+                }
+
+                // Add the skill to the volunteer with proficiency
+                $volunteer->addSkill($skill->getId(), $data['proficiency_levels'][$index]);
+            }
+        }
+
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         header('Location: ' . $base_url . '/volunteers');
     }
