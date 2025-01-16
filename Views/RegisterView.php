@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,26 +50,6 @@
             border-radius: 4px;
         }
 
-        .days {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .day {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 5px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 5px;
-            background-color: #f0f0f0;
-        }
-
-        .form-group .day input {
-            margin-left: 5px;
-        }
-
         .hidden {
             display: none;
         }
@@ -86,6 +67,13 @@
 
         button:hover {
             background-color: #0056b3;
+        }
+
+        .skill-entry {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -192,48 +180,41 @@
             <!-- Volunteer-Specific Fields -->
             <div id="volunteerFields" class="hidden">
                 <div class="form-group">
-                    <label for="skills">Skills:</label>
-                    <select name="skills" id="skills" class="form-control" required>
-                        <option value="Medical">Medical</option>
-                        <option value="Teaching">Teaching</option>
-                        <option value="Counseling">Counseling</option>
-                        <option value="Translation">Translation</option>
-                        <option value="Logistics">Logistics</option>
-                        <option value="Fundraising">Fundraising</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Availability:</label>
-                    <div class="days">
-                        <div class="day">
-                            <label for="Saturday">Sat</label>
-                            <input type="checkbox" name="availability[]" id="Saturday" value="Saturday">
-                        </div>
-                        <div class="day">
-                            <label for="Sunday">Sun</label>
-                            <input type="checkbox" name="availability[]" id="Sunday" value="Sunday">
-                        </div>
-                        <div class="day">
-                            <label for="Monday">Mon</label>
-                            <input type="checkbox" name="availability[]" id="Monday" value="Monday">
-                        </div>
-                        <div class="day">
-                            <label for="Tuesday">Tue</label>
-                            <input type="checkbox" name="availability[]" id="Tuesday" value="Tuesday">
-                        </div>
-                        <div class="day">
-                            <label for="Wednesday">Wed</label>
-                            <input type="checkbox" name="availability[]" id="Wednesday" value="Wednesday">
-                        </div>
-                        <div class="day">
-                            <label for="Thursday">Thu</label>
-                            <input type="checkbox" name="availability[]" id="Thursday" value="Thursday">
-                        </div>
-                        <div class="day">
-                            <label for="Friday">Fri</label>
-                            <input type="checkbox" name="availability[]" id="Friday" value="Friday">
+                    <label>Skills:</label>
+                    <div id="skillsContainer">
+                        <div class="skill-entry">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <select name="skills[]" class="form-control" required>
+                                        <option value="">Select a skill</option>
+                                        <option value="Medical">Medical</option>
+                                        <option value="Teaching">Teaching</option>
+                                        <option value="Counseling">Counseling</option>
+                                        <option value="Translation">Translation</option>
+                                        <option value="Logistics">Logistics</option>
+                                        <option value="Fundraising">Fundraising</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-block remove-skill">Remove</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-secondary btn-sm mt-2" id="addSkill">Add Another Skill</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="Availability">Availability:</label>
+                    <select name="availability" id="Availability" class="form-control" required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
                 </div>
             </div>
 
@@ -261,8 +242,6 @@
             const type = document.getElementById("type").value;
             const passportNumber = document.getElementById("passportNumber");
 
-            console.log(type);
-
             if (type === "refugee") {
                 if (passportNumber.value.trim() === "") {
                     alert("Passport Number is required for Refugees.");
@@ -271,14 +250,31 @@
                 }
             }
 
-            const checkboxes = document.querySelectorAll('#volunteerFields input[type="checkbox"]');
-            if (type === "volunteer" && !Array.from(checkboxes).some(checkbox => checkbox.checked)) {
-                alert("Please select at least one availability day for Volunteers.");
-                return false;
-            }
-
             return true;
         }
+
+        // Add skill functionality
+        document.getElementById('addSkill').addEventListener('click', function() {
+            const container = document.getElementById('skillsContainer');
+            const newSkill = container.children[0].cloneNode(true);
+
+            // Clear selections in the new element
+            newSkill.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+
+            // Add remove button functionality
+            newSkill.querySelector('.remove-skill').addEventListener('click', function() {
+                this.closest('.skill-entry').remove();
+            });
+
+            container.appendChild(newSkill);
+        });
+
+        // Add remove functionality to the initial skill entry
+        document.querySelector('.remove-skill').addEventListener('click', function() {
+            if (document.querySelectorAll('.skill-entry').length > 1) {
+                this.closest('.skill-entry').remove();
+            }
+        });
     </script>
 </body>
 

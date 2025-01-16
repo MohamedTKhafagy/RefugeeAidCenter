@@ -63,7 +63,7 @@ class SkillsManagementTest
         // Test finding skill by name
         $foundSkill = Skill::findByName('Test Skill Creation');
         assert($foundSkill !== null, "Should be able to find skill by name");
-        assert($foundSkill->getCategory() === 'Medical', "Skill category should match");
+        assert($foundSkill->getCategoryName() === 'Medical', "Skill category should match");
 
         echo "Skill creation tests passed\n";
     }

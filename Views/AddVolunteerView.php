@@ -75,9 +75,9 @@
             <div class="form-group">
                 <label>Skills:</label>
                 <div id="skillsContainer">
-                    <div class="skill-entry mb-2">
+                    <div class="skill-entry">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-10">
                                 <select name="skills[]" class="form-control" required>
                                     <option value="">Select a skill</option>
                                     <option value="Medical">Medical</option>
@@ -88,16 +88,8 @@
                                     <option value="Fundraising">Fundraising</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <select name="proficiency_levels[]" class="form-control" required>
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
-                                    <option value="Expert">Expert</option>
-                                </select>
-                            </div>
                             <div class="col-md-2">
-                                <button type="button" class="btn btn-danger btn-sm remove-skill">Remove</button>
+                                <button type="button" class="btn btn-danger btn-block remove-skill">Remove</button>
                             </div>
                         </div>
                     </div>

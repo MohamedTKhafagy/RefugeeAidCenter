@@ -1,5 +1,3 @@
-
-
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -36,7 +34,7 @@ $segments = explode('/', trim($path, '/'));
 if ($segments[0] == 'hospitals') {
     $controller = new HospitalController();
     if (isset($segments[1])) {
-        switch($segments[1]) {
+        switch ($segments[1]) {
             case 'add':
                 $controller->add($_POST ?: null);
                 break;
@@ -44,12 +42,12 @@ if ($segments[0] == 'hospitals') {
                 /*if (isset($segments[2])) {
                     $controller->edit($segments[2]);
                 }*/
-                if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+                if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
                 break;
             case 'update':
 
-              
-                    $controller->editHospital((isset($_POST) && !empty($_POST)) ? $_POST:null);
+
+                $controller->editHospital((isset($_POST) && !empty($_POST)) ? $_POST : null);
 
                 break;
             case 'delete':
@@ -63,8 +61,7 @@ if ($segments[0] == 'hospitals') {
     } else {
         $controller->index();
     }
-}
-elseif ($segments[0] == 'schools') {
+} elseif ($segments[0] == 'schools') {
     $controller = new SchoolController();
     if (isset($segments[1]) && $segments[1] === 'schoolDetails') {
         parse_str($queryString, $queryArray);
@@ -75,67 +72,67 @@ elseif ($segments[0] == 'schools') {
 } elseif ($segments[0] == 'inventory') {
 
     $controller = new InventoryController();
-        $controller->showInventory();
+    $controller->showInventory();
 }
 if ($segments[0] == 'donators') {
     $controller = new DonatorController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findDonatorById($segments[2]);
-    else if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findDonatorById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'editDonator') $controller->editDonator((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
 if ($segments[0] == 'donations') {
     $controller = new DonationController();
     if (isset($segments[1]) && $segments[1] === 'makeDonation') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2]))$controller->findDonationById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findDonationById($segments[2]);
     else $controller->index();
 }
 if ($segments[0] == 'doctors') {
     $controller = new DoctorController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findDoctorById($segments[2]);
-    else if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findDoctorById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'editDoctor') $controller->editDoctor((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
 if ($segments[0] == 'nurses') {
     $controller = new NurseController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findNurseById($segments[2]);
-    else if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findNurseById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'editNurse') $controller->editNurse((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
 
 if ($segments[0] == 'teachers') {
     $controller = new TeacherController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findTeacherById($segments[2]);
-    else if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findTeacherById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'editTeacher') $controller->editTeacher((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
 if ($segments[0] == 'socialWorkers') {
     $controller = new SocialWorkerController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findSocialWorkerById($segments[2]);
-    else if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findSocialWorkerById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'editSocialWorker') $controller->editSocialWorker((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
+    else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
 }
-if($segments[0]=='communication'){
+if ($segments[0] == 'communication') {
     if (isset($segments[1]) && $segments[1] === 'send') {
-    include_once "Controllers/CommunicationController.php";
-    $controller = new CommunicationController();
-    $controller->handleFormSubmit((isset($_POST) && !empty($_POST)) ? $_POST : null);
+        include_once "Controllers/CommunicationController.php";
+        $controller = new CommunicationController();
+        $controller->handleFormSubmit((isset($_POST) && !empty($_POST)) ? $_POST : null);
     } else {
-    include __DIR__ . '../Views/SendMessage.php';
+        include __DIR__ . '../Views/SendMessage.php';
     }
 }
 if ($segments[0] == 'refugees') {
@@ -144,10 +141,8 @@ if ($segments[0] == 'refugees') {
     else if (isset($segments[1]) && $segments[1] === 'editRefugee') {
         parse_str($queryString, $queryArray);
         $controller->edit((!empty($queryArray)) ? $queryArray : null);
-    }
-    else $controller->index();
-} 
-elseif ($segments[0] == 'volunteers') {
+    } else $controller->index();
+} elseif ($segments[0] == 'volunteers') {
     $controller = new VolunteerController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findVolunteerById($segments[2]);
@@ -155,19 +150,16 @@ elseif ($segments[0] == 'volunteers') {
     else if (isset($segments[1]) && $segments[1] === 'editVolunteer') $controller->editVolunteer((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
-} 
-else if ($segments[0] == 'register') {
+} else if ($segments[0] == 'register') {
     $controller = new RegisterController();
     if (isset($segments[1]) && $segments[1] === 'new' && isset($_POST) && !empty($_POST)) $controller->register($_POST);
     else if (isset($segments[1]) && $segments[1] === 'newAdmin' && isset($_POST) && !empty($_POST)) $controller->register($_POST, true);
     else $controller->index();
-}
-else if($segments[0] == 'login') {
+} else if ($segments[0] == 'login') {
     $controller = new LoginController();
     if (isset($segments[1]) && $segments[1] === 'new' && isset($_POST) && !empty($_POST)) $controller->login($_POST);
     else $controller->index();
-}
-elseif ($segments[0] == 'shelters') {
+} elseif ($segments[0] == 'shelters') {
     $controller = new ShelterController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findShelterById($segments[2]);
@@ -175,21 +167,49 @@ elseif ($segments[0] == 'shelters') {
     else if (isset($segments[1]) && $segments[1] === 'editShelter') $controller->editShelter((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
-} 
+}
 if ($segments[0] == 'tasks') {
     $controller = new TaskController();
 
-    if (isset($segments[1]) && $segments[1] === 'edit' && isset($segments[2])) {
-        $controller->edit($segments[2]);
-    }
-    elseif (isset($segments[1]) && $segments[1] === 'update' && isset($_POST)) {
-        $controller->update($_POST);
-    }
-    else {
+    if (isset($segments[1])) {
+        switch ($segments[1]) {
+            case 'add':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $controller->add($_POST);
+                } else {
+                    $controller->add();
+                }
+                break;
+            case 'edit':
+                if (isset($segments[2])) {
+                    $controller->edit($segments[2]);
+                }
+                break;
+            case 'update':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $controller->update($_POST);
+                }
+                break;
+            case 'delete':
+                if (isset($segments[2])) {
+                    $controller->delete($segments[2]);
+                }
+                break;
+            case 'assign':
+                if (isset($segments[2])) {
+                    $controller->assign($segments[2]);
+                }
+                break;
+            case 'complete':
+                if (isset($segments[2])) {
+                    $controller->complete($segments[2]);
+                }
+                break;
+            default:
+                $controller->index();
+        }
+    } else {
         $controller->index();
     }
+} else {
 }
-else {
-    
-}
-?>

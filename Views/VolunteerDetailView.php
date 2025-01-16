@@ -35,7 +35,7 @@
                             echo "<li><span class='badge badge-info mr-2'>" .
                                 htmlspecialchars($skill['name']) . "</span> - " .
                                 "<span class='text-muted'>" .
-                                htmlspecialchars($skill['proficiency_level']) .
+                                htmlspecialchars($skill['category']) .
                                 "</span></li>";
                         }
                         echo "</ul>";

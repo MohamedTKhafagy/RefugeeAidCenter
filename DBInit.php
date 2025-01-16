@@ -194,21 +194,73 @@ $db->query("
 // Volunteer Table (Extends User)
 $db->query("
    CREATE TABLE IF NOT EXISTS Volunteer (
-    VolunteerId INT PRIMARY KEY, -- Matches User.Id
-    Skills ENUM('Medical', 'Teaching', 'Counseling', 'Translation', 'Logistics', 'Fundraising') NOT NULL,
-    Availability ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
+    VolunteerId INT PRIMARY KEY,
+    Availability VARCHAR(255) NOT NULL,
+    IsDeleted TINYINT(1) DEFAULT 0,
     FOREIGN KEY (VolunteerId) REFERENCES User(Id)
 );
 ");
 
 $db->query("
-   CREATE TABLE IF NOT EXISTS Skills (
+   CREATE TABLE IF NOT EXISTS Events (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    category ENUM('Medical', 'Teaching', 'Counseling', 'Translation', 'Logistics', 'Fundraising', 'Other') NOT NULL,
-    description TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    type INT NOT NULL,
+    max_capacity INT NOT NULL,
+    current_capacity INT NOT NULL DEFAULT 0,
+    date DATE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_deleted TINYINT(1) DEFAULT 0
 );
+");
+
+$db->query("
+   CREATE TABLE IF NOT EXISTS Tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    hours_of_work DECIMAL(5,2) NOT NULL,
+    status VARCHAR(50) DEFAULT 'pending',
+    event_id INT,
+    volunteer_id INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_deleted TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (volunteer_id) REFERENCES User(Id),
+    FOREIGN KEY (event_id) REFERENCES Events(id)
+);
+");
+
+$db->query("
+   CREATE TABLE IF NOT EXISTS SkillCategories (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(50) NOT NULL UNIQUE,
+       description TEXT,
+       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+   );
+");
+
+$db->query("
+   CREATE TABLE IF NOT EXISTS Skills (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(255) NOT NULL UNIQUE,
+       category_id INT,
+       description TEXT,
+       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+       FOREIGN KEY (category_id) REFERENCES SkillCategories(id)
+   );
+");
+
+// Insert default categories
+$db->query("
+   INSERT IGNORE INTO SkillCategories (name) VALUES 
+   ('Medical'),
+   ('Teaching'),
+   ('Counseling'),
+   ('Translation'),
+   ('Logistics'),
+   ('Fundraising'),
+   ('Other');
 ");
 
 $db->query("
@@ -225,40 +277,9 @@ $db->query("
    CREATE TABLE IF NOT EXISTS Volunteer_Skills (
     volunteer_id INT NOT NULL,
     skill_id INT NOT NULL,
-    proficiency_level ENUM('Beginner', 'Intermediate', 'Advanced', 'Expert') NOT NULL DEFAULT 'Beginner',
     PRIMARY KEY (volunteer_id, skill_id),
     FOREIGN KEY (volunteer_id) REFERENCES Volunteer(VolunteerId) ON DELETE CASCADE,
     FOREIGN KEY (skill_id) REFERENCES Skills(id) ON DELETE CASCADE
-);
-");
-
-$db->query("
-   CREATE TABLE IF NOT EXISTS Tasks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    hours_of_work DECIMAL(5,2) NOT NULL,
-    status VARCHAR(50) DEFAULT 'pending',
-    event_id INT,
-    volunteer_id INT,
-    created_at DATETIME,
-    is_deleted TINYINT(1) DEFAULT 0,
-    FOREIGN KEY (volunteer_id) REFERENCES User(Id),
-    FOREIGN KEY (event_id) REFERENCES Events(id)
-);
-");
-
-$db->query("
-   CREATE TABLE IF NOT EXISTS Events (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    location VARCHAR(255) NOT NULL,
-    type INT NOT NULL,
-    max_capacity INT NOT NULL,
-    current_capacity INT NOT NULL DEFAULT 0,
-    date DATE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    is_deleted TINYINT(1) DEFAULT 0
 );
 ");
 
