@@ -12,7 +12,6 @@ class CompletedState implements TaskStates
     public function previousState(Task $task): void
     {
         $task->setState(new InProgressState());
-        $task->setStatus('in_progress');
     }
 
     public function getCurrentState(): string
