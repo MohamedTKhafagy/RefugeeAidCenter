@@ -202,12 +202,42 @@ $db->query("
 ");
 
 $db->query("
+   CREATE TABLE IF NOT EXISTS Skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    category ENUM('Medical', 'Teaching', 'Counseling', 'Translation', 'Logistics', 'Fundraising', 'Other') NOT NULL,
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+");
+
+$db->query("
+   CREATE TABLE IF NOT EXISTS Task_Skills (
+    task_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    PRIMARY KEY (task_id, skill_id),
+    FOREIGN KEY (task_id) REFERENCES Tasks(id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES Skills(id) ON DELETE CASCADE
+);
+");
+
+$db->query("
+   CREATE TABLE IF NOT EXISTS Volunteer_Skills (
+    volunteer_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    proficiency_level ENUM('Beginner', 'Intermediate', 'Advanced', 'Expert') NOT NULL DEFAULT 'Beginner',
+    PRIMARY KEY (volunteer_id, skill_id),
+    FOREIGN KEY (volunteer_id) REFERENCES Volunteer(VolunteerId) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES Skills(id) ON DELETE CASCADE
+);
+");
+
+$db->query("
    CREATE TABLE IF NOT EXISTS Tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     hours_of_work DECIMAL(5,2) NOT NULL,
-    skills_required TEXT,
     status VARCHAR(50) DEFAULT 'pending',
     event_id INT,
     volunteer_id INT,
