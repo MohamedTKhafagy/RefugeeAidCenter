@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../Models/Task.php';
 require_once __DIR__ . '/../SingletonDB.php';
+require_once __DIR__ . '/../Models/Commands/TaskDetailsCommand.php';
+require_once __DIR__ . '/../Models/Commands/TaskCommand.php';
 
 class TaskManagementTest
 {
@@ -22,6 +24,7 @@ class TaskManagementTest
         $this->testSkillsManagement();
         $this->testTaskStateManagement();
         $this->testTaskDeletion();
+        $this->testTaskDetailsCommand();
 
         echo "\nAll tests completed!\n";
     }
@@ -93,9 +96,19 @@ class TaskManagementTest
 
         $task = Task::findById($this->testTaskId);
 
-        // Add skills
-        $this->db->query("INSERT IGNORE INTO Skills (name, category) VALUES (?, 'Other')", ["PHP"]);
-        $this->db->query("INSERT IGNORE INTO Skills (name, category) VALUES (?, 'Other')", ["MySQL"]);
+        // Add test skills with proper category reference
+        $this->db->query("INSERT IGNORE INTO SkillCategories (name) VALUES ('Other')");
+        $categoryId = $this->db->fetchAll("SELECT id FROM SkillCategories WHERE name = 'Other'")[0]['id'];
+
+        // Add skills with proper category_id
+        $this->db->query(
+            "INSERT IGNORE INTO Skills (name, category_id, description) VALUES (?, ?, ?)",
+            ["PHP", $categoryId, "PHP Programming"]
+        );
+        $this->db->query(
+            "INSERT IGNORE INTO Skills (name, category_id, description) VALUES (?, ?, ?)",
+            ["MySQL", $categoryId, "Database Management"]
+        );
 
         $phpSkillId = $this->db->fetchAll("SELECT id FROM Skills WHERE name = ?", ["PHP"])[0]['id'];
         $mysqlSkillId = $this->db->fetchAll("SELECT id FROM Skills WHERE name = ?", ["MySQL"])[0]['id'];
@@ -153,6 +166,69 @@ class TaskManagementTest
 
         // Clean up test data
         $this->cleanup();
+    }
+
+    private function testTaskDetailsCommand()
+    {
+        echo "\nTesting TaskDetailsCommand...\n";
+
+        // First create a task if it doesn't exist
+        if (!isset($this->testTaskId) || !Task::findById($this->testTaskId)) {
+            $this->testTaskCreation();
+        }
+
+        $task = Task::findById($this->testTaskId);
+        if (!$task) {
+            echo "❌ Task not found for testing TaskDetailsCommand\n";
+            return;
+        }
+
+        $newDetails = [
+            'name' => 'Updated via Command',
+            'description' => 'Updated description via command',
+            'hoursOfWork' => 6.5,
+            'skills' => ['Medical', 'Teaching']
+        ];
+
+        try {
+            $command = new TaskDetailsCommand($task, $newDetails);
+
+            // Test execute
+            $executeResult = $command->execute();
+            assert($executeResult === true, "Command execution failed");
+            echo "✓ Command execution passed\n";
+
+            // Verify changes
+            $updatedTask = Task::findById($this->testTaskId);
+            assert($updatedTask->getName() === 'Updated via Command', "Name update failed");
+            assert($updatedTask->getHoursOfWork() === 6.5, "Hours update failed");
+            echo "✓ Task updates verified\n";
+
+            // Check skills
+            $skills = $updatedTask->getSkills();
+            $skillNames = array_column($skills, 'name');
+            assert(
+                in_array('Medical', $skillNames) || in_array('Teaching', $skillNames),
+                "Required skills not found"
+            );
+            echo "✓ Skills update verified\n";
+
+            // Test undo
+            $undoResult = $command->undo();
+            assert($undoResult === true, "Command undo failed");
+
+            $revertedTask = Task::findById($this->testTaskId);
+            assert(
+                $revertedTask->getName() === $task->getName(),
+                "Undo failed - name not reverted"
+            );
+            echo "✓ Command undo passed\n";
+        } catch (Exception $e) {
+            echo "❌ Test failed: " . $e->getMessage() . "\n";
+            return;
+        }
+
+        echo "✓ TaskDetailsCommand test passed\n";
     }
 
     private function cleanup()

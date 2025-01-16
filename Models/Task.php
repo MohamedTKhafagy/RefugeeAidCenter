@@ -62,10 +62,10 @@ class Task
         if (!$this->id) return;
 
         $db = DbConnection::getInstance();
-        $sql = "SELECT s.* FROM Skills s 
+        $sql = "SELECT s.id, s.name FROM Skills s 
                 JOIN Task_Skills ts ON s.id = ts.skill_id 
-                WHERE ts.task_id = $this->id";
-        $this->skills = $db->fetchAll($sql);
+                WHERE ts.task_id = ?";
+        $this->skills = $db->fetchAll($sql, [$this->id]);
     }
 
     private function loadVolunteerName()
@@ -110,6 +110,11 @@ class Task
     public function getSkills()
     {
         return $this->skills;
+    }
+
+    public function getSkillsRequired()
+    {
+        return implode(', ', array_column($this->getSkills(), 'name'));
     }
 
     // State pattern methods
@@ -270,5 +275,17 @@ class Task
             $task['volunteer_id'],
             $task['id']
         );
+    }
+
+    public function setSkillsRequired($skillNames)
+    {
+        $db = DbConnection::getInstance();
+        $skillArray = array_map('trim', explode(',', $skillNames));
+        foreach ($skillArray as $skillName) {
+            $result = $db->fetchAll("SELECT id FROM Skills WHERE name = ?", [$skillName]);
+            if (!empty($result)) {
+                $this->addSkill($result[0]['id']);
+            }
+        }
     }
 }

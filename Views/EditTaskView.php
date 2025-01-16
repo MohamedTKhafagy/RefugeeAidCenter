@@ -130,12 +130,12 @@
                                                 <label class="small">Skill:</label>
                                                 <select name="skills[]" class="form-control" required>
                                                     <option value="">Select a skill</option>
-                                                    <option value="Medical" <?= $skill['category'] === 'Medical' ? 'selected' : '' ?>>Medical</option>
-                                                    <option value="Teaching" <?= $skill['category'] === 'Teaching' ? 'selected' : '' ?>>Teaching</option>
-                                                    <option value="Counseling" <?= $skill['category'] === 'Counseling' ? 'selected' : '' ?>>Counseling</option>
-                                                    <option value="Translation" <?= $skill['category'] === 'Translation' ? 'selected' : '' ?>>Translation</option>
-                                                    <option value="Logistics" <?= $skill['category'] === 'Logistics' ? 'selected' : '' ?>>Logistics</option>
-                                                    <option value="Fundraising" <?= $skill['category'] === 'Fundraising' ? 'selected' : '' ?>>Fundraising</option>
+                                                    <option value="Medical" <?= $skill['name'] === 'Medical' ? 'selected' : '' ?>>Medical</option>
+                                                    <option value="Teaching" <?= $skill['name'] === 'Teaching' ? 'selected' : '' ?>>Teaching</option>
+                                                    <option value="Counseling" <?= $skill['name'] === 'Counseling' ? 'selected' : '' ?>>Counseling</option>
+                                                    <option value="Translation" <?= $skill['name'] === 'Translation' ? 'selected' : '' ?>>Translation</option>
+                                                    <option value="Logistics" <?= $skill['name'] === 'Logistics' ? 'selected' : '' ?>>Logistics</option>
+                                                    <option value="Fundraising" <?= $skill['name'] === 'Fundraising' ? 'selected' : '' ?>>Fundraising</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-2">
