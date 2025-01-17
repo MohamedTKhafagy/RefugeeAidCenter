@@ -1,6 +1,7 @@
 <?php
 require_once "Observer.php";
-abstract class User implements Observer 
+require_once "UserData.php";
+abstract class User implements Observer , UserData
 {
     private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
 
@@ -42,7 +43,12 @@ abstract class User implements Observer
         $this->Email = $Email;
         $this->Preference = $Preference;
     }
-
+    public function displayUserDetails($userId): string { // Implementation of the UserData interface method
+        if ($this->Id == $userId) {
+            return $this->displayInfo();
+        }
+        return "User not found";
+    }
     public function getUserDetails(int $UserId): ?array
     {
         $sql = "SELECT * FROM users WHERE id = $UserId";
