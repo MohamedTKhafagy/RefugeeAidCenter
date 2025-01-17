@@ -33,7 +33,8 @@ $db->query("
     Type INT,
     DirectedTo INT,
     Collection INT,
-    Currency INT
+    Currency INT,
+    State VARCHAR(30)
 );
 ");
 
