@@ -52,10 +52,6 @@ function renderVolunteerListView($volunteers)
                 </div>
             <?php endif; ?>
 
-            <!-- Add New Volunteer Button -->
-            <div class="mb-3">
-                <a href="<?= $baseUrl ?>/volunteers/add" class="btn btn-primary">Add New Volunteer</a>
-            </div>
 
             <!-- Volunteer Table -->
             <table class="table table-bordered">
