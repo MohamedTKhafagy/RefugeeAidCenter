@@ -22,7 +22,6 @@ abstract class User implements Observer
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference)
     {
-        $hashedPassword = $Password != null ? password_hash($Password, PASSWORD_DEFAULT) : null;
         $this->Id = $Id;
         $this->Name = $Name;
         $this->Age = $Age;
@@ -32,7 +31,7 @@ abstract class User implements Observer
         $this->Nationality = $Nationality;
         $this->Type = $Type;
         $this->Email = $Email;
-        $this->Password = $hashedPassword;
+        $this->Password = $Password;
         $this->Preference = $Preference;
     }
 

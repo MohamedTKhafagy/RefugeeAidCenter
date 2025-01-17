@@ -1,42 +1,42 @@
 <?php
 
-require_once __DIR__ . '/iUserAuthentication.php';
+require_once __DIR__ . '/RegistrationTemplate.php';
 
 
-class VolunteerAuthentication implements iUserAuthentication
+class VolunteerRegistration extends RegistrationTemplate
 {
-    public function register($data)
+    protected function save()
     {
-        $availability = $this->convertAvailability($data['availability']);
+        $availability = $this->convertAvailability($this->data['availability']);
         $volunteer = new Volunteer(
             null,
-            $data['name'],
-            $data['age'],
-            $data['gender'],
-            $data['address'],
-            $data['phone'],
-            $data['nationality'],
+            $this->data['name'],
+            $this->data['age'],
+            $this->data['gender'],
+            $this->data['address'],
+            $this->data['phone'],
+            $this->data['nationality'],
             2,
-            $data['email'],
-            $data['password'],
-            $data['preference'],
-            $data['skills'],
+            $this->data['email'],
+            $this->data['password'],
+            $this->data['preference'],
+            $this->data['skills'],
             $availability
         );
 
         return $volunteer->save();
     }
 
-    public function validate($data)
+    protected function validate()
     {
         $errors = [];
 
         $validDays = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-        if (!isset($data['availability']) || !is_array($data['availability']) || empty($data['availability'])) {
+        if (!isset($this->data['availability']) || !is_array($this->data['availability']) || empty($this->data['availability'])) {
             $errors['availability'] = "Please select at least one day of availability.";
         } else {
-            foreach ($data['availability'] as $day) {
+            foreach ($this->data['availability'] as $day) {
                 if (!in_array($day, $validDays)) {
                     $errors['availability'] = "Invalid day selected in availability.";
                     break;

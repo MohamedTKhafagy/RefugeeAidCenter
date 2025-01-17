@@ -1,10 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../Models/Stratigies/VolunteerAuthentication.php';
-require_once __DIR__ . '/../Models/Stratigies/DonatorAuthentication.php';
-require_once __DIR__ . '/../Models/Stratigies/RefugeeAuthentication.php';
-require_once __DIR__ . '/../Models/Stratigies/ChildAuthentication.php';
-
 class RegisterService
 {
 
