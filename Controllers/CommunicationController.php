@@ -64,11 +64,5 @@ class CommunicationController {
     }
 }
 
-// Handle direct form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller = new CommunicationController();
-    $controller->handleFormSubmit($_POST);
-} else {
-    echo "Invalid request method.";
-}
+
 ?>
