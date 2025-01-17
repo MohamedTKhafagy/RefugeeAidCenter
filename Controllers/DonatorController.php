@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../Models/DonatorModel.php';
+include __DIR__ . '/../Views/DonatorDonationsList.php';
 
 
 class DonatorController
@@ -73,5 +74,10 @@ class DonatorController
     {
         $donator = Donator::findById($id);
         require 'Views/DonatorView.php';
+    }
+
+    public function findDonationsById($id){
+        $donations = Donator::findDonationsById($id);
+        echo renderDonatorDonationsView($donations);
     }
 }
