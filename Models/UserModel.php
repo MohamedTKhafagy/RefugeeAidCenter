@@ -1,21 +1,36 @@
 <?php
-
 require_once "Observer.php";
+//require_once "UserData.php";
+require_once('C:\xampp\htdocs\RefugeeAidCenter\Proxy\UserData.php'); 
 require_once __DIR__ . "/../SingletonDB.php";
 
-abstract class User  implements Observer{
+abstract class User implements Observer , UserData
+{
+    
 
     // User properties
     protected $Id;
+    // Database connection instance
+    protected static $db;
+    // Database implementation object
+    protected $userDataImpl;
+
+    // Constants for user operations
+    const OP_CREATE = 'create';
+    const OP_READ = 'read';
+    const OP_UPDATE = 'update';
+    const OP_DELETE = 'delete';
+
     protected $Name;
     protected $Age;
     protected $Gender; // 0 Male 1 Female
     protected $Address;
-    protected $Phone;
-    protected $Nationality;
-    protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher  
+    protected $Phone;    protected $Nationality;
+    protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher 8: Admin 
     protected $Email;
-    protected $Preference; // Some preferences specific to the user
+    protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
+    //protected $observer;
+    //protected $message;
 
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
@@ -31,8 +46,54 @@ abstract class User  implements Observer{
         $this->Email = $Email;
         $this->Preference = $Preference;
     }
+    public function displayUserDetails($userId): string { // Implementation of the UserData interface method
+        if ($this->Id == $userId) {
+            return $this->displayInfo();
+        }
+        return "User not found";
+    }
+    public function getUserDetails(int $UserId): ?array
+    {
+        $sql = "SELECT * FROM users WHERE id = $UserId";
+        $result = self::$db->fetchAll($sql);
+        return $result ? $result[0] : null;
+    }
 
+    public function getAllUsers(): array
+    {
+        $sql = "SELECT * FROM users";
+        return self::$db->fetchAll($sql);
+    }
 
+    public function updateUserDetails(int $UserId, array $data): bool
+    {
+        $name = $data['name'];
+        $age = $data['age'];
+        $gender = $data['gender'];
+        $address = $data['address'];
+        $phone = $data['phone'];
+        $sql = "UPDATE users SET name = '$name', age = $age, gender = $gender, address = '$address', phone = '$phone' WHERE id = $UserId";
+        return self::$db->query($sql);
+    }
+
+    public function addUser(array $data): int|false
+    {
+        $name = $data['name'];
+        $age = $data['age'];
+        $gender = $data['gender'];
+        $address = $data['address'];
+        $phone = $data['phone'];
+        $sql = "INSERT INTO users (name, age, gender, address, phone) VALUES ('$name', $age, $gender, '$address', '$phone')";
+        return self::$db->query($sql) ? self::$db->database_connection->insert_id : false;
+    }
+
+    public function deleteUser(int $UserId): bool
+    {
+        $sql = "DELETE FROM users WHERE id = $UserId";
+        return self::$db->query($sql);
+    }
+
+    //abstract public function RegisterEvent();
     abstract public function Update($Message);
 
 
@@ -48,18 +109,15 @@ abstract class User  implements Observer{
         return $this->Name;
     }
 
-
     public function getAge()
     {
         return $this->Age;
     }
 
-
     public function getGender()
     {
         return $this->Gender;
     }
-
 
     public function getNationality()
     {
@@ -199,5 +257,18 @@ abstract class User  implements Observer{
         if($db->query($query)) return true;
         return false;
         
+    }
+}
+class DummyUser extends User {
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference) {
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
+    }
+
+    public function RegisterEvent() {
+        // Dummy implementation
+    }
+
+    public function Update($Message) {
+        // Dummy implementation
     }
 }

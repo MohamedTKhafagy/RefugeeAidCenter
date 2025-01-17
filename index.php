@@ -12,6 +12,7 @@ require_once 'Controllers/ShelterController.php';
 require_once 'Controllers/SchoolController.php';
 require_once 'Controllers/VolunteerController.php';
 require_once 'Controllers/TaskController.php';
+require_once 'Controllers/TaskController.php';
 require_once 'Controllers/InventoryController.php';
 require_once 'Controllers/DonatorController.php';
 require_once 'Controllers/DonationController.php';
@@ -20,6 +21,8 @@ require_once 'Controllers/NurseController.php';
 require_once 'Controllers/TeacherController.php';
 require_once 'Controllers/SocialWorkerController.php';
 require_once 'Controllers/RequestController.php';
+require_once 'Controllers/AdminController.php';
+
 
 $basePath = dirname($_SERVER['SCRIPT_NAME']);
 $requestUri = str_replace($basePath, '', $_SERVER['REQUEST_URI']);
@@ -200,6 +203,47 @@ elseif ($segments[0] == 'shelters') {
     else if (isset($segments[1]) && $segments[1] === 'editShelter') $controller->editShelter((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
     else $controller->index();
+}
+elseif ($segments[0] == 'admin') {
+
+    $controller = new AdminController();
+    
+    // Basic routing for admin actions
+    if (!isset($segments[1])) {
+        $controller->index();
+    } else {
+        switch ($segments[1]) {
+            case 'editUser':
+                if (isset($segments[2])) $controller->editUser($segments[2]);
+                break;
+            case 'editEvent':
+                if (isset($segments[2])) $controller->editEvent($segments[2]);
+                break;
+            case 'editTask':
+                if (isset($segments[2])) $controller->editTask($segments[2]);
+                break;
+            case 'editDonation':
+                if (isset($segments[2])) $controller->editDonation($segments[2]);
+                break;
+            default:
+                // Handle 404 or redirect to dashboard
+                $controller->index();
+        }
+    }
+} 
+if ($segments[0] == 'tasks') {
+    $controller = new TaskController();
+
+    if (isset($segments[1]) && $segments[1] === 'edit' && isset($segments[2])) {
+        $controller->edit($segments[2]);
+    }
+    elseif (isset($segments[1]) && $segments[1] === 'update' && isset($_POST)) {
+        $controller->update($_POST);
+    }
+    else {
+        $controller->index();
+    }
+}
 } 
 if ($segments[0] == 'tasks') {
     $controller = new TaskController();

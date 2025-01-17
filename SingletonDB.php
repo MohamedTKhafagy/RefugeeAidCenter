@@ -7,7 +7,7 @@ class DbConnection {
     
     private $host="localhost";
     private $username="root";
-    private $password="";
+    private $password="1234";
     private $db_name="aidcenter";// database name 
     public  $database_connection; 
     private static $instance;

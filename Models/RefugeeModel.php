@@ -24,6 +24,7 @@ class Refugee extends User
     }
 
 
+
     public function RegisterEvent()
     {
         echo "An event has been registered by the Refugee user.";
