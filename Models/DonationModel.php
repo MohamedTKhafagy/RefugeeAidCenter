@@ -45,10 +45,10 @@ class Donation {
             $this->state = new FailedState();
         }
         else if ($state == "Pending"){
-            $this->state = new PendingState();
+            $this->state = new DonationPendingState();
         }
         else{
-            $this->state = new CompletedState();
+            $this->state = new DonationCompletedState();
         }
     }
     public function getState(){

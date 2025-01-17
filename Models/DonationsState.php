@@ -8,7 +8,7 @@ interface DonationStates
 }
 
 
-Class PendingState implements DonationStates{
+Class DonationPendingState implements DonationStates{
     public function nextState(Donation $donation,$failed){
         if($failed){
             $donation->setState("Failed");
@@ -25,7 +25,7 @@ Class PendingState implements DonationStates{
     }
 }
 
-Class CompletedState implements DonationStates{
+Class DonationCompletedState implements DonationStates{
     public function nextState(Donation $donation,$failed){
         return;
     }
