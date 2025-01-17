@@ -90,6 +90,9 @@ if ($segments[0] == 'donations') {
     $controller = new DonationController();
     if (isset($segments[1]) && $segments[1] === 'makeDonation') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2]))$controller->findDonationById($segments[2]);
+    else if(isset($segments[1])&&$segments[1]=='complete' && isset($segments[2]))$controller->complete($segments[2]);
+    else if(isset($segments[1])&&$segments[1]=='fail' && isset($segments[2]))$controller->fail($segments[2]);
+    else if(isset($segments[1])&&$segments[1]=='undo' && isset($segments[2]))$controller->undo($segments[2]);
     else $controller->index();
 }
 if ($segments[0] == 'doctors') {
