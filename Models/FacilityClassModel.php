@@ -1,6 +1,7 @@
 <?php
 
-abstract class Facility{
+abstract class Facility
+{
     protected $ID;
     protected $Name;
     protected $Address;
@@ -32,4 +33,5 @@ abstract class Facility{
     public function setName($Name){
         $this->Name = $Name;
     }
+
 }

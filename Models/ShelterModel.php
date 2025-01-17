@@ -1,23 +1,22 @@
 <?php
-include_once 'FacilityClassModel.php';
+require_once 'FacilityClassModel.php';
+require_once 'DBInit.php';
 
 class Shelter extends Facility
 {
-    private $ShelterID;
-    private $Supervisor;
-    private $MaxCapacity;
-    private $CurrentCapacity;
-
-    private static $file = __DIR__ . '/../data/shelters.txt';
+    public $Supervisor;
+    public $MaxCapacity;
+    public $CurrentCapacity;
 
     public function __construct($ShelterID, $Name, $Address, $Supervisor, $MaxCapacity, $CurrentCapacity)
     {
-        $this->ShelterID = $ShelterID;
+        $this->ID = (int)$ShelterID;
         $this->Name = $Name;
         $this->Address = $Address;
+        $this->Type = 0; // 0 for Shelter
         $this->Supervisor = $Supervisor;
-        $this->MaxCapacity = $MaxCapacity;
-        $this->CurrentCapacity = $CurrentCapacity;
+        $this->MaxCapacity = (int)$MaxCapacity;
+        $this->CurrentCapacity = (int)$CurrentCapacity;
     }
 
     public function assign()
@@ -30,83 +29,119 @@ class Shelter extends Facility
         return false;
     }
 
-    // Save or update the shelter data in the text file
     public function save()
     {
-        // Load existing data
-        $data = file_exists(self::$file) ? json_decode(file_get_contents(self::$file), true) : [];
+        $db = DbConnection::getInstance();
+        try {
+            $sql = "
+            INSERT INTO Facility (Name, Address, Type, IsDeleted)
+            VALUES ('$this->Name', '$this->Address', 0, 0)
+            ";
+            $db->query($sql);
 
-        // Remove any existing entry with the same ShelterID
-        $data = array_filter($data, function ($shelter) {
-            return $shelter['ShelterID'] !== $this->ShelterID;
-        });
+            $sql = "SELECT LAST_INSERT_ID() AS last;";
+            $rows = $db->fetchAll($sql);
+            foreach ($rows as $row) {
+                $facilityId = $row["last"];
+            }
 
-        // Add the current shelter data
-        $data[] = [
-            "ShelterID" => $this->ShelterID,
-            "Name" => $this->Name,
-            "Address" => $this->Address,
-            "Supervisor" => $this->Supervisor,
-            "MaxCapacity" => $this->MaxCapacity,
-            "CurrentCapacity" => $this->CurrentCapacity,
-        ];
+            $sql = "
+            INSERT INTO Shelter (ShelterID, Supervisor, MaxCapacity, CurrentCapacity)
+            VALUES ($facilityId, '$this->Supervisor', $this->MaxCapacity, $this->CurrentCapacity)
+            ";
+            $db->query($sql);
 
-        // Write updated data back to the file
-        file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT));
-    }
-
-    // Static method to get all shelters from the text file
-    public static function getAll()
-    {
-        if (file_exists(self::$file)) {
-            return json_decode(file_get_contents(self::$file), true);
+            return $this->findById($facilityId);
+        } catch (Exception $e) {
+            throw $e;
         }
-        return [];
     }
 
-    // Static method to find a shelter by ID
     public static function findById($ShelterID)
     {
-        $shelters = self::getAll();
-        foreach ($shelters as $shelter) {
-            if ($shelter['ShelterID'] == $ShelterID) {
-                return new self(
-                    $shelter['ShelterID'],
-                    $shelter['Name'],
-                    $shelter['Address'],
-                    $shelter['Supervisor'],
-                    $shelter['MaxCapacity'],
-                    $shelter['CurrentCapacity']
-                );
-            }
+        $db = DbConnection::getInstance();
+        $sql = "SELECT f.Id AS FacilityID, f.Name, f.Address, s.Supervisor, s.MaxCapacity, s.CurrentCapacity 
+                FROM Facility f 
+                JOIN Shelter s ON f.Id = s.ShelterID 
+                WHERE f.Id = $ShelterID AND f.IsDeleted = 0;";
+        $rows = $db->fetchAll($sql);
+        foreach ($rows as $shelter) {
+            return new self(
+                $shelter["FacilityID"],
+                $shelter["Name"],
+                $shelter["Address"],
+                $shelter["Supervisor"],
+                $shelter["MaxCapacity"],
+                $shelter["CurrentCapacity"]
+            );
         }
         return null;
     }
 
+    public static function all()
+    {
+        $db = DbConnection::getInstance();
+        $sql = "SELECT f.Id AS FacilityID, f.Name, f.Address, s.Supervisor, s.MaxCapacity, s.CurrentCapacity 
+                FROM Facility f 
+                JOIN Shelter s ON f.Id = s.ShelterID 
+                WHERE f.IsDeleted = 0;";
+        $rows = $db->fetchAll($sql);
+        $shelters = [];
+        foreach ($rows as $shelter) {
+            $shelters[] = new self(
+                $shelter["FacilityID"],
+                $shelter["Name"],
+                $shelter["Address"],
+                $shelter["Supervisor"],
+                $shelter["MaxCapacity"],
+                $shelter["CurrentCapacity"]
+            );
+        }
+        return $shelters ?? [];
+    }
+
+    public static function editById($ShelterID, $shelter)
+    {
+        $db = DbConnection::getInstance();
+        try {
+            $sql = "UPDATE Facility
+            SET 
+            Name = '$shelter->Name',
+            Address = '$shelter->Address'
+            WHERE Id = $ShelterID;";
+            $db->query($sql);
+
+            $sql = "UPDATE Shelter
+            SET 
+            Supervisor = '$shelter->Supervisor',
+            MaxCapacity = $shelter->MaxCapacity,
+            CurrentCapacity = $shelter->CurrentCapacity
+            WHERE ShelterID = $ShelterID;";
+            $db->query($sql);
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public static function deleteById($ShelterID)
+    {
+        $db = DbConnection::getInstance();
+        $sql = "UPDATE Facility
+        SET
+        IsDeleted = 1
+        WHERE Id = $ShelterID;";
+        $db->query($sql);
+    }
+
     // Getter and Setter methods
-    public function getShelterID()
-    {
-        return $this->ShelterID;
-    }
-
-    public function getName()
-    {
-        return $this->Name;
-    }
-
     public function getSupervisor()
     {
         return $this->Supervisor;
     }
 
-    public function getAddress()
+    public function setSupervisor($Supervisor)
     {
-        return $this->Address;
-    }
-
-    public function getCurrentCapacity()
-    {
-        return $this->CurrentCapacity;
+        $this->Supervisor = $Supervisor;
     }
 
     public function getMaxCapacity()
@@ -118,6 +153,11 @@ class Shelter extends Facility
     {
         $this->MaxCapacity = $MaxCapacity;
         $this->save();
+    }
+
+    public function getCurrentCapacity()
+    {
+        return $this->CurrentCapacity;
     }
 
     public function setCurrentCapacity($CurrentCapacity)

@@ -1,0 +1,23 @@
+[
+    {
+        "AdultID": 1,
+        "Profession": "doctor",
+        "Education": "kwis",
+        "Family": null,
+        "RefugeeID": 1
+    },
+    {
+        "AdultID": 2,
+        "Profession": "doctor",
+        "Education": "kwis",
+        "Family": null,
+        "RefugeeID": 2
+    },
+    {
+        "AdultID": 3,
+        "Profession": "doctor",
+        "Education": "kwis",
+        "Family": null,
+        "RefugeeID": 3
+    }
+]

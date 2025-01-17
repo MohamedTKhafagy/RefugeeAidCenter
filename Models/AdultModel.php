@@ -1,7 +1,8 @@
 <?php
 
-require_once'Models/RefugeeModel.php';
-require_once 'SingeltonDB.php';
+require_once 'Models/RefugeeModel.php';
+require_once __DIR__ . "/../SingletonDB.php";
+
 class Adult extends Refugee {
     private $AdultID;
     private $Profession;
@@ -15,26 +16,81 @@ class Adult extends Refugee {
         $this->Education = $Education;
         $this->Family = $Family;
     }
-    /*
-    This functions is to save the parent information into the database with the ID later used to be a key in the child table.
 
-    // Save adult to the database
     public function save() {
+        $refugeeId = parent::save();
+        if($refugeeId == -1) echo "Error saving refugee.";
         $db = DbConnection::getInstance();
-        $conn = $db->database_connect;
-
-        $query = "INSERT INTO adults (AdultID, Profession, Education) VALUES (?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $query);
-        mysqli_stmt_bind_param($stmt, 'iss', $this->AdultID, $this->Profession, $this->Education);
-
-        if (mysqli_stmt_execute($stmt)) {
-            echo "Adult saved successfully.";
-        } else {
-            echo "Error saving adult: " . mysqli_error($conn);
+        $query = "INSERT INTO Adult (Profession, Education, RefugeeId) VALUES ('$this->Profession', '$this->Education', $refugeeId)";
+        $db->query($query);
+        $sql = "SELECT LAST_INSERT_ID() AS last;";
+        $rows = $db->fetchAll($sql);
+        $lastId = -1;
+        foreach ($rows as $row) {
+            $lastId = $row["last"];
         }
-
-        mysqli_stmt_close($stmt);
+        if ($lastId == -1) echo "Error saving adult.";
+        else {
+            $this->AdultID = $lastId;
+            $this->saveFamily();
+        }
     }
-        */
+
+    private function saveFamily() {
+        $db = DbConnection::getInstance();
+        foreach ($this->Family as $refugeeId) {
+            $query = "INSERT INTO adult_family (AdultId, FamilyId) VALUES ('$this->AdultID', '$refugeeId')";
+            $db->query($query);
+        }
+    }
+
+    private function getProperties($newProperty = null) {
+        $properties = [
+            "AdultID" => $this->AdultID,
+            "Profession" => $this->Profession,
+            "Education" => $this->Education,
+            "Family" => $this->Family
+        ];
+    
+        if ($newProperty) {
+            $properties = array_merge($properties, $newProperty);
+        }
+    
+        return $properties;
+    }
+
+    public function  getProfession() {
+        return $this->Profession;
+    }
+
+    public function getEducation() {
+        return $this->Education;
+    }
+
+    public function getFamily() {
+        return $this->Family;
+    }
+
+    public function editAdult($data) {
+        parent::editRefugee($data);
+        $this->Profession = $data["profession"];
+        $this->Education = $data["education"];
+        $this->Family = $data["family"];
+        $db = DbConnection::getInstance();
+        $query = "UPDATE Adult SET Profession = '$this->Profession', Education = '$this->Education' WHERE Id = '$this->AdultID'";
+        if($db->query($query)) {
+            $this->editFamily();
+            return true;
+        }
+        return false;
+    }
+
+    private function editFamily() {
+        $db = DbConnection::getInstance();
+        $query = "DELETE FROM adult_family WHERE AdultId = '$this->AdultID'";
+        $db->query($query);
+        $this->saveFamily();
+    }
+    
 }
 ?>

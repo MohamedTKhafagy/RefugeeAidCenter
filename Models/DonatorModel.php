@@ -34,7 +34,7 @@ class Donator extends User{
     {
         //to be done when events are implemented    
     }
-    public function Update()
+    public function Update($message)
     {
         //to be implemented
     }
