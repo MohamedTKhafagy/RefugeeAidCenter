@@ -1,4 +1,5 @@
 <?php
+<<<<<<< Updated upstream
 
 namespace RefugeeAidCenter\Proxy;
 
@@ -46,3 +47,16 @@ interface UserData
      */
     public function hasPermission(string $operation): bool;
 }
+=======
+// 1. UserData.php (Interface)
+namespace RefugeeAidCenter\Proxy;
+
+interface UserData {
+    public function getUserDetails(int $UserId): ?array;
+    public function getAllUsers(): array;
+    public function updateUserDetails(int $UserId, array $data): bool;
+    public function addUser(array $data): int|false;
+    public function deleteUser(int $UserId): bool;
+    public function hasPermission(string $operation): bool;
+}
+>>>>>>> Stashed changes

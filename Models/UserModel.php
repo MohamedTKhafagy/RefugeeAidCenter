@@ -31,7 +31,7 @@ abstract class User implements UserData
     protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
 
     // Constructor to initialize user data
-    /*public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
     {
         $this->Id = $Id;
         $this->Name = $Name;
