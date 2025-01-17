@@ -14,7 +14,6 @@ Class PendingState implements DonationStates{
             $donation->setState("Failed");
         }
         else{
-            $donation->Donate();
             $donation->setState("Completed");
         }
     }

@@ -10,7 +10,7 @@ class Donation {
 
     private $Id;
     private DonationStrategy $DonationStrategy;
-    private DonationStates $state = new PendingState();
+    private DonationStates $state;
     private $Amount;
     private $Type;//Type: 0 = Money, 1 = Clothes, 2 = Food
     private $DirectedTo;//DirectedTo: 0 = Hospital, 1 = School, 2 = Shelter
@@ -18,7 +18,7 @@ class Donation {
     private $currency;//Currency: 0 = EGP (Default), 1 = USD, 2 = GBP
     private $failed = false;
 
-    public function __construct($Id,$Type,$Amount,$DirectedTo,$Collection=1,$currency=0,$state){
+    public function __construct($Id,$Type,$Amount,$DirectedTo,$Collection,$currency,$state){
         $this->Id = $Id;
         $this->Type = $Type;
         $this->Amount = $Amount;
@@ -30,8 +30,14 @@ class Donation {
     }
 
     public function NextState(){
-            $this->state->nextState($this,$this->failed);
-            $this->updateState();  
+        if($this->state->getCurrentState()=="Completed"){
+            return;
+        }
+        $this->state->nextState($this,$this->failed);
+        if($this->state->getCurrentState()=="Completed"){
+            $this->Donate();
+        }
+        $this->updateState();  
     }
 
     public function setState($state){
