@@ -3,7 +3,8 @@ include_once "SingletonDB.php";
 include_once "DonationStrategy.php";
 include_once "MoneyDonationDecorator.php";
 class Donation {
-
+    private static $file = __DIR__ . '/../data/donations.txt'; // Path to text file
+    private static $DonationToDonatorfile = __DIR__ . '/../data/DonationDonator.txt'; // Path to text file
 
 
     private $Id;

@@ -21,7 +21,6 @@ class VolunteerController
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/volunteers'); // Redirect to list after adding
         } else {
-            $id = Volunteer::getLatestId() + 1;
             require 'Views/AddVolunteerView.php';
         }
     }
@@ -30,19 +29,21 @@ class VolunteerController
     public function saveVolunteer($data)
     {
         $volunteer = new Volunteer(
-            $data['Id'],
+            null,
             $data['Name'],
             $data['Age'],
             $data['Gender'],
             $data['Address'],
             $data['Phone'],
             $data['Nationality'],
-            $data['Type'],
+            2,
             $data['Email'],
             $data['Preference'],
             $data['Skills'],
             $data['Availability']
         );
+
+
         $volunteer->save();
     }
 
@@ -63,7 +64,7 @@ class VolunteerController
             $data['Address'],
             $data['Phone'],
             $data['Nationality'],
-            $data['Type'],
+            2,
             $data['Email'],
             $data['Preference'],
             $data['Skills'],
@@ -77,7 +78,6 @@ class VolunteerController
     public function edit($id)
     {
         $volunteer = Volunteer::findById($id);
-
         require 'Views/EditVolunteerView.php';
     }
 

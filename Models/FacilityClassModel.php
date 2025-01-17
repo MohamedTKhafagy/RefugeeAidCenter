@@ -1,11 +1,17 @@
 <?php
 
-abstract class Facility{
+abstract class Facility
+{
     protected $ID;
     protected $Name;
     protected $Address;
     protected $Type;//0:Shelter / 1:Hospital / 2:School
-
+    public function __construct($ID, $Name, $Address, $Type){
+        $this->ID = $ID;
+        $this->Name = $Name;
+        $this->Address = $Address;
+        $this->Type = $Type;
+    }
     public function getID(){
         return $this->ID;
     }
@@ -27,4 +33,5 @@ abstract class Facility{
     public function setName($Name){
         $this->Name = $Name;
     }
+
 }

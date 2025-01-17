@@ -1,38 +1,30 @@
 [
     {
-        "Id": "1",
-        "PassportNumber": "P987654321",
-        "Advisor": "John Doe",
-        "Shelter": "Shelter A",
-        "HealthCare": "Basic Healthcare Plan",
-        "Name": "Ali Ahmed",
-        "Age": 30,
-        "Gender": "Male",
-        "Address": "123 Main Street, City, Country",
-        "Phone": "+1234567890",
-        "Nationality": "Country A",
-        "Type": "Asylum Seeker",
-        "Email": "ali.ahmed@example.com",
-        "Preference": "Prefer English-speaking advisor"
+        "RefugeeID": 1,
+        "PassportNumber": "aa3329fjk",
+        "Advisor": null,
+        "Shelter": null,
+        "HealthCare": null,
+        "userId": 1
     },
     {
-        "Id": "2",
-        "PassportNumber": "P1122334455",
-        "Advisor": "Jane Smith",
-        "Shelter": "Shelter B",
-        "HealthCare": "Comprehensive Healthcare Plan",
-        "Name": "Maria Gonzalez",
-        "Age": 25,
-        "Gender": "Female",
-        "Address": "456 Another Street, City, Country",
-        "Phone": "+9876543210",
-        "Nationality": "Country B",
-        "Type": "Refugee",
-        "Email": "maria.gonzalez@example.com",
-        "Preference": "Prefer Spanish-speaking advisor"
+        "RefugeeID": 2,
+        "PassportNumber": "aa3329fjk",
+        "Advisor": null,
+        "Shelter": null,
+        "HealthCare": null,
+        "userId": 2
     },
     {
-        "Id": "3",
+<<<<<<< HEAD
+        "RefugeeID": 3,
+        "PassportNumber": "aa3329fjk",
+        "Advisor": null,
+        "Shelter": null,
+        "HealthCare": null,
+        "userId": 3
+=======
+        "Id": "R11223",
         "PassportNumber": "P5566778899",
         "Advisor": "Mohammed Al Farsi",
         "Shelter": "Shelter C",
@@ -62,37 +54,5 @@
         "Type": "volunteer",
         "Email": "mamin7522@gmail.com",
         "Preference": "gsdfSDF"
-    },
-    {
-        "Id": "5",
-        "PassportNumber": "asdasfsd2123",
-        "Advisor": "ali",
-        "Shelter": "shelter1",
-        "HealthCare": "none",
-        "Name": "Ahmed",
-        "Age": "25",
-        "Gender": "Male",
-        "Address": "5",
-        "Phone": "01221602822",
-        "Nationality": "Egyptian",
-        "Type": "Refugee",
-        "Email": "abc@gmail.com",
-        "Preference": "email"
-    },
-    {
-        "Id": "6",
-        "PassportNumber": "asdasfsd2123",
-        "Advisor": "ali",
-        "Shelter": "shelter1",
-        "HealthCare": "none",
-        "Name": "Ahmed",
-        "Age": "25",
-        "Gender": "Male",
-        "Address": "5",
-        "Phone": "01221602822",
-        "Nationality": "Egyptian",
-        "Type": "Refugee",
-        "Email": "abc@gmail.com",
-        "Preference": "email"
     }
 ]

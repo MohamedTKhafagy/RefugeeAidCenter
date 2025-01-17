@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Health Checkup Camp",
+    "location": "Refugee Aid Center - Clinic",
+    "type": 0,
+    "maxCapacity": 100,
+    "currentCapacity": 80,
+    "date": "2024-12-01",
+    "volunteers": ["vol1", "vol2"],
+    "attendees": ["att1", "att2", "att3"],
+    "is_deleted": 0
+  },
+  {
+    "id": 2,
+    "name": "Food Distribution Drive",
+    "location": "Refugee Aid Center - Warehouse",
+    "type": 1,
+    "maxCapacity": 300,
+    "currentCapacity": 250,
+    "date": "2024-11-25",
+    "volunteers": ["vol4", "vol5"],
+    "attendees": ["att4", "att5", "att6"],
+    "is_deleted": 0
+  },
+  {
+    "id": 3,
+    "name": "Winter Clothing Giveaway",
+    "location": "Refugee Aid Center - Main Hall",
+    "type": 2,
+    "maxCapacity": 200,
+    "currentCapacity": 180,
+    "date": "2024-12-15",
+    "volunteers": ["vol6", "vol7"],
+    "attendees": ["att7", "att8", "att9"],
+    "is_deleted": 0
+  },
+  {
+    "id": 4,
+    "name": "Education Workshop",
+    "location": "Refugee Aid Center - Conference Room",
+    "type": 3,
+    "maxCapacity": 50,
+    "currentCapacity": 45,
+    "date": "2024-11-30",
+    "volunteers": ["vol8", "vol9"],
+    "attendees": ["att10", "att11"],
+    "is_deleted": 0
+  },
+  {
+    "id": 5,
+    "name": "Housing Assistance Program",
+    "location": "Refugee Aid Center - Outreach Office",
+    "type": 4,
+    "maxCapacity": 30,
+    "currentCapacity": 25,
+    "date": "2024-12-05",
+    "volunteers": ["vol10"],
+    "attendees": ["att12", "att13"],
+    "is_deleted": 0
+  }
+]

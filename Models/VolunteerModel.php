@@ -1,20 +1,17 @@
 <?php
 require_once 'UserModel.php';
+require_once 'DBInit.php';
 
 class Volunteer extends User
 {
     private $Skills;
     private $Availability;
-    private $AssignedEvents;
 
-    private static $file = __DIR__ . '/../data/volunteers.txt'; // Path to text file
-
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $Skills, $Availability, $AssignedEvents = [])
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $Skills, $Availability)
     {
         parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
         $this->Skills = $Skills;
         $this->Availability = $Availability;
-        $this->AssignedEvents = $AssignedEvents;
     }
 
     public function RegisterEvent()
@@ -22,7 +19,7 @@ class Volunteer extends User
         echo "Volunteer has registered for an event.";
     }
 
-    public function Update()
+    public function Update($message)
     {
         echo "Updating volunteer information.";
     }
@@ -39,171 +36,129 @@ class Volunteer extends User
         return $this->Availability;
     }
 
-    // Getter for AssignedEvents
-    public function getAssignedEvents()
-    {
-        return $this->AssignedEvents;
-    }
-
-    // Save volunteer details to the text file (JSON format)
-    public function save()
-    {
-        // Load existing data
-        $data = file_exists(self::$file) ? json_decode(file_get_contents(self::$file), true) : [];
-
-        // Add this volunteer's data to the array
-        $data[] = [
-            "Id" => $this->Id,
-            "Skills" => $this->Skills,
-            "Availability" => $this->Availability,
-            "AssignedEvents" => $this->AssignedEvents,
-            "Name" => $this->Name,
-            "Age" => $this->Age,
-            "Gender" => $this->Gender,
-            "Address" => $this->Address,
-            "Phone" => $this->Phone,
-            "Nationality" => $this->Nationality,
-            "Type" => $this->Type,
-            "Email" => $this->Email,
-            "Preference" => $this->Preference
-        ];
-
-        // Write the updated data back to the file
-        if (file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT))) {
-            echo "Volunteer saved successfully.";
-        } else {
-            echo "Error saving volunteer.";
-        }
-    }
-
-    // Find a volunteer by ID from the text file
     public static function findById($id)
     {
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true);
-
-            foreach ($data as $volunteer) {
-                if ($volunteer['Id'] == $id) {
-                    return new self(
-                        $volunteer['Id'] ?? null,
-                        $volunteer['Name'] ?? null,
-                        $volunteer['Age'] ?? null,
-                        $volunteer['Gender'] ?? null,
-                        $volunteer['Address'] ?? null,
-                        $volunteer['Phone'] ?? null,
-                        $volunteer['Nationality'] ?? null,
-                        $volunteer['Type'] ?? null,
-                        $volunteer['Email'] ?? null,
-                        $volunteer['Preference'] ?? null,
-                        $volunteer['Skills'],
-                        $volunteer['Availability'],
-                        $volunteer['AssignedEvents'] ?? []
-                    );
-                }
-            }
+        $db = DbConnection::getInstance();
+        $sql = "SELECT u.*, v.Skills, v.Availability 
+                FROM User u 
+                JOIN Volunteer v ON u.Id = v.VolunteerId 
+                WHERE u.Id = $id AND u.Type = 2 AND u.IsDeleted = 0;";
+        $rows = $db->fetchAll($sql);
+        foreach ($rows as $volunteer) {
+            return new self(
+                $volunteer["Id"],
+                $volunteer["Name"],
+                $volunteer["Age"],
+                $volunteer["Gender"],
+                $volunteer["Address"],
+                $volunteer["Phone"],
+                $volunteer["Nationality"],
+                $volunteer["Type"],
+                $volunteer["Email"],
+                $volunteer["Preference"],
+                $volunteer["Skills"],
+                $volunteer["Availability"]
+            );
         }
         return null;
     }
 
-    // Get all volunteers from the text file
     public static function all()
     {
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true);
-
-            $volunteers = [];
-            foreach ($data as $volunteer) {
-                $volunteers[] = new self(
-                    $volunteer['Id'] ?? null,
-                    $volunteer['Name'] ?? null,
-                    $volunteer['Age'] ?? null,
-                    $volunteer['Gender'] ?? null,
-                    $volunteer['Address'] ?? null,
-                    $volunteer['Phone'] ?? null,
-                    $volunteer['Nationality'] ?? null,
-                    $volunteer['Type'] ?? null,
-                    $volunteer['Email'] ?? null,
-                    $volunteer['Preference'] ?? null,
-                    $volunteer['Skills'],
-                    $volunteer['Availability'],
-                    $volunteer['AssignedEvents'] ?? []
-                );
-            }
-            return $volunteers;
+        $db = DbConnection::getInstance();
+        $sql = "SELECT u.*, v.Skills, v.Availability 
+                FROM User u 
+                JOIN Volunteer v ON u.Id = v.VolunteerId 
+                WHERE u.Type = 2 AND u.IsDeleted = 0;";
+        $rows = $db->fetchAll($sql);
+        $volunteers = [];
+        foreach ($rows as $volunteer) {
+            $volunteers[] = new self(
+                $volunteer["Id"],
+                $volunteer["Name"],
+                $volunteer["Age"],
+                $volunteer["Gender"],
+                $volunteer["Address"],
+                $volunteer["Phone"],
+                $volunteer["Nationality"],
+                $volunteer["Type"],
+                $volunteer["Email"],
+                $volunteer["Preference"],
+                $volunteer["Skills"],
+                $volunteer["Availability"]
+            );
         }
-        return [];
+        return $volunteers ?? [];
+    }
+
+    public function save()
+    {
+        $db = DbConnection::getInstance();
+        // $db->beginTransaction();
+        try {
+            $sql = "
+            INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference)
+            VALUES ('$this->Name', $this->Age, '$this->Gender', '$this->Address', '$this->Phone', '$this->Nationality', $this->Type, '$this->Email', '$this->Preference')
+            ";
+            $db->query($sql);
+
+            $sql = "SELECT LAST_INSERT_ID() AS last;";
+            $rows = $db->fetchAll($sql);
+            foreach ($rows as $row) {
+                $userId = $row["last"];
+            }
+
+            $sql = "
+            INSERT INTO Volunteer (VolunteerId, Skills, Availability)
+            VALUES ($userId, '$this->Skills', '$this->Availability')
+            ";
+            $db->query($sql);
+
+            return $this->findById($userId);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     public static function editById($id, $volunteer)
     {
-        // Load the file data
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true);
-            // Loop through the data and update the volunteer with the matching ID
-            foreach ($data as &$vol) {
-                if ($vol['Id'] == $id) {
-                    $vol['Id'] = $volunteer->getId();
-                    $vol['Name'] = $volunteer->getName();
-                    $vol['Age'] = $volunteer->getAge();
-                    $vol['Gender'] = $volunteer->getGender();
-                    $vol['Address'] = $volunteer->getAddress();
-                    $vol['Phone'] = $volunteer->getPhone();
-                    $vol['Nationality'] = $volunteer->getNationality();
-                    $vol['Type'] = $volunteer->getType();
-                    $vol['Email'] = $volunteer->getEmail();
-                    $vol['Preference'] = $volunteer->getPreference();
-                    $vol['Skills'] = $volunteer->getSkills();
-                    $vol['Availability'] = $volunteer->getAvailability();
-                    $vol['AssignedEvents'] = $volunteer->getAssignedEvents();
-                    break;
-                }
-            }
+        $db = DbConnection::getInstance();
+        // $db->beginTransaction();
+        try {
+            $sql = "UPDATE User
+            SET 
+            Name = '$volunteer->Name',
+            Age = $volunteer->Age,
+            Gender = '$volunteer->Gender',
+            Address = '$volunteer->Address',
+            Phone = '$volunteer->Phone',
+            Nationality = '$volunteer->Nationality',
+            Type = $volunteer->Type,
+            Email = '$volunteer->Email',
+            Preference = '$volunteer->Preference'
+            WHERE Id = $id;";
+            $db->query($sql);
 
-            // Save the updated data back to the file
-            file_put_contents(self::$file, json_encode($data, JSON_PRETTY_PRINT));
+            $sql = "UPDATE Volunteer
+            SET 
+            Skills = '$volunteer->Skills',
+            Availability = '$volunteer->Availability'
+            WHERE VolunteerId = $id;";
+            $db->query($sql);
+        } catch (Exception $e) {
 
-            return true; // Indicate success
+            throw $e;
         }
-
-        return false; // File does not exist or operation failed
     }
 
     public static function deleteById($id)
     {
-        // Load the file data
-        if (file_exists(self::$file)) {
-            $data = json_decode(file_get_contents(self::$file), true);
-
-            // Filter out the volunteer with the matching ID
-            $data = array_filter($data, function ($vol) use ($id) {
-                return $vol['Id'] != $id;
-            });
-
-            // Save the updated data back to the file
-            file_put_contents(self::$file, json_encode(array_values($data), JSON_PRETTY_PRINT));
-
-            return true; // Indicate success
-        }
-
-        return false; // File does not exist or operation failed
-    }
-
-    public static function getLatestId()
-    {
-        // Read the file content
-        $fileContent = file_get_contents(self::$file);
-        $data = json_decode($fileContent, true);
-
-        // Check if JSON decoding was successful and if the data is an array
-        if ($data === null || !is_array($data) || empty($data)) {
-            return 0;
-        }
-
-        // Extract the IDs and find the maximum
-        $ids = array_map(function ($item) {
-            return isset($item['Id']) ? (int)$item['Id'] : 0;
-        }, $data);
-
-        return !empty($ids) ? max($ids) : 0;
+        $db = DbConnection::getInstance();
+        $sql = "UPDATE User
+        SET
+        IsDeleted = 1
+        WHERE Id = $id;";
+        $db->query($sql);
     }
 }
+?>

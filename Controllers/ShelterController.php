@@ -3,37 +3,87 @@ require_once __DIR__ . '/../Models/ShelterModel.php';
 
 class ShelterController
 {
-    // Display all shelters
-    public function showAllShelters()
+    // Display a list of all shelters
+    public function index()
     {
-        $shelters = Shelter::getAll();
-        include __DIR__ . '/../Views/ShelterListView.php';
+
+        $shelters = Shelter::all(); // Retrieve all shelters
+        $volunteers = Volunteer::all();
+        require 'Views/ShelterListView.php'; // Load view to display shelters
     }
 
-    // Display a specific shelter's details
-    public function showShelter($data)
+    // Display form to add a new shelter or handle form submission
+    public function add($data = null)
     {
-
-        $shelter = Shelter::findById($data["ShelterID"]);
-        if ($shelter) {
-            include __DIR__ . '/../Views/ShelterDetailView.php';
+        if ($data) {
+            $this->saveShelter($data);
+            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+            header('Location: ' . $base_url . '/shelters'); // Redirect to list after adding
         } else {
-            echo "Shelter not found.";
+            //test 
+            $volunteers = Volunteer::all();
+            require 'Views/AddShelterView.php';
         }
     }
 
-    // Add or update a shelter's capacity
-    public function updateCapacity($ShelterID, $newCapacity)
+    // Save shelter data
+    public function saveShelter($data)
     {
-        $shelter = Shelter::findById($ShelterID);
-        if ($shelter) {
-            if ($shelter->setCurrentCapacity($newCapacity)) {
-                echo "Shelter capacity updated.";
-            } else {
-                echo "Error: Capacity exceeds max limit.";
-            }
-        } else {
-            echo "Shelter not found.";
-        }
+        $shelter = new Shelter(
+            null,
+            $data["Name"],
+            $data["Address"],
+            $data["Supervisor"],
+            $data["MaxCapacity"],
+            $data["CurrentCapacity"]
+        );
+        $shelter->save();
+    }
+
+    // Show details of a specific shelter by ID
+    public function showShelter($id)
+    {
+        $shelter = Shelter::findById($id);
+        require 'Views/ShelterDetailView.php'; // Load view to display shelter details
+    }
+
+    // Display form to edit a shelter or handle form submission
+    public function edit($id)
+    {
+        $shelter = Shelter::findById($id);
+        $volunteers = Volunteer::all();
+        require 'Views/EditShelterView.php';
+    }
+
+    // Update shelter data
+    public function editShelter($data)
+    {
+        $shelter = new Shelter(
+            $data["Id"],
+            $data["Name"],
+            $data["Address"],
+            $data["Supervisor"],
+            $data["MaxCapacity"],
+            $data["CurrentCapacity"]
+        );
+        var_dump($data);
+        Shelter::editById($data["Id"], $shelter);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/shelters');
+    }
+
+    // Delete a shelter
+    public function delete($id)
+    {
+        Shelter::deleteById($id);
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        header('Location: ' . $base_url . '/shelters');
+    }
+
+    // Find a shelter by ID
+    public function findShelterById($id)
+    {
+        $shelter = Shelter::findById($id);
+        require 'Views/ShelterDetailView.php';
     }
 }
