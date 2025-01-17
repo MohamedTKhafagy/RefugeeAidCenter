@@ -173,7 +173,14 @@ class Donation {
         return $this->Id;
     }
     public function GenerateInvoice(){
-        return $this->DonationStrategy->Description();
+        if($this->state->getCurrentState()=="Completed"){
+            return $this->DonationStrategy->Description();
+        }
+        elseif($this->state->getCurrentState()=="Pending"){
+            return "This Donation is pending.";
+        }else{
+            return "This Donation Failed";
+        }
     }
     public function Donate(){
         return $this->DonationStrategy->Donate();
