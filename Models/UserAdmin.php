@@ -1,47 +1,62 @@
 <?php
 class UserAdmin {
-    private $accessLevel;
     private $proxy;
     
-    public function __construct(int $accessLevel) {
-        $this->accessLevel = $accessLevel;
-    }
-    
-    public function setProxy(UserData $proxy) {
+    public function __construct(UserData $proxy) {
         $this->proxy = $proxy;
     }
     
-    // CRUD Operations
+    // Create new user
     public function createUser($userData): bool {
-        if ($this->checkAccess()) {
-            // Implementation for creating user
-            return true;
-        }
-        return false;
+        $db = DbConnection::getInstance();
+        $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference) 
+                 VALUES (
+                    '{$userData['Name']}',
+                    {$userData['Age']},
+                    {$userData['Gender']},
+                    {$userData['Address']},
+                    '{$userData['Phone']}',
+                    '{$userData['Nationality']}',
+                    {$userData['Type']},
+                    '{$userData['Email']}',
+                    {$userData['Preference']}
+                 )";
+        return $db->query($query) ? true : false;
     }
     
+    // Read user details
     public function readUser($userId): string {
         return $this->proxy->displayUserDetails($userId);
     }
     
+    // Update user
     public function updateUser($userId, $userData): bool {
-        if ($this->checkAccess()) {
-            // Implementation for updating user
-            return true;
-        }
-        return false;
+        $db = DbConnection::getInstance();
+        $query = "UPDATE User SET 
+                    Name = '{$userData['Name']}',
+                    Age = {$userData['Age']},
+                    Gender = {$userData['Gender']},
+                    Address = {$userData['Address']},
+                    Phone = '{$userData['Phone']}',
+                    Nationality = '{$userData['Nationality']}',
+                    Type = {$userData['Type']},
+                    Email = '{$userData['Email']}',
+                    Preference = {$userData['Preference']}
+                 WHERE Id = $userId";
+        return $db->query($query) ? true : false;
     }
     
+    // Delete user
     public function deleteUser($userId): bool {
-        if ($this->checkAccess()) {
-            // Implementation for deleting user
-            return true;
-        }
-        return false;
+        $db = DbConnection::getInstance();
+        $query = "DELETE FROM User WHERE Id = $userId";
+        return $db->query($query) ? true : false;
     }
-    
-    // Check if admin has required access level
-    public function checkAccess(): bool {
-        return $this->accessLevel >= 3; // Assuming 3 is minimum required level
+
+    // List all users
+    public function listAllUsers(): array {
+        $db = DbConnection::getInstance();
+        $sql = "SELECT Id, Name, Email, Type FROM User";
+        return $db->fetchAll($sql);
     }
 }
