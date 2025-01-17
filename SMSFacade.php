@@ -14,9 +14,9 @@ class SMSFacade {
         $dotenv = Dotenv::createImmutable(__DIR__);
         $dotenv->load();
 
-        $this->baseUrl = $_ENV['INFOBIP_BASE_URL']; // Your Infobip base URL
-        $this->apiKey = $_ENV['INFOBIP_API_KEY'];   // Your Infobip API key
-        $this->from = $_ENV['INFOBIP_SENDER'];      // Your sender ID or number
+        $this->baseUrl = $_ENV['INFOBIP_BASE_URL']; 
+        $this->apiKey = $_ENV['INFOBIP_API_KEY'];   
+        $this->from = $_ENV['INFOBIP_SENDER'];      
     }
 
     public function sendSMS($recipient, $message) {

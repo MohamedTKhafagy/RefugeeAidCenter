@@ -36,6 +36,32 @@ $db->query("
     Currency INT
 );
 ");
+$db->query("
+CREATE TABLE IF NOT EXISTS Events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    type INT NOT NULL,
+    max_capacity INT NOT NULL,
+    current_capacity INT NOT NULL DEFAULT 0,
+    date DATE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_deleted TINYINT(1) DEFAULT 0
+);
+");
+$db->query("
+CREATE TABLE IF NOT EXISTS Event_Registrations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT NOT NULL,
+    user_id INT NOT NULL,
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'registered',
+    is_deleted TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (event_id) REFERENCES Events(id),
+    FOREIGN KEY (user_id) REFERENCES User(id),
+    UNIQUE KEY unique_registration (event_id, user_id)
+);");
+
 
 $db->query("
     CREATE TABLE IF NOT EXISTS DonatorDonation (

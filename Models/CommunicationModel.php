@@ -1,7 +1,6 @@
 <?php
 require_once 'Subject.php';
 require_once 'Observer.php';
-require_once 'EmailNotifier.php';
 
 class CommunicationModel implements Subject {
     private $observers = []; // List of user observers
