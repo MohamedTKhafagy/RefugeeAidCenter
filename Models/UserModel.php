@@ -1,6 +1,8 @@
 <?php
 require_once "Observer.php";
-require_once "UserData.php";
+//require_once "UserData.php";
+require_once('C:\xampp\htdocs\RefugeeAidCenter\Proxy\UserData.php'); 
+
 abstract class User implements Observer , UserData
 {
     private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
@@ -88,12 +90,6 @@ abstract class User implements Observer , UserData
     {
         $sql = "DELETE FROM users WHERE id = $UserId";
         return self::$db->query($sql);
-    }
-
-    public function hasPermission(string $operation): bool
-    {
-        // Implement permission logic here
-        return true;
     }
 
     abstract public function RegisterEvent();
@@ -255,5 +251,18 @@ abstract class User implements Observer , UserData
         if($db->query($query)) return true;
         return false;
         
+    }
+}
+class DummyUser extends User {
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference) {
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
+    }
+
+    public function RegisterEvent() {
+        // Dummy implementation
+    }
+
+    public function Update($Message) {
+        // Dummy implementation
     }
 }

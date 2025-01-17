@@ -213,6 +213,19 @@ $db->query("
         FOREIGN KEY (AssignedVolunteerId) REFERENCES User(Id)
     );
 ");
+$db->query("
+   CREATE TABLE IF NOT EXISTS Events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    type INT NOT NULL,
+    max_capacity INT NOT NULL,
+    current_capacity INT NOT NULL DEFAULT 0,
+    date DATE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_deleted TINYINT(1) DEFAULT 0
+);
+");
 /*
 
 $db->query("

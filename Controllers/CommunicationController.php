@@ -12,7 +12,7 @@ class CommunicationController {
 
             $communication = new CommunicationModel($type, $messageBody, $phoneNumber, $email, $subject);
 
-            $userAdmin = new UserAdmin("John Doe",$communication);
+            //$userAdmin = new UserAdmin("John Doe",$communication);
             $eventAdmin = new EventAdmin("Jane Smith",$communication);
             $refugeeAdmin = new RefugeeAdmin("Ali Hussein",$communication);
 

@@ -37,4 +37,12 @@ class SecureUserDataProxy implements UserData {
         }
         return "Access Denied: Only administrators can view user details.";
     }
+    public function deleteUser(int $userId): bool {
+        if ($this->verifyAdminAccess()) {
+            $db = DbConnection::getInstance();
+            $sql = "UPDATE User SET isDeleted = 1 WHERE Id = $userId";
+            return $db->query($sql);
+        }
+        return false;
+    }
 }
