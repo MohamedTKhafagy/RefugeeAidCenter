@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/TaskCommand.php';
 require_once __DIR__ . '/../../Models/Task.php';
-require_once __DIR__ . '/../../Models/Event.php';
+require_once __DIR__ . '/../../Event.php';
+require_once __DIR__ . '/../../DBInit.php';
 
 class AssignEventCommand implements TaskCommand
 {
@@ -22,10 +23,25 @@ class AssignEventCommand implements TaskCommand
 
         // Verify event exists
         if ($eventId !== null) {
-            $this->event = Event::findById($eventId);
-            if (!$this->event) {
+            $db = DbConnection::getInstance();
+            $sql = "SELECT * FROM Events WHERE id = ? AND is_deleted = 0";
+            $result = $db->fetchAll($sql, [$eventId]);
+
+            if (empty($result)) {
                 throw new Exception("Event with ID $eventId not found");
             }
+
+            $this->event = new Event(
+                $result[0]['id'],
+                $result[0]['name'],
+                $result[0]['location'],
+                $result[0]['type'],
+                $result[0]['max_capacity'],
+                $result[0]['current_capacity'],
+                $result[0]['date'],
+                [], // volunteers array
+                []  // attendees array
+            );
         }
     }
 
@@ -34,7 +50,6 @@ class AssignEventCommand implements TaskCommand
         $db = DbConnection::getInstance();
         // If we're assigning to an event, update status to 'assigned'
         $status = $this->newEventId ? 'assigned' : 'pending';
-        $eventIdValue = $this->newEventId ? $this->newEventId : "NULL";
         $taskId = $this->task->getId();
 
         if (!$taskId) {
@@ -42,12 +57,23 @@ class AssignEventCommand implements TaskCommand
         }
 
         $sql = "UPDATE Tasks 
-                SET event_id = $eventIdValue, 
-                    status = '$status' 
-                WHERE id = $taskId 
+                SET event_id = ?, 
+                    status = ? 
+                WHERE id = ? 
                 AND is_deleted = 0";
 
-        return $db->query($sql);
+        $result = $db->query($sql, [
+            $this->newEventId,
+            $status,
+            $taskId
+        ]);
+
+        if ($result) {
+            // Update the task object's event ID
+            $this->task->setEventId($this->newEventId);
+        }
+
+        return $result;
     }
 
     public function undo()
@@ -55,7 +81,6 @@ class AssignEventCommand implements TaskCommand
         $db = DbConnection::getInstance();
         // If we're removing from an event, update status back to 'pending'
         $status = $this->oldEventId ? 'assigned' : 'pending';
-        $eventIdValue = $this->oldEventId ? $this->oldEventId : "NULL";
         $taskId = $this->task->getId();
 
         if (!$taskId) {
@@ -63,11 +88,22 @@ class AssignEventCommand implements TaskCommand
         }
 
         $sql = "UPDATE Tasks 
-                SET event_id = $eventIdValue, 
-                    status = '$status' 
-                WHERE id = $taskId 
+                SET event_id = ?, 
+                    status = ? 
+                WHERE id = ? 
                 AND is_deleted = 0";
 
-        return $db->query($sql);
+        $result = $db->query($sql, [
+            $this->oldEventId,
+            $status,
+            $taskId
+        ]);
+
+        if ($result) {
+            // Update the task object's event ID
+            $this->task->setEventId($this->oldEventId);
+        }
+
+        return $result;
     }
 }

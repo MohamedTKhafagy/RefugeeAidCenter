@@ -50,7 +50,12 @@ class AssignVolunteerCommand implements TaskCommand
                 WHERE id = ? 
                 AND is_deleted = 0";
 
-        return $db->query($sql, [$volunteerId, $status, $taskId]);
+        $result = $db->query($sql, [$volunteerId, $status, $taskId]);
+        if ($result) {
+            $this->task->setVolunteerId($volunteerId);
+            $this->task->setStatus($status);
+        }
+        return $result;
     }
 
     public function undo()
@@ -62,9 +67,9 @@ class AssignVolunteerCommand implements TaskCommand
             throw new Exception("Cannot undo volunteer assignment: Task ID is missing");
         }
 
-        // Restore previous volunteer ID and status
-        $status = $this->oldVolunteerId ? 'in_progress' : 'pending';
-        $volunteerId = $this->oldVolunteerId ? $this->oldVolunteerId : null;
+        // When undoing, we always want to remove the volunteer assignment
+        $status = 'pending';
+        $volunteerId = null;
 
         $sql = "UPDATE Tasks 
                 SET volunteer_id = ?, 
@@ -72,6 +77,11 @@ class AssignVolunteerCommand implements TaskCommand
                 WHERE id = ? 
                 AND is_deleted = 0";
 
-        return $db->query($sql, [$volunteerId, $status, $taskId]);
+        $result = $db->query($sql, [$volunteerId, $status, $taskId]);
+        if ($result) {
+            $this->task->setVolunteerId($volunteerId);
+            $this->task->setStatus($status);
+        }
+        return $result;
     }
 }
