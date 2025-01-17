@@ -33,6 +33,10 @@ $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
                 <option value="Food">Food</option>
             </select>
         </div>
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="Quantity" required>
+        </div>
         <button type="submit" class="btn btn-primary">Submit Request</button>
     </form>
 </div>

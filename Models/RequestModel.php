@@ -13,17 +13,19 @@ class Request
     private $Name;
     private $Description;
     private $Type; // Type: 'Money', 'Clothes', 'Food'
+    private $Quantity;
     private $Status; // Status: 'Draft', 'Pending', 'Accepted', 'Completed', 'Declined'
     private $StatusComment;
     private RequestState $state;
 
-    public function __construct($Id, $RefugeeId, $Name, $Description, $Type, $Status = 'Draft', $StatusComment = null)
+    public function __construct($Id, $RefugeeId, $Name, $Description, $Type, $Quantity, $Status = 'Draft', $StatusComment = null)
     {
         $this->Id = $Id;
         $this->RefugeeId = $RefugeeId;
         $this->Name = $Name;
         $this->Description = $Description;
         $this->Type = $Type;
+        $this->Quantity = $Quantity;
         $this->Status = $Status;
         $this->StatusComment = $StatusComment;
         $this->setState($Status);
@@ -71,6 +73,11 @@ class Request
         return $this->Type;
     }
 
+    public function getQuantity()
+    {
+        return $this->Quantity;
+    }
+
     public function getStatus()
     {
         return $this->Status;
@@ -80,6 +87,8 @@ class Request
     {
         return $this->StatusComment;
     }
+
+
 
 
         // Set state dynamically
@@ -107,11 +116,11 @@ class Request
         $inventory = new Inventory();
         switch ($this->Type) {
             case 'Money':
-                return $inventory->removeMoney(floatval($this->Description));
+                return $inventory->removeMoney(floatval($this->Quantity));
             case 'Clothes':
-                return $inventory->removeClothesQuantity(intval($this->Description));
+                return $inventory->removeClothesQuantity(intval($this->Quantity));
             case 'Food':
-                return $inventory->removeFoodResourceQuantity(intval($this->Description));
+                return $inventory->removeFoodResourceQuantity(intval($this->Quantity));
             default:
                 throw new Exception("Invalid request type.");
         }
@@ -123,8 +132,8 @@ class Request
     {
         $db = DbConnection::getInstance();
         $sql = "
-            INSERT INTO requests (RefugeeId, Name, Description, Type, Status, StatusComment)
-            VALUES ($this->RefugeeId, '$this->Name', '$this->Description', '$this->Type', '$this->Status', '$this->StatusComment')
+            INSERT INTO requests (RefugeeId, Name, Description, Type, Quantity, Status, StatusComment)
+            VALUES ($this->RefugeeId, '$this->Name', '$this->Description', '$this->Type', '$this->Quantity', '$this->Status', '$this->StatusComment')
         ";
         $db->query($sql);
         $sql = "SELECT LAST_INSERT_ID() AS last;";
@@ -147,6 +156,7 @@ class Request
                 $request["Name"],
                 $request["Description"],
                 $request["Type"],
+                $request["Quantity"],
                 $request["Status"],
                 $request["StatusComment"]
             );
@@ -167,6 +177,7 @@ class Request
                 $request["Name"],
                 $request["Description"],
                 $request["Type"],
+                $request["Quantity"],
                 $request["Status"],
                 $request["StatusComment"]
             );
@@ -188,6 +199,7 @@ class Request
                 $request["Name"],
                 $request["Description"],
                 $request["Type"],
+                $request["Quantity"],
                 $request["Status"],
                 $request["StatusComment"]
             );

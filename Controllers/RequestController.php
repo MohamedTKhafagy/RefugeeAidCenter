@@ -18,7 +18,8 @@ class RequestController
                 $data['RefugeeId'] ?? null,
                 $data['Name'] ?? null,
                 $data['Description'] ?? null,
-                $data['Type'] ?? null
+                $data['Type'] ?? null,
+                $data['Quantity'] ?? null
             );
             $request = $request->save();
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');

@@ -30,6 +30,10 @@ $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             <td><?php echo htmlspecialchars($request->getType()); ?></td>
         </tr>
         <tr>
+            <th>Quantity</th>
+            <td><?php echo htmlspecialchars($request->getQuantity()); ?></td>
+        </tr>
+        <tr>
             <th>Status</th>
             <td><?php echo htmlspecialchars($request->getStatus()); ?></td>
         </tr>

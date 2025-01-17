@@ -224,6 +224,7 @@ $db->query("
         Name VARCHAR(255) NOT NULL,
         Description TEXT,
         Type ENUM('Money', 'Clothes', 'Food') NOT NULL,
+        Quantity INT NOT NULL,
         Status ENUM('Draft', 'Pending', 'Accepted', 'Completed', 'Declined') NOT NULL DEFAULT 'Draft',
         StatusComment TEXT,
         CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

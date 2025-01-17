@@ -17,6 +17,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Type</th>
+                <th>Quantity</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -27,6 +28,7 @@
                     <td><?php echo htmlspecialchars($request->getId()); ?></td>
                     <td><?php echo htmlspecialchars($request->getName()); ?></td>
                     <td><?php echo htmlspecialchars($request->getType()); ?></td>
+                    <td><?php echo htmlspecialchars($request->getQuantity()); ?></td>
                     <td><?php echo htmlspecialchars($request->getStatus()); ?></td>
                     <td>
                         <?php
