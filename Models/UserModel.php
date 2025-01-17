@@ -23,7 +23,7 @@ abstract class User implements Observer , UserData
     protected $Gender; // 0 Male 1 Female
     protected $Address;
     protected $Phone;    protected $Nationality;
-    protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher  
+    protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher 8: Admin 
     protected $Email;
     protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
     protected $observer;

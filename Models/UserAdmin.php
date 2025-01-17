@@ -1,4 +1,5 @@
 <?php
+
 class UserAdmin {
     private $proxy;
     
@@ -9,7 +10,7 @@ class UserAdmin {
     // Create new user
     public function createUser($userData): bool {
         $db = DbConnection::getInstance();
-        $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference) 
+        $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference, IsDeleted) 
                  VALUES (
                     '{$userData['Name']}',
                     {$userData['Age']},
@@ -19,12 +20,13 @@ class UserAdmin {
                     '{$userData['Nationality']}',
                     {$userData['Type']},
                     '{$userData['Email']}',
-                    {$userData['Preference']}
+                    {$userData['Preference']},
+                    0
                  )";
         return $db->query($query) ? true : false;
     }
     
-    // Read user details
+    // Read user details (excluding deleted users)
     public function readUser($userId): string {
         return $this->proxy->displayUserDetails($userId);
     }
@@ -42,21 +44,25 @@ class UserAdmin {
                     Type = {$userData['Type']},
                     Email = '{$userData['Email']}',
                     Preference = {$userData['Preference']}
-                 WHERE Id = $userId";
+                 WHERE Id = $userId AND IsDeleted = 0";
         return $db->query($query) ? true : false;
     }
     
-    // Delete user
+    // Soft delete user
     public function deleteUser($userId): bool {
         $db = DbConnection::getInstance();
-        $query = "DELETE FROM User WHERE Id = $userId";
+        $query = "UPDATE User SET IsDeleted = 1 WHERE Id = $userId";
         return $db->query($query) ? true : false;
     }
 
-    // List all users
+    // List all active users
     public function listAllUsers(): array {
         $db = DbConnection::getInstance();
-        $sql = "SELECT Id, Name, Email, Type FROM User";
+        $sql = "SELECT u.Id, u.Name, u.Email, u.Type, u.Phone, u.Age, u.Gender, 
+                       a.Name as AddressName 
+                FROM User u 
+                LEFT JOIN Address a ON u.Address = a.Id 
+                WHERE u.IsDeleted = 0";
         return $db->fetchAll($sql);
     }
 }

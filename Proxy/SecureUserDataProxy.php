@@ -1,16 +1,14 @@
 <?php 
 class SecureUserDataProxy implements UserData {
     private $userModel;
-    private $admin;
     
-    public function __construct(User $userModel, UserAdmin $admin) {
+    public function __construct(User $userModel) {
         $this->userModel = $userModel;
-        $this->admin = $admin;
     }
     
-    // Verify if the admin has proper access
-    private function verifyAdminAccess(): bool {
-        return $this->admin->checkAccess();
+     // Check if current user is admin (type = 8)
+     private function verifyAdminAccess(): bool {
+        return $this->userModel->getType() == 8;
     }
     
     // Retrieve the actual user data if access is granted
@@ -24,11 +22,19 @@ class SecureUserDataProxy implements UserData {
     // Implementation of the interface method with access control
     public function displayUserDetails($userId): string {
         if ($this->verifyAdminAccess()) {
-            $user = $this->retrieveRealData($userId);
-            if ($user !== null) {
-                return $user->displayInfo();
+            $db = DbConnection::getInstance();
+            $sql = "SELECT * FROM User WHERE Id = $userId";
+            $result = $db->fetchAll($sql);
+            
+            if (!empty($result)) {
+                $userData = $result[0];
+                return "User Details: \nName: {$userData['Name']}\n" .
+                       "Age: {$userData['Age']}\n" .
+                       "Email: {$userData['Email']}\n" .
+                       "Phone: {$userData['Phone']}";
             }
+            return "User not found";
         }
-        return "Access Denied: Insufficient permissions to view user details.";
+        return "Access Denied: Only administrators can view user details.";
     }
 }
