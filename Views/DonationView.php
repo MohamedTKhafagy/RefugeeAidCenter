@@ -1,4 +1,9 @@
 <!-- views/DonationView.php -->
+<?php
+function renderDonationView($donation, $donator, $Invoice) {
+    // Start output buffering
+    ob_start();
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,3 +28,8 @@
 </body>
 
 </html>
+
+<?php
+    // End output buffering and return the content
+    return ob_get_clean();
+}
