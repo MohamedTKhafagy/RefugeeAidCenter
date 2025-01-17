@@ -3,8 +3,7 @@
 require_once "Observer.php";
 require_once __DIR__ . "/../SingletonDB.php";
 
-abstract class User  implements Observer
-{
+abstract class User  implements Observer{
 
     // User properties
     protected $Id;
@@ -34,7 +33,6 @@ abstract class User  implements Observer
     }
 
 
-    abstract public function RegisterEvent();
     abstract public function Update($Message);
 
 

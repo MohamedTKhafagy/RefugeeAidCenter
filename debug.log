@@ -1,0 +1,71 @@
+Received data: Array
+(
+    [MessageBody] => q
+    [Type] => Email
+    [PhoneNumber] => +20113142064
+    [Email] => 20p8103@eng.asu.edu.eg
+    [Subject] => try
+)
+
+Type: Email, MessageBody: q, PhoneNumber: +20113142064, Email: 20p8103@eng.asu.edu.eg, Subject: try
+Processing Email to 20p8103@eng.asu.edu.eg.
+Received data: Array
+(
+    [MessageBody] => q
+    [Type] => Email
+    [PhoneNumber] => +20113142064
+    [Email] => 20p8103@eng.asu.edu.eg
+    [Subject] => try
+)
+
+Type: Email, MessageBody: q, PhoneNumber: +20113142064, Email: 20p8103@eng.asu.edu.eg, Subject: try
+Processing Email to 20p8103@eng.asu.edu.eg.
+Email sent successfully to 20p8103@eng.asu.edu.eg.
+Received data: Array
+(
+    [MessageBody] => q
+    [Type] => SMS
+    [PhoneNumber] => +20113142064
+    [Email] => 20p8103@eng.asu.edu.eg
+    [Subject] => try
+)
+
+Type: SMS, MessageBody: q, PhoneNumber: +20113142064, Email: 20p8103@eng.asu.edu.eg, Subject: try
+Processing SMS to +20113142064.
+SMS sent successfully to +20113142064.
+Received data: Array
+(
+    [MessageBody] => q
+    [Type] => SMS
+    [PhoneNumber] => +201550501495
+    [Email] => 20p8103@eng.asu.edu.eg
+    [Subject] => try
+)
+
+Type: SMS, MessageBody: q, PhoneNumber: +201550501495, Email: 20p8103@eng.asu.edu.eg, Subject: try
+Processing SMS to +201550501495.
+SMS sent successfully to +201550501495.
+Received data: Array
+(
+    [MessageBody] => q
+    [Type] => SMS
+    [PhoneNumber] => 201550501495
+    [Email] => 20p8103@eng.asu.edu.eg
+    [Subject] => try
+)
+
+Type: SMS, MessageBody: q, PhoneNumber: 201550501495, Email: 20p8103@eng.asu.edu.eg, Subject: try
+Processing SMS to 201550501495.
+SMS sent successfully to 201550501495.
+Received data: Array
+(
+    [MessageBody] => ya zalem
+    [Type] => Email
+    [PhoneNumber] => 201550501495
+    [Email] => ahmedbehairy10@gmail.com
+    [Subject] => Nadin
+)
+
+Type: Email, MessageBody: ya zalem, PhoneNumber: 201550501495, Email: ahmedbehairy10@gmail.com, Subject: Nadin
+Processing Email to ahmedbehairy10@gmail.com.
+Email sent successfully to ahmedbehairy10@gmail.com.

@@ -1,44 +1,30 @@
 <?php
 interface Observer {
-    public function update($message);
+    public function update($eventData);
 }
 
-class UserAdmin implements Observer {
+
+class UserAdmin {
     private $name;
-    private  Subject $Subject;
-    public function __construct($name,Subject $Subject) {
+    public function __construct($name) {
         $this->name = $name;
-        $this->Subject->RegisterObserver($this);
     }
 
-    public function update($message) {
-        echo "{$this->name} received the notification: {$message}\n";
-    }
 }
 
-class EventAdmin implements Observer {
+class EventAdmin {
     private $name;
-    private  Subject $Subject;
-    public function __construct($name,Subject $Subject) {
+    public function __construct($name) {
         $this->name = $name;
-        $this->Subject->RegisterObserver($this);
     }
 
-    public function update($message) {
-        echo "{$this->name} received the notification: {$message}\n";
-    }
 }
 
-class RefugeeAdmin implements Observer {
+class RefugeeAdmin {
     private $name;
-    private  Subject $Subject;
-    public function __construct($name,Subject $Subject) {
+    public function __construct($name) {
         $this->name = $name;
-        $this->Subject->RegisterObserver($this);
     }
 
-    public function update($message) {
-        echo "{$this->name} received the notification: {$message}\n";
-    }
 }
 ?>
