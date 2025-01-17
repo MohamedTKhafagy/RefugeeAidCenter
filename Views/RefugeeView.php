@@ -12,16 +12,7 @@
 <body>
 <div class="container">
     <h1 class="mt-4 mb-4">Refugee Management</h1>
-
-    <!-- Add New Refugee Button -->
-    <div class="mb-3">
-    <?php
-        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        echo '<a href="' . $base_url . '/refugees/add" class="btn btn-primary">Add New Refugee</a>';
-        ?>
-    </div>
     
-    <!-- Refugee Table -->
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -34,7 +25,13 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($refugees as $refugee): ?>
+            <?php if($refugees->isEmpty()) { ?>
+                <td>No Avaialbile Refugees</td>
+            <?php
+            } else {
+                while($rIterator->hasNext()) {
+                    $refugee = $rIterator->next();
+            ?>
                 <tr>
                     <td><?php echo htmlspecialchars($refugee->getRefugeeId()); ?></td>
                     <td><?php echo htmlspecialchars($refugee->getName()); ?></td>
@@ -48,7 +45,7 @@
                         <a href="<?php echo $base_url ?>/refugees/view/<?php echo $refugee->getRefugeeId(); ?>" class="btn btn-primary btn-sm">View</a>
                     </td>
                 </tr>
-            <?php endforeach; ?>
+            <?php }} ?>
         </tbody>
     </table>
 </div>

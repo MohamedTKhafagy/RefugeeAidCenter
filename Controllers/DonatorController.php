@@ -36,6 +36,7 @@ class DonatorController
             $data['Nationality'],
             1,
             $data['Email'],
+            null,
             $data['Preference']
         );
         $donator->save();
@@ -52,6 +53,7 @@ class DonatorController
             $data['Nationality'],
             1,
             $data['Email'],
+            null,
             $data['Preference']
         );
         Donator::editById($data['Id'], $donator);

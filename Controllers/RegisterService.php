@@ -26,7 +26,7 @@ class RegisterService
             $errors['nationality'] = "Nationality is required and should only contain letters and spaces.";
         }
 
-        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (!$update && (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL))) {
             $errors['email'] = "Email is required and should be a valid email address.";
         }
 

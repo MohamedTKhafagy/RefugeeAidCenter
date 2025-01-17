@@ -73,7 +73,7 @@
         </div>
         <div class="info-group">
             <label for="address">Address:</label>
-            <p><?php echo htmlspecialchars($refugee->getAddress()); ?></p>
+            <p><?php echo htmlspecialchars($refugee->getFullAddress()); ?></p>
         </div>
         <div class="info-group">
             <label for="phone">Phone:</label>
@@ -94,6 +94,14 @@
         <div class="info-group">
             <label for="preference">Preference:</label>
             <p><?php echo $refugee->getPreference() === "0" ? "Email" : "SMS"; ?></p>
+        </div>
+        <div class="info-group">
+            <label for="preference">Profession:</label>
+            <p><?php echo $refugee->getProfession()?></p>
+        </div>
+        <div class="info-group">
+            <label for="preference">Education:</label>
+            <p><?php echo $refugee->getEducation()?></p>
         </div>
     </div>
 </body>

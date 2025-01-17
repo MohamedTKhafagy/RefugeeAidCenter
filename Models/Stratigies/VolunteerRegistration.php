@@ -25,20 +25,21 @@ class VolunteerRegistration extends RegistrationTemplate
         );
 
         return $volunteer->save();
+        return 0;
     }
 
-    protected function validate()
+    public function validate()
     {
         $errors = [];
 
         $validDays = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-        if (!isset($this->data['availability']) || !is_array($this->data['availability']) || empty($this->data['availability'])) {
+        if (!isset($this->data['Availability']) || !is_array($this->data['Availability']) || empty($this->data['Availability'])) {
             $errors['availability'] = "Please select at least one day of availability.";
         } else {
-            foreach ($this->data['availability'] as $day) {
+            foreach ($this->data['Availability'] as $day) {
                 if (!in_array($day, $validDays)) {
-                    $errors['availability'] = "Invalid day selected in availability.";
+                    $errors['Availability'] = "Invalid day selected in availability.";
                     break;
                 }
             }
@@ -47,20 +48,26 @@ class VolunteerRegistration extends RegistrationTemplate
         return $errors;
     }
 
-    function convertAvailability($availability)
+    public function convertAvailability($availability)
     {
-        // Define the days of the week in order, starting from Saturday (leftmost bit)
-        $daysOfWeek = ['Friday', 'Thursday', 'Wednesday', 'Tuesday', 'Monday', 'Sunday', 'Saturday'];
-        $daysOfWeek = array_reverse($daysOfWeek);
-
-        $bits = 0;
-
+        $availabilityBits = 0;
+        $dayMap = [
+            'Sunday' => 0,
+            'Monday' => 1,
+            'Tuesday' => 2,
+            'Wednesday' => 3,
+            'Thursday' => 4,
+            'Friday' => 5,
+            'Saturday' => 6
+        ];
         foreach ($availability as $day) {
-            if (in_array($day, $daysOfWeek)) {
-                $bits |= (1 << array_search($day, $daysOfWeek));
+            if (isset($dayMap[$day])) {
+                $availabilityBits |= (1 << $dayMap[$day]);
             }
         }
-
-        return $bits;
+        return $availabilityBits;
     }
 }
+
+
+?>

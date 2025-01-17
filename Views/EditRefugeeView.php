@@ -142,11 +142,6 @@
             </div>
 
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="<?php echo $refugee->getEmail() ?>" required>
-            </div>
-
-            <div class="form-group">
                 <label for="passportNumber">Passport Number:</label>
                 <input type="text" id="passportNumber" name="passportNumber" value="<?php echo $refugee->getPassportNumber() ?>">
             </div>
@@ -159,51 +154,28 @@
                 </select>
             </div>
 
-            <div id="adultFields" class="hidden">
-                <div class="form-group">
-                    <label for="profession">Profession:</label>
-                    <select name="profession" id="profession" class="form-control" required>
-                        <option value="farmer">Farmer</option>
-                        <option value="tailor">Tailor</option>
-                        <option value="carpenter">Carpenter</option>
-                        <option value="cook">Cook</option>
-                        <option value="driver">Driver</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="education">Education:</label>
-                    <select name="education" id="education" class="form-control" required>
-                        <option value="none">No Formal Education</option>
-                        <option value="primary">Primary School</option>
-                        <option value="secondary">Secondary School</option>
-                        <option value="vocational">Vocational Training</option>
-                        <option value="bachelor">Bachelor's Degree</option>
-                    </select>
-                </div>
-                <div class="form-group family">
-                    <div style="display:flex;margin-bottom:10px;">
-                        <label>Family:</label>
-                        <button type="button" onclick="addFamily()" style="width:20px;height:20px;padding:0;border-radius:50%;margin-left:10px;">+</button>
-                    </div>
-                    <div id="family_members"></div>
-                    <!-- <input type="text" id="family" name="family"> -->
-                </div>
+            <div class="form-group">
+                <label for="profession">Profession:</label>
+                <select name="profession" id="profession" class="form-control" required>
+                    <option value="farmer" <?php echo ($refugee->getProfession() == 'farmer') ? 'selected' : ''; ?>>Farmer</option>
+                    <option value="tailor" <?php echo ($refugee->getProfession() == 'tailor') ? 'selected' : ''; ?>>Tailor</option>
+                    <option value="carpenter" <?php echo ($refugee->getProfession() == 'carpenter') ? 'selected' : ''; ?>>Carpenter</option>
+                    <option value="cook" <?php echo ($refugee->getProfession() == 'cook') ? 'selected' : ''; ?>>Cook</option>
+                    <option value="driver" <?php echo ($refugee->getProfession() == 'driver') ? 'selected' : ''; ?>>Driver</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="education">Education:</label>
+                <select name="education" id="education" class="form-control" required>
+                    <option value="none" <?php echo ($refugee->getEducation() == 'none') ? 'selected' : ''; ?>>No Formal Education</option>
+                    <option value="primary" <?php echo ($refugee->getEducation() == 'primary') ? 'selected' : ''; ?>>Primary School</option>
+                    <option value="secondary" <?php echo ($refugee->getEducation() == 'secondary') ? 'selected' : ''; ?>>Secondary School</option>
+                    <option value="vocational" <?php echo ($refugee->getEducation() == 'vocational') ? 'selected' : ''; ?>>Vocational Training</option>
+                    <option value="bachelor" <?php echo ($refugee->getEducation() == 'bachelor') ? 'selected' : ''; ?>>Bachelor's Degree</option>
+                </select>
             </div>
 
-            <div id="childFields" class="hidden">
-                <div class="form-group">
-                    <label for="school">School:</label>
-                    <input type="text" id="school" name="school">
-                </div>
-                <div class="form-group">
-                    <label for="level">Level:</label>
-                    <input type="text" id="level" name="level">
-                </div>
-                <div class="form-group">
-                    <label for="guardian">Guardian:</label>
-                    <input type="text" id="guardian" name="guardian">
-                </div>
-            </div>
+
 
             <button type="submit">Edit</button>
         </form>
@@ -219,12 +191,6 @@
     </div>
 
     <script>
-        function toggleFields() {
-            const type = document.getElementById("type").value;
-            document.getElementById("adultFields").classList.toggle("hidden", type !== "adult");
-            document.getElementById("childFields").classList.toggle("hidden", type !== "child");
-        }
-
         function validateForm() {
             const type = document.getElementById("type").value;
             const passportNumber = document.getElementById("passportNumber");
@@ -238,16 +204,6 @@
                 }
             }
             return true;
-        }
-
-        function addFamily() {
-            const familyMembers = document.getElementById("family_members");
-            const input = document.createElement("input");
-            input.type = "text";
-            input.name = "family[]";
-            input.placeholder = "Family Member ID";
-            input.style.marginBottom = "10px";
-            familyMembers.appendChild(input);
         }
     </script>
 </body>

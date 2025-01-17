@@ -16,5 +16,10 @@ class UserCollection implements Collections {
     public function createIterator(): iIterator {
         return new UserIterator($this->users);
     }
+
+    public function isEmpty()
+    {
+        return empty($this->users);
+    }
 }
 ?>

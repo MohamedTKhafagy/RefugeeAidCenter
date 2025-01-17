@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../Models/RefugeeModel.php';
-// require_once __DIR__ . '/../Models/VolunteerModel.php';
 require_once __DIR__ . "/RegisterService.php";
 
 
@@ -10,6 +9,7 @@ class RefugeeController
     public function index()
     {
         $refugees = Refugee::all();
+        $rIterator = $refugees->createIterator();
         require 'Views/RefugeeView.php';
     }
 
@@ -33,8 +33,8 @@ class RefugeeController
     public function update($data) {
         $registerService = new RegisterService();
         $commonErrors = $registerService->validateUserData($data, true);
-        $strategy = $registerService->getRegisterationStrategy("adult");
-        $specificErrors = $strategy->validate($data);
+        $strategy = RegistrationFactory::createStrategy('refugee', $data);
+        $specificErrors = $strategy->validate();
         $errors = array_merge($commonErrors, $specificErrors);
         if (!empty($errors)) {
             $refugee = Refugee::findById($data['id']);
@@ -58,27 +58,6 @@ class RefugeeController
     {
         $refugee = Refugee::findById($id);
         require 'Views/ViewRefugee.php';
-    }
-
-    public function saveRefugee($data)
-    {
-        $refugee = new Refugee(
-            $data['Id'],
-            $data['Name'],
-            $data['Age'],
-            $data['Gender'],
-            $data['Address'],
-            $data['Phone'],
-            $data['Nationality'],
-            $data['Type'],
-            $data['Email'],
-            $data['Preference'],
-            $data['PassportNumber'],
-            $data['Advisor'],
-            $data['Shelter'],
-            $data['HealthCare']
-        );
-        $refugee->save();
     }
 
     public function findRefugeeById($id)

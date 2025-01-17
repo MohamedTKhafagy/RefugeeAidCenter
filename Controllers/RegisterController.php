@@ -22,7 +22,6 @@ class RegisterController
         try {
             $strategy = RegistrationFactory::createStrategy($data['type'], $data);
             $register = $strategy->registerUser();
-
             if (!empty($register['errors'])) {
                 $errors = $register['errors'];
                 require(!$admin ? 'Views/RegisterView.php' : 'Views/AddRefugeeView.php');

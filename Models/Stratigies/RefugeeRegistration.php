@@ -1,6 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../AdultModel.php';
 require_once __DIR__ . '/../RefugeeModel.php';
 require_once __DIR__ . '/RegistrationTemplate.php';
 
@@ -9,12 +8,11 @@ class RefugeeRegistration extends RegistrationTemplate
 
     protected function save()
     {
-        $family = (isset($this->data["family"])) ? $this->data["family"] : [];
-        $adultRefugee = new Adult(null, $this->data['name'], $this->data['age'], $this->data['gender'], $this->data['address'], $this->data['phone'], $this->data['nationality'], 0, $this->data['email'], $this->data['password'], $this->data["preference"], null, $this->data['passportNumber'], 1, 1, 1, 1, $this->data['profession'], $this->data['education'], $family);
-        return $adultRefugee->save();
+        $Refugee = new Refugee(null, $this->data['name'], $this->data['age'], $this->data['gender'], $this->data['address'], $this->data['phone'], $this->data['nationality'], 0, $this->data['email'], $this->data['password'], $this->data["preference"], $this->data['passportNumber'], $this->data['profession'], $this->data['education']);
+        return $Refugee->save();
     }
 
-    protected function validate()
+    public function validate()
     {
         $errors = [];
 
@@ -28,24 +26,6 @@ class RefugeeRegistration extends RegistrationTemplate
 
         if (!preg_match("/^[a-zA-Z0-9\s]+$/", $this->data['education'])) {
             $errors['education'] = "Education should only contain letters, numbers, and spaces.";
-        }
-
-        if(isset($this->data["family"])) {
-            $this->data["family"] = array_filter($this->data["family"], function($value) {
-                return !empty($value);
-            });
-
-            if (!array_filter($this->data["family"], 'is_int')) {
-                $errors['family'] = "Family members IDs should be valid integers.";
-            }
-            $errors['family'] = "";
-            foreach ($this->data["family"] as $id) {
-                $refugee = Refugee::findById($id);
-                if (!$refugee) {
-                    $errors['family'] .= "Family member " . $id . " not found.<br>";
-                }
-            }
-            if(empty($errors['family'])) unset($errors['family']);
         }
 
         return $errors;

@@ -1,6 +1,7 @@
 <?php
 require_once 'UserModel.php';
 require_once __DIR__ . '/../SingletonDB.php';
+require_once __DIR__ . '/UserCollection.php';
 
 class Refugee extends User
 {
@@ -8,19 +9,16 @@ class Refugee extends User
 
     protected $RefugeeID;
     protected $PassportNumber;
-    protected $Advisor; // Instance of SocialWorker
-    protected $Shelter; // Instance of Shelter
-    protected $HealthCare; // Instance of HealthcareStrategy
+    private $Profession;
+    private $Education;
 
-    private static $file = __DIR__ . '/../data/refugees.txt'; // Path to text file
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare, $RefugeeID = null)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $PassportNumber, $Profession, $Education, $RefugeeID = null)
     {
         parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference);
         $this->PassportNumber = $PassportNumber;
-        $this->Advisor = $Advisor; // Pass an instance of SocialWorker
-        $this->Shelter = $Shelter; // Pass an instance of Shelter
-        $this->HealthCare = $HealthCare; // Pass an instance of HealthcareStrategy
+        $this->Profession = $Profession;
+        $this->Education = $Education;
         $this->RefugeeID = $RefugeeID;
     }
 
@@ -31,14 +29,12 @@ class Refugee extends User
         echo "An event has been registered by the Refugee user.";
     }
 
-
-    // Save refugee details to the text file (JSON format)
     public function save()
     {
         $userId = parent::save();
         if ($userId == -1) return -1;
         $db = DbConnection::getInstance();
-        $query = "INSERT INTO Refugee (PassportNumber, Advisor, Shelter, HealthCare, UserId) VALUES ('$this->PassportNumber', 1, 1, $this->HealthCare, $userId)";
+        $query = "INSERT INTO Refugee (PassportNumber, Profession, Education, UserId) VALUES ('$this->PassportNumber', '$this->Profession', '$this->Education', $userId)";
         $db->query($query);
         $sql = "SELECT LAST_INSERT_ID() AS last;";
         $rows = $db->fetchAll($sql);
@@ -49,24 +45,6 @@ class Refugee extends User
         return -1;
     }
 
-    private function getProperties($newProperty = null)
-    {
-        $properties = [
-            "RefugeeID" => $this->RefugeeID,
-            "PassportNumber" => $this->PassportNumber,
-            "Advisor" => $this->Advisor,
-            "Shelter" => $this->Shelter,
-            "HealthCare" => $this->HealthCare
-        ];
-
-        if ($newProperty) {
-            $properties = array_merge($properties, $newProperty);
-        }
-
-        return $properties;
-    }
-
-    // Find a refugee by ID from the text file
     public static function findById($id)
     {
         $db = DbConnection::getInstance();
@@ -75,8 +53,8 @@ class Refugee extends User
         SELECT 
             User.Id AS UserId, User.Name, User.Age, User.Gender, User.Address, 
             User.Phone, User.Nationality, User.Type, User.Email, User.Preference,
-            Refugee.Id AS RefugeeId, Refugee.PassportNumber, Refugee.Advisor, 
-            Refugee.Shelter, Refugee.HealthCare
+            Refugee.Id AS RefugeeId, Refugee.PassportNumber, Refugee.Profession, 
+            Refugee.Education
         FROM 
             Refugee
         INNER JOIN 
@@ -106,9 +84,8 @@ class Refugee extends User
             null,
             $data['Preference'],
             $data['PassportNumber'],
-            $data['Advisor'],
-            $data['Shelter'],
-            $data['HealthCare'],
+            $data['Profession'],
+            $data['Education'],
             $id
         );
 
@@ -127,8 +104,8 @@ class Refugee extends User
     SELECT 
         User.Id AS UserId, User.Name, User.Age, User.Gender, User.Address, 
         User.Phone, User.Nationality, User.Type, User.Email, User.Preference,
-        Refugee.Id AS RefugeeId, Refugee.PassportNumber, Refugee.Advisor, 
-        Refugee.Shelter, Refugee.HealthCare
+        Refugee.Id AS RefugeeId, Refugee.PassportNumber, Refugee.Profession, 
+        Refugee.Education
     FROM 
         Refugee
     INNER JOIN 
@@ -139,12 +116,8 @@ class Refugee extends User
 
         $rows = $db->fetchAll($query);
 
-        if (empty($rows)) {
-            return null;
-        }
-
-        $refugees = [];
-
+        $uCollection = new UserCollection();
+        
         foreach ($rows as $data) {
             $refugee = new self(
                 $data['UserId'],
@@ -159,16 +132,15 @@ class Refugee extends User
                 null,
                 $data['Preference'],
                 $data['PassportNumber'],
-                $data['Advisor'],
-                $data['Shelter'],
-                $data['HealthCare'],
+                $data['Profession'],
+                $data['Education'],
                 $data['RefugeeId']
             );
 
-            $refugees[] = $refugee;
+            $uCollection->addUser($refugee);
         }
 
-        return $refugees;
+        return $uCollection;
     }
 
     public function getRefugeeID()
@@ -181,26 +153,24 @@ class Refugee extends User
         return $this->PassportNumber;
     }
 
-    public function getAdvisor()
+    public function getProfession()
     {
-        return $this->Advisor;
+        return $this->Profession;
     }
 
-    public function getShelter()
+    public function getEducation()
     {
-        return $this->Shelter;
+        return $this->Education;
     }
 
-    public function getHealthCare()
-    {
-        return $this->HealthCare;
-    }
 
     public function Update($data) {
         parent::Update($data);
         $this->PassportNumber = $data['passportNumber'];
+        $this->Education = $data['education'];
+        $this->Profession = $data['profession'];
         $db = DbConnection::getInstance();
-        $sql = "UPDATE Refugee SET PassportNumber = '$this->PassportNumber' WHERE Id = $this->RefugeeID";
+        $sql = "UPDATE Refugee SET PassportNumber = '$this->PassportNumber', Profession = '$this->Profession', Education = '$this->Education' WHERE Id = $this->RefugeeID";
         if($db->query($sql)) return true;
         return false;
     }

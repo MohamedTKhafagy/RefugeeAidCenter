@@ -1,6 +1,6 @@
 <?php
 require_once "Observer.php";
-abstract class User implements Observer 
+abstract class User implements Observer
 {
     private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
 
@@ -70,59 +70,74 @@ abstract class User implements Observer
     {
         return $this->Id;
     }
-    public function getAddress(){
+    public function getAddress()
+    {
         return $this->Address;
     }
-    public function getPhone(){
+    public function getPhone()
+    {
         return $this->Phone;
     }
-    public function getType(){
+    public function getType()
+    {
         return $this->Type;
     }
-    public function getPreference(){
+    public function getPreference()
+    {
         return $this->Preference;
     }
-    public function getEmail(){
+    public function getEmail()
+    {
         return $this->Email;
     }
-    
-    public function setName($Name){
+
+    public function setName($Name)
+    {
         $this->Name = $Name;
         return true;
     }
-    public function setAge($Age){
+    public function setAge($Age)
+    {
         $this->Age = $Age;
         return true;
     }
-    public function setGender($Gender){
+    public function setGender($Gender)
+    {
         $this->Gender = $Gender;
         return true;
     }
-    public function setAddress($Address){
+    public function setAddress($Address)
+    {
         $this->Address = $Address;
         return true;
     }
-    public function setPhone($Phone){
+    public function setPhone($Phone)
+    {
         $this->Phone = $Phone;
         return true;
     }
-    public function setNationality ($Nationality){
+    public function setNationality($Nationality)
+    {
         $this->Nationality = $Nationality;
         return true;
     }
-    public function setType($Type){
+    public function setType($Type)
+    {
         $this->Type = $Type;
         return true;
     }
-    public function setEmail($Email){
+    public function setEmail($Email)
+    {
         $this->Email = $Email;
         return true;
     }
-    public function setPreference($Preference){
+    public function setPreference($Preference)
+    {
         $this->Preference = $Preference;
         return true;
     }
-    public function getFullAddress(){
+    public function getFullAddress()
+    {
         return $this->getFullAddressHelper($this->Address);
     }
     /*
@@ -142,12 +157,13 @@ abstract class User implements Observer
         return "Error";
     }
     */
-    private function getFullAddressHelper($address){
+    private function getFullAddressHelper($address)
+    {
         $db = DbConnection::getInstance();
         $sql = "SELECT * FROM Address WHERE Id = $address;";
-        $rows=$db->fetchAll($sql);
-        foreach($rows as $Address){
-            if($Address['ParentId'] == null){
+        $rows = $db->fetchAll($sql);
+        foreach ($rows as $Address) {
+            if ($Address['ParentId'] == null) {
                 return $Address['Name'] . ".";
             }
             return $Address['Name'] . ", " . self::getFullAddressHelper($Address['ParentId']);
@@ -155,7 +171,7 @@ abstract class User implements Observer
     }
     public function save() {
         $db = DbConnection::getInstance();
-        $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Password, Preference) VALUES ('$this->Name', '$this->Age', '$this->Gender', '1', '$this->Phone', '$this->Nationality', '$this->Type', '$this->Email', '$this->Password', '$this->Preference')";
+        $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Password, Preference) VALUES ('$this->Name', '$this->Age', '$this->Gender', $this->Address, '$this->Phone', '$this->Nationality', '$this->Type', '$this->Email', '$this->Password', '$this->Preference')";
         $db->query($query);
         $sql ="SELECT LAST_INSERT_ID() AS last;";
         $rows=$db->fetchAll($sql);
@@ -166,9 +182,10 @@ abstract class User implements Observer
         return -1;
     }
 
-    public static function getBy($field, $value) {
+    public static function getBy($field, $value)
+    {
         $db = DbConnection::getInstance();
-        if($field == "email") $value = $db->escape($value);
+        if ($field == "email") $value = $db->escape($value);
         $row = $db->getBy("User", $field, $value);
         return $row;
     }
@@ -195,12 +212,10 @@ abstract class User implements Observer
         $this->Address = $data['address'];
         $this->Phone = $data['phone'];
         $this->Nationality = $data['nationality'];
-        $this->Email = $data['email'];
         $this->Preference = $data['preference'];
         $db = DbConnection::getInstance();
         $query = "UPDATE User SET Name = '$this->Name', Age = $this->Age, Gender = $this->Gender, Address = $this->Address, Phone = '$this->Phone', Nationality = '$this->Nationality', Type = $this->Type, Email = '$this->Email', Preference = $this->Preference WHERE Id = $this->Id;";
-        if($db->query($query)) return true;
+        if ($db->query($query)) return true;
         return false;
-        
     }
 }

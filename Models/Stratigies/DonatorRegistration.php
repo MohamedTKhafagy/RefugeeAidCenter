@@ -11,7 +11,7 @@ class DonatorRegistration extends RegistrationTemplate
         return $donator->save();
     }
 
-    protected function validate()
+    public function validate()
     {
         return [];
     }
