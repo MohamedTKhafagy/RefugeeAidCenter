@@ -81,77 +81,40 @@ class Request
         return $this->StatusComment;
     }
 
-        // Deduct inventory based on request type
-        private function deductInventory()
+
+        // Set state dynamically
+        public function setState($status)
         {
-            $inventory = new Inventory();
-    
-            switch ($this->Type) {
-                case 'Money':
-                    $amount = floatval($this->Description); // Assuming `Description` contains the amount for money requests
-                    return $inventory->removeMoney($amount);
-                case 'Clothes':
-                    $quantity = intval($this->Description); // Assuming `Description` contains the quantity for clothes
-                    return $inventory->removeClothesQuantity($quantity);
-                case 'Food':
-                    $quantity = intval($this->Description); // Assuming `Description` contains the quantity for food
-                    return $inventory->removeFoodResourceQuantity($quantity);
-                default:
-                    throw new Exception("Invalid request type.");
+            switch ($status) {
+                case 'Draft': $this->state = new DraftState(); break;
+                case 'Pending': $this->state = new PendingState(); break;
+                case 'Accepted': $this->state = new AcceptedState(); break;
+                case 'Completed': $this->state = new CompletedState(); break;
+                case 'Declined': $this->state = new DeclinedState(); break;
+                default: throw new Exception("Invalid request state.");
             }
+            $this->Status = $status;
         }
 
-    private function setState($status)
+        // Delegate actions to state object
+        public function submit() { $this->state->submit($this); }
+        public function accept() { $this->state->accept($this); }
+        public function complete() { $this->state->complete($this); }
+        public function decline() { $this->state->decline($this); }
+
+    public function deductInventory()
     {
-        switch ($status) {
-            case 'Draft':
-                $this->state = new DraftState();
-                break;
-            case 'Pending':
-                $this->state = new PendingState();
-                break;
-            case 'Accepted':
-                $this->state = new AcceptedState();
-                break;
-            case 'Completed':
-                $this->state = new CompletedState();
-                break;
-            case 'Declined':
-                $this->state = new DeclinedState();
-                break;
+        $inventory = new Inventory();
+        switch ($this->Type) {
+            case 'Money':
+                return $inventory->removeMoney(floatval($this->Description));
+            case 'Clothes':
+                return $inventory->removeClothesQuantity(intval($this->Description));
+            case 'Food':
+                return $inventory->removeFoodResourceQuantity(intval($this->Description));
             default:
-                throw new Exception("Invalid request state.");
+                throw new Exception("Invalid request type.");
         }
-    }
-
-    public function submit()
-    {
-        $this->state->submit($this);
-        $this->setState('Pending'); // Update state dynamically
-    }
-    
-    public function accept()
-    {
-        $this->state->accept($this);
-        $this->setState('Accepted'); // Update state dynamically
-    }
-    
-    public function complete()
-    {
-        // Attempt to deduct inventory
-        if ($this->deductInventory()) {
-            $this->state->complete($this);
-            $this->setState('Completed'); // Update state dynamically
-            echo "Request completed and inventory updated successfully.\n";
-        } else {
-            throw new Exception("Insufficient inventory to complete the request.");
-        }
-    }
-    
-    public function decline()
-    {
-        $this->state->decline($this);
-        $this->setState('Declined'); // Update state dynamically
     }
     
 

@@ -15,9 +15,13 @@ class AcceptedState implements RequestState
 
     public function complete(Request $request)
     {
-        $request->setStatus('Completed');
-        $request->updateStatus('Completed');
-        echo "Request completed and is now in Completed state.\n";
+        if ($request->deductInventory()) {
+            $request->updateStatus('Completed');
+            $request->setState('Completed');
+            echo "Request completed and inventory updated successfully.\n";
+        } else {
+            throw new Exception("Insufficient inventory to complete the request.");
+        }
     }
 
     public function decline(Request $request)

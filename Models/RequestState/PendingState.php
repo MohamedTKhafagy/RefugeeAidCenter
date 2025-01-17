@@ -10,8 +10,8 @@ class PendingState implements RequestState
 
     public function accept(Request $request)
     {
-        $request->setStatus('Accepted');
         $request->updateStatus('Accepted');
+        $request->setState('Accepted');
         echo "Request accepted and is now in Accepted state.\n";
     }
 
@@ -22,8 +22,8 @@ class PendingState implements RequestState
 
     public function decline(Request $request)
     {
-        $request->setStatus('Declined');
         $request->updateStatus('Declined');
+        $request->setState('Declined');
         echo "Request declined and is now in Declined state.\n";
     }
 }

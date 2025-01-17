@@ -5,8 +5,8 @@ class DraftState implements RequestState
 {
     public function submit(Request $request)
     {
-        $request->setStatus('Pending');
         $request->updateStatus('Pending');
+        $request->setState('Pending');
         echo "Request submitted and is now in Pending state.\n";
     }
 
