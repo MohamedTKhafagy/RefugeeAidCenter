@@ -98,7 +98,8 @@ if ($segments[0] == 'donations') {
 if ($segments[0] == 'requests') {
     $controller = new RequestController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-    else if (isset($segments[1]) && $segments[1] === 'view' && isset($segments[2])) $controller->findRequestById($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'viewrefugee' && isset($segments[2])) $controller->findRequestByIdRefugee($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'view' && isset($segments[2])) $controller->findRequestByIdAdmin($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'submit' && isset($segments[2])) $controller->submitRequest($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'accept' && isset($segments[2])) $controller->acceptRequest($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'complete' && isset($segments[2])) $controller->completeRequest($segments[2]);

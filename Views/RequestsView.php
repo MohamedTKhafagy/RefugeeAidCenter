@@ -35,7 +35,6 @@
                         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
                         ?>
                         <a href="<?php echo $base_url; ?>/requests/view/<?php echo $request->getId(); ?>" class="btn btn-info">View</a>
-                        <a href="<?php echo $base_url; ?>/requests/submit/<?php echo $request->getId(); ?>" class="btn btn-warning">Submit</a>
                         <a href="<?php echo $base_url; ?>/requests/accept/<?php echo $request->getId(); ?>" class="btn btn-primary">Accept</a>
                         <a href="<?php echo $base_url; ?>/requests/complete/<?php echo $request->getId(); ?>" class="btn btn-success">Complete</a>
                         <a href="<?php echo $base_url; ?>/requests/decline/<?php echo $request->getId(); ?>" class="btn btn-danger">Decline</a>

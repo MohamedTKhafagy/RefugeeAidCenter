@@ -23,7 +23,7 @@ class RequestController
             );
             $request = $request->save();
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-            header('Location: ' . $base_url . '/requests/view/' . $request->getId());
+            header('Location: ' . $base_url . '/requests/viewrefugee/' . $request->getId());
         } else {
             require 'Views/CreateRequestView.php';
         }
@@ -33,8 +33,8 @@ class RequestController
     {
         $request = Request::findById($id);
         $request->submit();
-        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        header('Location: ' . $base_url . '/requests/view/' . $id);
+        // $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        // header('Location: ' . $base_url . '/requests/view/' . $id);
     }
 
     public function completeRequest($id)
@@ -64,10 +64,16 @@ class RequestController
     }
 
 
-    public function findRequestById($id)
+    public function findRequestByIdAdmin($id)
     {
         $request = Request::findById($id);
-        require 'Views/RequestDetailsView.php';
+        require 'Views/AdminRequestDetailsView.php';
+    }
+
+    public function findRequestByIdRefugee($id)
+    {
+        $request = Request::findById($id);
+        require 'Views/RefugeeRequestDetailsView.php';
     }
 }
 ?>
