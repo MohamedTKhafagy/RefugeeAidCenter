@@ -30,7 +30,7 @@ Class CompletedState implements DonationStates{
         return;
     }
     public function previousState(Donation $donation,$failed){
-        $donation->setState("Pending");
+        return;
     }
     public function getCurrentState(){
         return "Completed";
@@ -42,7 +42,7 @@ Class FailedState implements DonationStates{
         return;
     }
     public function previousState(Donation $donation,$failed){
-       return;
+        $donation->setState("Pending");
     }
     public function getCurrentState(){
         return "Failed";

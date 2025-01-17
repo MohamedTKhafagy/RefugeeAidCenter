@@ -58,7 +58,7 @@ class Donation {
     public function PrevState(){
         if($this->getState()=="Failed"){
             $failed = false;
-            $this->state->nextState($this,$this->failed);
+            $this->state->previousState($this,$this->failed);
             $this->updateState();
         }
         $this->state->previousState($this,$this->failed);
