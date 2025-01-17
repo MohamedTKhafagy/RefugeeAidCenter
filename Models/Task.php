@@ -20,19 +20,19 @@ class Task
     private $volunteerName;
 
     public function __construct(
-        $name,
-        $description,
-        $hoursOfWork,
+        $name = '',
+        $description = '',
+        $hoursOfWork = 0,
         $status = 'pending',
         $eventId = null,
         $volunteerId = null,
         $id = null
     ) {
         $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->hoursOfWork = $hoursOfWork;
-        $this->status = $status;
+        $this->name = $name ?? '';
+        $this->description = $description ?? '';
+        $this->hoursOfWork = $hoursOfWork ?? 0;
+        $this->status = $status ?? 'pending';
         $this->eventId = $eventId;
         $this->volunteerId = $volunteerId;
         $this->createdAt = date('Y-m-d H:i:s');
@@ -92,8 +92,8 @@ class Task
         }
 
         $db = DbConnection::getInstance();
-        $sql = "INSERT IGNORE INTO Task_Skills (task_id, skill_id) VALUES ($this->id, $skillId)";
-        $db->query($sql);
+        $sql = "INSERT IGNORE INTO Task_Skills (task_id, skill_id) VALUES (?, ?)";
+        $db->query($sql, [$this->id, $skillId]);
         $this->loadSkills();
     }
 
@@ -102,8 +102,8 @@ class Task
         if (!$this->id) return;
 
         $db = DbConnection::getInstance();
-        $sql = "DELETE FROM Task_Skills WHERE task_id = $this->id AND skill_id = $skillId";
-        $db->query($sql);
+        $sql = "DELETE FROM Task_Skills WHERE task_id = ? AND skill_id = ?";
+        $db->query($sql, [$this->id, $skillId]);
         $this->loadSkills();
     }
 
@@ -145,6 +145,11 @@ class Task
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     public function getName()
