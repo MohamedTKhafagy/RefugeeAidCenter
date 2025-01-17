@@ -32,7 +32,6 @@ $parsedUrl = parse_url($requestUri);
 $path = isset($parsedUrl['path']) ? $parsedUrl['path'] : '';
 $queryString = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
 
-// Split the path into segments
 $segments = explode('/', trim($path, '/'));
 
 
@@ -45,9 +44,6 @@ if ($segments[0] == 'hospitals') {
                 $controller->add($_POST ?: null);
                 break;
             case 'edit':
-                /*if (isset($segments[2])) {
-                    $controller->edit($segments[2]);
-                }*/
                 if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
                 break;
             case 'update':
@@ -108,9 +104,11 @@ if ($segments[0] == 'requests') {
     else if (isset($segments[1]) && $segments[1] === 'viewrefugee') $controller->findRequestByIdRefugee();
     else if (isset($segments[1]) && $segments[1] === 'view') $controller->findRequestByIdAdmin();
     else if (isset($segments[1]) && $segments[1] === 'submit' && isset($segments[2])) $controller->submitRequest($segments[2]);
-    else if (isset($segments[1]) && $segments[1] === 'accept' && isset($segments[2])) $controller->acceptRequest($segments[2]);
-    else if (isset($segments[1]) && $segments[1] === 'complete' && isset($segments[2])) $controller->completeRequest($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'accept' && isset($segments[2])) $controller->nextStateRequest($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'complete' && isset($segments[2])) $controller->nextStateRequest($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'decline' && isset($segments[2])) $controller->declineRequest($segments[2]);
+    else if (isset($segments[1]) && $segments[1] === 'previous' && isset($segments[2])) $controller->previousStateRequest($segments[2]);
+
 }
 
 
@@ -156,24 +154,13 @@ if ($segments[0] == 'communication') {
     $controller = new CommunicationController();
 
     if (isset($segments[1]) && $segments[1] === 'send') {
-        // Pass form data to the controller's method
         $controller->handleFormSubmit($_POST);
     } elseif (isset($segments[1]) && $segments[1] === 'success') {
         echo "Message sent successfully!";
     } else {
-        // Show the form for sending messages
         include __DIR__ . '/Views/SendMessage.php';
     }
 }
-// if ($segments[0] == 'refugees') {
-//     $controller = new RefugeeController();
-//     if (isset($segments[1]) && $segments[1] === 'add') $controller->add();
-//     else if (isset($segments[1]) && $segments[1] === 'editRefugee') {
-//         parse_str($queryString, $queryArray);
-//         $controller->edit((!empty($queryArray)) ? $queryArray : null);
-//     }
-//     else $controller->index();
-// } 
 
 elseif ($segments[0] == 'refugees') {
     $controller = new RefugeeController();
@@ -188,19 +175,8 @@ elseif ($segments[0] == 'refugees') {
     else $controller->index();
 } 
 
-// elseif ($segments[0] == 'volunteers') {
-//     $controller = new VolunteerController();
-//     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
-//     else if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findVolunteerById($segments[2]);
-//     else if (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
-//     else if (isset($segments[1]) && $segments[1] === 'editVolunteer') $controller->editVolunteer((isset($_POST) && !empty($_POST)) ? $_POST : null);
-//     else if (isset($segments[1]) && $segments[1] == 'delete' && isset($segments[2])) $controller->delete($segments[2]);
-//     else $controller->index();
-// }
-
 elseif ($segments[0] == 'volunteers') {
     $controller = new VolunteerController();
-    // if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     if (isset($segments[1]) && $segments[1] == 'view' && isset($segments[2])) $controller->findVolunteerById($segments[2]);
     elseif (isset($segments[1]) && $segments[1] == 'edit' && isset($segments[2])) $controller->edit($segments[2]);
     elseif (isset($segments[1]) && $segments[1] === 'editVolunteer') $controller->update((isset($_POST) && !empty($_POST)) ? $_POST : null);
@@ -250,10 +226,7 @@ elseif ($segments[0] == 'admin') {
 
     $controller = new AdminController();
     $taskcontroller = new TaskController();
-
-
     
-    // Basic routing for admin actions
     if (!isset($segments[1])) {
         $controller->index();
     } else {
@@ -271,38 +244,10 @@ elseif ($segments[0] == 'admin') {
                 if (isset($segments[2])) $controller->editDonation($segments[2]);
                 break;
             default:
-                // Handle 404 or redirect to dashboard
                 $controller->index();
         }
     }
 } 
-// if ($segments[0] == 'tasks') {
-//     $controller = new TaskController();
-
-//     if (isset($segments[1]) && $segments[1] === 'edit' && isset($segments[2])) {
-//         $controller->edit($segments[2]);
-//     }
-//     elseif (isset($segments[1]) && $segments[1] === 'update' && isset($_POST)) {
-//         $controller->update($_POST);
-//     }
-//     else {
-//         $controller->index();
-//     }
-// }
-
-// if ($segments[0] == 'tasks') {
-//     $controller = new TaskController();
-
-//     if (isset($segments[1]) && $segments[1] === 'edit' && isset($segments[2])) {
-//         $controller->edit($segments[2]);
-//     }
-//     elseif (isset($segments[1]) && $segments[1] === 'update' && isset($_POST)) {
-//         $controller->update($_POST);
-//     }
-//     else {
-//         $controller->index();
-//     }
-// }
 
 elseif ($segments[0] == 'volunteertasks') {
     $controller = new TaskController();

@@ -7,7 +7,7 @@ class AdminUser {
         $this->proxy = $proxy;
     }
     
-    // Create new user
+    
     public function createUser($userData): bool {
         $db = DbConnection::getInstance();
         $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference, IsDeleted) 
@@ -26,12 +26,12 @@ class AdminUser {
         return $db->query($query) ? true : false;
     }
     
-    // Read user details (excluding deleted users)
+    
     public function readUser($userId): string {
         return $this->proxy->displayUserDetails($userId);
     }
     
-    // Update user
+    
     public function updateUser($userId, $userData): bool {
         $db = DbConnection::getInstance();
         $query = "UPDATE User SET 
@@ -48,14 +48,14 @@ class AdminUser {
         return $db->query($query) ? true : false;
     }
     
-    // Soft delete user
+    
     public function deleteUser($userId): bool {
         $db = DbConnection::getInstance();
         $query = "UPDATE User SET IsDeleted = 1 WHERE Id = $userId";
         return $db->query($query) ? true : false;
     }
 
-    // List all active users
+    
     public function listAllUsers(): array {
         $db = DbConnection::getInstance();
         $sql = "SELECT u.Id, u.Name, u.Email, u.Type, u.Phone, u.Age, u.Gender, 
@@ -66,7 +66,7 @@ class AdminUser {
         return $db->fetchAll($sql);
     }
 
-      // Event Management Methods
+      
       public function listAllEvents(): array {
         $db = DbConnection::getInstance();
         $sql = "SELECT * FROM Events WHERE is_deleted = 0";
@@ -85,7 +85,7 @@ class AdminUser {
         return $db->query($query) ? true : false;
     }
 
-    // Task Management Methods
+    
     public function listAllTasks(): array {
         $db = DbConnection::getInstance();
         $sql = "SELECT t.*, u.Name as VolunteerName 
@@ -116,7 +116,7 @@ class AdminUser {
         return $db->query($query) ? true : false;
     }
 
-    // Donation Management Methods
+    
     public function listAllDonations(): array {
         $db = DbConnection::getInstance();
         $sql = "SELECT d.*, u.Name as DonorName 

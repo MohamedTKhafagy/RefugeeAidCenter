@@ -1,7 +1,7 @@
-<!-- views/DonatorView.php -->
+
 <?php
 function renderDonatorView($donator) {
-    // Start output buffering
+    
     ob_start();
     ?>
 <!DOCTYPE html>
@@ -42,6 +42,6 @@ function renderDonatorView($donator) {
 
 </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

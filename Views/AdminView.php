@@ -22,7 +22,6 @@ class AdminView {
             <div class="container mt-4">
                 <h2>Admin Dashboard</h2>
                 
-                <!-- Navigation Tabs -->
                 <ul class="nav nav-tabs mb-4">
                     <li class="nav-item">
                         <a class="nav-link active" onclick="showView('users')">Users</a>
@@ -38,7 +37,6 @@ class AdminView {
                     </li>
                 </ul>
 
-                <!-- Views -->
                 <?php 
                 echo $this->renderUsersView($users);
                 echo $this->renderEventsView($events);
@@ -49,13 +47,10 @@ class AdminView {
 
             <script>
             function showView(viewName) {
-                // Hide all views
                 document.querySelectorAll('.dashboard-view').forEach(view => {
                     view.classList.remove('active');
                 });
-                // Show selected view
                 document.getElementById(viewName + 'View').classList.add('active');
-                // Update active tab
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.classList.remove('active');
                 });
@@ -471,7 +466,7 @@ class AdminView {
         </div>
     
         <script>
-        // Form validation
+        
         (function () {
             'use strict'
             var forms = document.querySelectorAll('.needs-validation')
@@ -504,7 +499,7 @@ class AdminView {
         ];
         return $types[$type] ?? 'Unknown';
     }
-     // Helper Methods for Type Conversions
+     
      private function getEventType($type) {
         $types = [
             0 => 'Workshop',

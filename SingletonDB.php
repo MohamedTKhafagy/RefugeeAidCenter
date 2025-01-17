@@ -47,7 +47,7 @@ class DbConnection
                 return false;
             }
 
-            // Determine types string
+            
             $types = '';
             foreach ($params as $param) {
                 if ($param === null) {
@@ -61,18 +61,18 @@ class DbConnection
                 }
             }
 
-            // Convert null values to actual NULL
+            
             $params = array_map(function ($param) {
                 return $param === null ? NULL : $param;
             }, $params);
 
-            // Bind parameters
+            
             if (!empty($params)) {
                 $bindParams = array_merge([$stmt, $types], $params);
                 call_user_func_array('mysqli_stmt_bind_param', $this->refValues($bindParams));
             }
 
-            // Execute
+            
             if (!mysqli_stmt_execute($stmt)) {
                 error_log("Execute failed: " . mysqli_stmt_error($stmt));
                 error_log("SQL: " . $sql);

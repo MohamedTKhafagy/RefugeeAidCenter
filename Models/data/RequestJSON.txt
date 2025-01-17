@@ -37,5 +37,70 @@
         "CreatedAt": "2025-01-18 09:42:46",
         "UpdatedAt": "2025-01-18 10:06:45",
         "UserId": "4"
+    },
+    {
+        "Id": "7",
+        "RefugeeId": "1",
+        "Name": "fjdgdk",
+        "Description": "gfdgokfd",
+        "Type": "Clothes",
+        "Quantity": "300",
+        "Status": "Declined",
+        "StatusComment": "",
+        "CreatedAt": "2025-01-18 14:04:23",
+        "UpdatedAt": "2025-01-18 14:09:03",
+        "UserId": "4"
+    },
+    {
+        "Id": "8",
+        "RefugeeId": "1",
+        "Name": "3ayzfloos",
+        "Description": "dskj",
+        "Type": "Money",
+        "Quantity": "299",
+        "Status": "Completed",
+        "StatusComment": "",
+        "CreatedAt": "2025-01-18 14:54:29",
+        "UpdatedAt": "2025-01-18 15:14:57",
+        "UserId": "4"
+    },
+    {
+        "Id": "9",
+        "RefugeeId": "1",
+        "Name": "fskf",
+        "Description": "fdsfjs",
+        "Type": "Clothes",
+        "Quantity": "332",
+        "Status": "Completed",
+        "StatusComment": "",
+        "CreatedAt": "2025-01-18 15:52:39",
+        "UpdatedAt": "2025-01-18 15:53:22",
+        "UserId": "4"
+    },
+    {
+        "Id": "10",
+        "RefugeeId": "1",
+        "Name": "TrialRecord",
+        "Description": "Trial",
+        "Type": "Clothes",
+        "Quantity": "123",
+        "Status": "Completed",
+        "StatusComment": "",
+        "CreatedAt": "2025-01-17 23:45:18",
+        "UpdatedAt": "2025-01-17 23:46:46",
+        "UserId": "4"
+    },
+    {
+        "Id": "11",
+        "RefugeeId": "1",
+        "Name": "Trying",
+        "Description": "fgfg",
+        "Type": "Food",
+        "Quantity": "101",
+        "Status": "Completed",
+        "StatusComment": "",
+        "CreatedAt": "2025-01-17 23:42:48",
+        "UpdatedAt": "2025-01-17 23:46:43",
+        "UserId": "4"
     }
 ]

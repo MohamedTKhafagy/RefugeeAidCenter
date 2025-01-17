@@ -5,7 +5,7 @@ class AssignVolunteerState implements TaskWizardStates
 {
     public function nextState(TaskCreationWizard $wizard): void
     {
-        // This is the final state
+        
         $task = $wizard->getTask();
         $task->setStatus('pending');
         $task->save();
@@ -18,7 +18,7 @@ class AssignVolunteerState implements TaskWizardStates
 
     public function execute(TaskCreationWizard $wizard): void
     {
-        // Logic for assigning volunteer to task
+        
         $task = $wizard->getTask();
         if ($task->getVolunteerId() !== null) {
             $this->nextState($wizard);

@@ -3,26 +3,21 @@ include_once "RequestState.php";
 
 class DraftState implements RequestState
 {
-    public function submit(Request $request)
+    public function nextState(Request $request)
     {
+        $request->setState(new PendingState());
         $request->updateStatus('Pending');
-        $request->setState('Pending');
-        echo "Request submitted and is now in Pending state.\n";
+        echo "Request moved to Pending state.\n";
     }
 
-    public function accept(Request $request)
+    public function prevState(Request $request)
     {
-        throw new Exception("Cannot accept a request in Draft state.");
+        echo "This is the initial state; cannot move back further.\n";
     }
 
-    public function complete(Request $request)
+    public function printCurrentState()
     {
-        throw new Exception("Cannot complete a request in Draft state.");
-    }
-
-    public function decline(Request $request)
-    {
-        throw new Exception("Cannot decline a request in Draft state.");
+        echo "Current state: Draft\n";
     }
 }
 ?>

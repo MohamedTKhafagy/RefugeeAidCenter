@@ -10,7 +10,7 @@
     <h2 class="mt-4 mb-4">Edit Nurse</h2>
     <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
     <form action="<?php echo $base_url; ?>/nurses/editNurse" method="POST">
-        <!-- Hidden action field -->
+        
         <input type="hidden" name="action" value="save">
         
         <div class="form-group">

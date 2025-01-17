@@ -1,7 +1,7 @@
 
 <?php
 function renderDonationManagementView($donatorsWithDonations) {
-    // Start output buffering
+    
     ob_start();
     ?>
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ function renderDonationManagementView($donatorsWithDonations) {
     <h1 class="mt-4 mb-4">Donation Management</h1>
     
     
-    <!-- Refugee Table -->
+    
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -58,17 +58,17 @@ function renderDonationManagementView($donatorsWithDonations) {
                             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
                             echo '<a href="' . $base_url . '/donations/view/'.$donation->getID().'" class="btn btn-primary">View</a>';
                         ?>
-                            <!-- Complete Button with Check Icon -->
+                            
                             <a href="<?= $base_url . '/donations/complete/' . $donation->getID(); ?>" class="btn btn-success">
                                 <i class="fas fa-check"></i> Complete
                             </a>
 
-                            <!-- Fail Button with X Icon -->
+                            
                             <a href="<?= $base_url . '/donations/fail/' . $donation->getID(); ?>" class="btn btn-danger">
                                 <i class="fas fa-times"></i> Fail
                             </a>
 
-                            <!-- Undo Button with Undo Icon -->
+                            
                             <a href="<?= $base_url . '/donations/undo/' . $donation->getID(); ?>" class="btn btn-warning">
                                 <i class="fas fa-undo"></i> Undo
                             </a>
@@ -82,6 +82,6 @@ function renderDonationManagementView($donatorsWithDonations) {
 </body>
 </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

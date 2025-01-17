@@ -3,24 +3,19 @@ include_once "RequestState.php";
 
 class CompletedState implements RequestState
 {
-    public function submit(Request $request)
+    public function nextState(Request $request)
     {
-        throw new Exception("Cannot submit a request in Completed state.");
+        echo "Request is already in the Completed state; no further transitions allowed.\n";
     }
 
-    public function accept(Request $request)
-    {
-        throw new Exception("Cannot accept a request in Completed state.");
-    }
-
-    public function complete(Request $request)
+    public function prevState(Request $request)
     {
         throw new Exception("Request is already completed.");
     }
 
-    public function decline(Request $request)
+    public function printCurrentState()
     {
-        throw new Exception("Cannot decline a request in Completed state.");
+        echo "Current state: Completed\n";
     }
 }
 ?>

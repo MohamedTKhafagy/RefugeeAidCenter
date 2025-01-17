@@ -1,4 +1,4 @@
-<!-- views/InventoryListView.php -->
+
 <!DOCTYPE html>
 <html lang="en">
 

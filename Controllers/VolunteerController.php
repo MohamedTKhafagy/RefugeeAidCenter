@@ -85,7 +85,7 @@ class VolunteerController
         $this->checkAdminAccess();
         $db = DbConnection::getInstance();
 
-        // Check if volunteer has any assigned tasks
+        
         $sql = "SELECT COUNT(*) as count FROM Tasks WHERE volunteer_id = ? AND is_deleted = 0";
         $result = $db->fetchAll($sql, [$id]);
 

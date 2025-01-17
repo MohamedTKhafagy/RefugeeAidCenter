@@ -176,7 +176,7 @@ class VolunteerTaskListView
                 <?php endif; ?>
             </div>
 
-            <!-- Delete Confirmation Modal -->
+            
             <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -213,11 +213,11 @@ class VolunteerTaskListView
                     }
 
                     initializeEventListeners() {
-                        // Add any additional event listeners here
+                        
                     }
                 }
 
-                // Initialize the task list manager
+                
                 const taskManager = new TaskListManager('<?= $this->baseUrl ?>');
             </script>
         </body>
@@ -228,7 +228,5 @@ class VolunteerTaskListView
     }
 }
 
-// Usage in controller:
-// $view = new TaskListView($tasks);
-// echo $view->render();
+
 ?>

@@ -251,15 +251,15 @@ class TaskWizardEventView
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
             <script>
                 function selectEvent(element, eventId) {
-                    // Remove selected class from all cards
+                    
                     document.querySelectorAll('.event-card').forEach(card => {
                         card.classList.remove('selected');
                     });
 
-                    // Add selected class to clicked card
+                    
                     element.classList.add('selected');
 
-                    // Update hidden input
+                    
                     document.getElementById('selectedEvent').value = eventId;
                 }
             </script>

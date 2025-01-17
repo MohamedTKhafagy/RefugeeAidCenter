@@ -1,12 +1,12 @@
 <?php
-// Enable error reporting for debugging
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Check if a status query parameter is set
+
 $status = $_GET['status'] ?? '';
 
-// Display a message based on the status
+
 if ($status === 'success') {
     $message = "Message sent successfully!";
 } elseif ($status === 'error') {

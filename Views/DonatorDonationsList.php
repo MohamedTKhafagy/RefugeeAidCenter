@@ -1,7 +1,7 @@
 
 <?php
 function renderDonatorDonationsView($donations) {
-    // Start output buffering
+    
     ob_start();
     ?>
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ function renderDonatorDonationsView($donations) {
     <h1 class="mt-4 mb-4">My Donations</h1>
     
     
-    <!-- Refugee Table -->
+    
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -64,6 +64,6 @@ function renderDonatorDonationsView($donations) {
 </body>
 </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

@@ -2,7 +2,7 @@
 function renderAddRefugeeView($workers = [], $errors = [])
 {
     $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-    // Start output buffering
+
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -211,7 +211,7 @@ function renderAddRefugeeView($workers = [], $errors = [])
                         <button type="button" onclick="addFamily()" style="width:20px;height:20px;padding:0;border-radius:50%;margin-left:10px;">+</button>
                     </div>
                     <div id="family_members"></div>
-                    <!-- <input type="text" id="family" name="family"> -->
+                    
                 </div>
                 <div id="childFields" class="hidden">
                     <div class="form-group">
@@ -279,6 +279,6 @@ function renderAddRefugeeView($workers = [], $errors = [])
 
     </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

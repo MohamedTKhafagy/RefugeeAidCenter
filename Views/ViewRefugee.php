@@ -1,7 +1,7 @@
 <?php
 function renderRefugeeView($refugee)
 {
-    // Start output buffering
+    
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -113,6 +113,6 @@ function renderRefugeeView($refugee)
 
     </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

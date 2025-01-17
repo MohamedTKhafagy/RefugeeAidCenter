@@ -41,29 +41,29 @@ class TaskDetailsCommand implements TaskCommand
     private function updateSkills()
     {
         try {
-            // Remove existing skills
+            
             $this->db->query("DELETE FROM Task_Skills WHERE task_id = ?", [$this->task->getId()]);
 
-            // Add new skills
+            
             if (!empty($this->newDetails['skills'])) {
                 foreach ($this->newDetails['skills'] as $skillName) {
                     if (empty($skillName)) continue;
 
                     error_log("Processing skill: " . $skillName);
 
-                    // Get or create skill
+                    
                     $sql = "SELECT id FROM Skills WHERE name = ?";
                     $existingSkill = $this->db->fetchAll($sql, [$skillName]);
 
                     if (empty($existingSkill)) {
                         error_log("Skill not found, attempting to create new skill");
 
-                        // Get the category ID for this skill
+                        
                         $categoryCheck = $this->db->fetchAll("SELECT id FROM SkillCategories WHERE name = ?", [$skillName]);
                         error_log("Category check result: " . print_r($categoryCheck, true));
 
                         if (!empty($categoryCheck)) {
-                            // Create new skill with the found category ID
+                            
                             $sql = "INSERT INTO Skills (name, category_id, description) VALUES (?, ?, ?)";
                             $result = $this->db->query($sql, [
                                 $skillName,
@@ -105,7 +105,7 @@ class TaskDetailsCommand implements TaskCommand
             $this->task->setHoursOfWork($this->oldDetails['hoursOfWork']);
 
             if ($this->task->save()) {
-                // Restore old skills
+                
                 $this->db->query("DELETE FROM Task_Skills WHERE task_id = ?", [$this->task->getId()]);
                 foreach ($this->oldDetails['skills'] as $skill) {
                     $this->task->addSkill($skill['id']);

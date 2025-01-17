@@ -25,7 +25,7 @@ class DB
             return 0;
         }
 
-        // Extract the IDs and find the maximum
+        
         $ids = array_map(function ($item) use ($idField) {
             return isset($item[$idField]) ? (int)$item[$idField] : 0;
         }, $data);

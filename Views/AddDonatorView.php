@@ -15,7 +15,7 @@ function renderAddDonatorView() {
     <h2 class="mt-4 mb-4">Add New Donator</h2>
     <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
     <form action="<?php echo $base_url; ?>/donators/add" method="POST">
-        <!-- Hidden action field -->
+        
         <input type="hidden" name="action" value="save">
 
         <div class="form-group">
@@ -83,6 +83,6 @@ function renderAddDonatorView() {
 </body>
 </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

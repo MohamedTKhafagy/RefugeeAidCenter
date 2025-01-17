@@ -122,7 +122,7 @@ class TaskController
     public function wizardEvent()
     {
         $this->checkAdminAccess();
-        // Get available events first
+        
         $db = DbConnection::getInstance();
         $sql = "SELECT * FROM Events WHERE date >= CURDATE() AND is_deleted = 0";
         $results = $db->fetchAll($sql);
@@ -142,7 +142,7 @@ class TaskController
             );
         }
 
-        // If no events are available, redirect to event creation
+        
         if (empty($events)) {
             $_SESSION['error'] = "Please create an event first before creating a task.";
             header('Location: ' . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/events/add');
@@ -159,7 +159,7 @@ class TaskController
 
             $task = $this->wizard->getTask();
 
-            // Save the task first if it hasn't been saved yet
+            
             if (!$task->getId()) {
                 $db = DbConnection::getInstance();
                 $sql = "INSERT INTO Tasks (name, description, hours_of_work, status) 
@@ -173,7 +173,7 @@ class TaskController
                 if ($result) {
                     $task->setId($db->lastInsertId());
 
-                    // Save skills
+                    
                     $skills = $task->getSkills();
                     if (!empty($skills)) {
                         foreach ($skills as $skill) {
@@ -192,7 +192,7 @@ class TaskController
             try {
                 $command = new AssignEventCommand($task, $_POST['event_id']);
                 if ($this->wizard->executeCommand($command)) {
-                    // Debug: Check if event ID is set after command execution
+                    
                     $db = DbConnection::getInstance();
                     $sql = "SELECT event_id FROM Tasks WHERE id = ?";
                     $result = $db->fetchAll($sql, [$task->getId()]);
@@ -221,7 +221,7 @@ class TaskController
         $task = $this->wizard->getTask();
         $event = null;
 
-        // Debug: Log task and event information
+        
         $_SESSION['debug'] .= "\nReview - Task ID: " . $task->getId() . ", Event ID: " . $task->getEventId();
 
         if ($task->getEventId()) {
@@ -229,7 +229,7 @@ class TaskController
             $sql = "SELECT * FROM Events WHERE id = ? AND is_deleted = 0";
             $result = $db->fetchAll($sql, [$task->getEventId()]);
 
-            // Debug: Log event query results
+            
             $_SESSION['debug'] .= "\nEvent Query Results: " . (!empty($result) ? "Found" : "Not Found");
 
             if (!empty($result)) {
@@ -244,7 +244,7 @@ class TaskController
                     [], // volunteers array
                     []  // attendees array
                 );
-                // Debug: Log created event object
+                
                 $_SESSION['debug'] .= "\nEvent Object Created - ID: " . $event->getId() . ", Name: " . $event->getName();
             }
         }
@@ -350,7 +350,7 @@ class TaskController
         $this->checkAdminAccess();
         $task = Task::findById($taskId);
         if ($task) {
-            // Only allow completion if task has a volunteer assigned
+            
             if (!$task->getVolunteerId()) {
                 $_SESSION['error'] = "Cannot complete task: No volunteer assigned";
                 $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
@@ -359,7 +359,7 @@ class TaskController
             }
 
             try {
-                // Use the state pattern to transition to the next state
+                
                 $task->nextState();
                 if ($task->save()) {
                     $_SESSION['success'] = "Task state updated successfully to: " . $task->getCurrentState();
@@ -380,10 +380,10 @@ class TaskController
 
     public function cancelWizard()
     {
-        // Reset the wizard state
+        
         $this->wizard->reset();
 
-        // Clear any session data related to the task
+        
         if (isset($_SESSION['task_wizard'])) {
             unset($_SESSION['task_wizard']);
         }
@@ -405,7 +405,7 @@ class TaskController
         }
 
         try {
-            // Create command with current volunteer ID
+            
             $command = new AssignVolunteerCommand($task, $task->getVolunteerId());
             if ($command->undo()) {
                 $_SESSION['success'] = "Volunteer unassigned successfully";

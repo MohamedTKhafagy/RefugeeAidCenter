@@ -21,7 +21,7 @@ class AssignEventCommand implements TaskCommand
         $this->oldEventId = $task->getEventId();
         $this->newEventId = $eventId;
 
-        // Verify event exists
+        
         if ($eventId !== null) {
             $db = DbConnection::getInstance();
             $sql = "SELECT * FROM Events WHERE id = ? AND is_deleted = 0";
@@ -48,7 +48,7 @@ class AssignEventCommand implements TaskCommand
     public function execute()
     {
         $db = DbConnection::getInstance();
-        // If we're assigning to an event, update status to 'assigned'
+        
         $status = $this->newEventId ? 'assigned' : 'pending';
         $taskId = $this->task->getId();
 
@@ -69,7 +69,7 @@ class AssignEventCommand implements TaskCommand
         ]);
 
         if ($result) {
-            // Update the task object's event ID
+            
             $this->task->setEventId($this->newEventId);
         }
 
@@ -79,7 +79,7 @@ class AssignEventCommand implements TaskCommand
     public function undo()
     {
         $db = DbConnection::getInstance();
-        // If we're removing from an event, update status back to 'pending'
+        
         $status = $this->oldEventId ? 'assigned' : 'pending';
         $taskId = $this->task->getId();
 
@@ -100,7 +100,7 @@ class AssignEventCommand implements TaskCommand
         ]);
 
         if ($result) {
-            // Update the task object's event ID
+            
             $this->task->setEventId($this->oldEventId);
         }
 

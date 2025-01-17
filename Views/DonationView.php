@@ -1,7 +1,7 @@
-<!-- views/DonationView.php -->
+
 <?php
 function renderDonationView($donation, $donator, $Invoice) {
-    // Start output buffering
+    
     ob_start();
     ?>
 <!DOCTYPE html>
@@ -24,6 +24,6 @@ function renderDonationView($donation, $donator, $Invoice) {
 </html>
 
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

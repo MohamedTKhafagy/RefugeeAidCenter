@@ -7,7 +7,7 @@ function renderVolunteerListView($volunteers)
     $error = isset($_SESSION['error']) ? $_SESSION['error'] : '';
     unset($_SESSION['success'], $_SESSION['error']);
 
-    // Start output buffering
+    
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -67,7 +67,7 @@ function renderVolunteerListView($volunteers)
                 </thead>
                 <tbody>
                     <?php foreach ($volunteers as $volunteer):
-                        // Check if volunteer has assigned tasks
+                        
                         $db = DbConnection::getInstance();
                         $sql = "SELECT COUNT(*) as count FROM Tasks WHERE volunteer_id = ? AND is_deleted = 0";
                         $result = $db->fetchAll($sql, [$volunteer->getId()]);
@@ -120,7 +120,7 @@ function renderVolunteerListView($volunteers)
 
     </html>
 <?php
-    // Return the buffered content
+    
     return ob_get_clean();
 }
 ?>

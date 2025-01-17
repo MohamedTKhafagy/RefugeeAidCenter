@@ -244,7 +244,7 @@ class TaskListView
                     }
                 }
 
-                // Initialize the task list manager
+                
                 const taskManager = new TaskListManager('<?= $this->baseUrl ?>');
             </script>
         </body>
@@ -255,7 +255,5 @@ class TaskListView
     }
 }
 
-// Usage in controller:
-// $view = new TaskListView($tasks);
-// echo $view->render();
+
 ?>

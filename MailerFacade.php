@@ -39,14 +39,14 @@ class MailerFacade {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($recipient);
     
-            // Email Content
+            
             $this->mailer->isHTML(true);
             $this->mailer->Subject = $subject;
             $this->mailer->Body = $messageBody;
     
-            // Send Email
+            
             $this->mailer->send();
-            return true; // Success
+            return true; 
         } catch (Exception $e) {
             throw new Exception("Failed to send email: {$this->mailer->ErrorInfo}");
         }

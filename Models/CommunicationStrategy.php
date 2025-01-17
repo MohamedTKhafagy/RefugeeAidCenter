@@ -35,4 +35,18 @@ class SMSCommunication implements CommunicationStrategy {
         echo "Sending SMS to {$this->phoneNumber} with message: '{$this->messageBody}'\n";
     }
 }
+class CommunicationContext {
+    private $strategy;
+
+    public function setStrategy(CommunicationStrategy $strategy) {
+        $this->strategy = $strategy;
+    }
+
+    public function executeStrategy() {
+        if (!$this->strategy) {
+            throw new Exception("No communication strategy has been set.");
+        }
+        $this->strategy->notify();
+    }
+}
 ?>

@@ -83,7 +83,7 @@
         <h2>User Registration</h2>
         <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
         <form id="registrationForm" action="<?php echo $base_url ?>/register/new" method="POST" onsubmit="return validateForm()">
-            <!-- Common Fields -->
+            
             <div class="form-group">
                 <label for="type">User Type:</label>
                 <select name="type" id="type" required onchange="toggleFields()">
@@ -158,7 +158,7 @@
                 </select>
             </div>
 
-            <!-- Refugee-Specific Fields -->
+            
             <div id="refugeeFields" class="hidden">
                 <div class="form-group">
                     <label for="profession">Profession:</label>
@@ -182,7 +182,7 @@
                 </div>
             </div>
 
-            <!-- Volunteer-Specific Fields -->
+            
             <div id="volunteerFields" class="hidden">
                 <div class="form-group">
                     <label>Skills:</label>

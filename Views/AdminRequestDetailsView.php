@@ -6,30 +6,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    
-<?php
-require_once __DIR__ . '/../Models/RequestModel.php';
-require_once __DIR__ . '/../Models/Adapter.php';
-
-// Fetch draft and pending requests
-$draftRequests = Request::getRequestsByStatus('Draft');
-$pendingRequests = Request::getRequestsByStatus('Pending');
-$acceptedRequests = Request::getRequestsByStatus('Accepted');
-$completedRequests = Request::getRequestsByStatus('Completed');
-$declinedRequests = Request::getRequestsByStatus('Declined');
-
-
-
-
-
-// Combine both arrays
-$requests = array_merge($draftRequests, $pendingRequests, $acceptedRequests, $completedRequests, $declinedRequests);
-?>
 
 <div class="container">
     <h1 class="mt-4 mb-4">Requests Management</h1>
 
-
+    <?php
+    require_once __DIR__ . '/../Models/RequestModel.php';
+    
+    $requests = Request::all();
+    ?>
 
     <table class="table table-bordered">
         <thead>
@@ -54,11 +39,16 @@ $requests = array_merge($draftRequests, $pendingRequests, $acceptedRequests, $co
                         <?php
                         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
                         ?>
-                        <a href="<?php echo $base_url; ?>/requests/view/<?php echo $request->getId(); ?>" class="btn btn-info">View</a>
-                        <a href="<?php echo $base_url; ?>/requests/submit/<?php echo $request->getId(); ?>" class="btn btn-secondary">Submit</a>
-                        <a href="<?php echo $base_url; ?>/requests/accept/<?php echo $request->getId(); ?>" class="btn btn-primary">Accept</a>
-                        <a href="<?php echo $base_url; ?>/requests/complete/<?php echo $request->getId(); ?>" class="btn btn-success">Complete</a>
-                        <a href="<?php echo $base_url; ?>/requests/decline/<?php echo $request->getId(); ?>" class="btn btn-danger">Decline</a>
+<td>
+    <?php
+    $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+    ?>
+    <a href="<?php echo $base_url; ?>/requests/view/<?php echo $request->getId(); ?>" class="btn btn-info">View</a>
+    <a href="<?php echo $base_url; ?>/requests/submit/<?php echo $request->getId(); ?>" class="btn btn-secondary">Next State</a>
+    <a href="<?php echo $base_url; ?>/requests/decline/<?php echo $request->getId(); ?>" class="btn btn-danger">Decline</a>
+    <a href="<?php echo $base_url; ?>/requests/previous/<?php echo $request->getId(); ?>" class="btn btn-warning">Previous State</a>
+</td>
+
                     </td>
                 </tr>
             <?php endforeach; ?>

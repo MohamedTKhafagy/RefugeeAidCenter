@@ -16,7 +16,7 @@ class AssignEventState implements TaskWizardStates
 
     public function execute(TaskCreationWizard $wizard): void
     {
-        // Logic for assigning event to task
+        
         $task = $wizard->getTask();
         if ($task->getEventId() !== null) {
             $this->nextState($wizard);

@@ -5,7 +5,7 @@ function renderEventDetailsView($event, $tasks)
 {
     $baseUrl = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 
-    // Start output buffering
+    
     ob_start();
 ?>
     <!DOCTYPE html>

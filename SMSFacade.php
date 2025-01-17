@@ -25,14 +25,14 @@ class SMSFacade {
         $request->setMethod(HTTP_Request2::METHOD_POST);
         $request->setConfig(['follow_redirects' => true]);
 
-        // Set headers
+        
         $request->setHeader([
             'Authorization' => "App {$this->apiKey}",
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]);
 
-        // Set request body
+        
         $request->setBody(json_encode([
             'messages' => [
                 [
@@ -43,7 +43,7 @@ class SMSFacade {
             ],
         ]));
 
-        // Send request and handle response
+        
         try {
             $response = $request->send();
             if ($response->getStatus() == 200) {

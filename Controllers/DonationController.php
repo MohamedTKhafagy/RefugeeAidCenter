@@ -10,14 +10,13 @@ class DonationController
     public function index()
     {
         $donations = Donation::all();
-         // Initialize an array to store donators associated with donations
         $donatorsWithDonations = [];
 
-        // Loop through each donation to find the associated donator
+        
         foreach ($donations as $donation) {
             $donatorId = $donation->findDonatorId();
             $donator = Donator::findById($donatorId);
-            // Add the donator and their donation to the array
+        
             $donatorsWithDonations[] = [
                 'donation' => $donation,
                 'donator' => $donator,
@@ -42,7 +41,7 @@ class DonationController
             //validation
             $donation = $this->saveDonation($data);
             //$donation->Donate();
-            // Get the current URL
+            
             $donation->recordTransaction($userid);
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/donations/view/' . $donation->getID());

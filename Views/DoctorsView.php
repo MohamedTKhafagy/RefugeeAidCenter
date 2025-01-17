@@ -9,7 +9,7 @@
 <div class="container">
     <h1 class="mt-4 mb-4">Doctor Management</h1>
     
-    <!-- Add New Refugee Button -->
+    
     <div class="mb-3">
     <?php
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
@@ -17,7 +17,7 @@
         ?>
     </div>
     
-    <!-- Refugee Table -->
+    
     <table class="table table-bordered">
         <thead>
             <tr>

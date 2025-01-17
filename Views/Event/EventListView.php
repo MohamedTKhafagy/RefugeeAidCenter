@@ -5,7 +5,7 @@ function renderEventListView($events)
 {
     $baseUrl = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 
-    // Start output buffering
+    
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -152,6 +152,6 @@ function renderEventListView($events)
 
     </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

@@ -1,5 +1,7 @@
 <?php
 $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+$errorMessage = $_GET['error'] ?? null; 
+$refugeeId = $_SESSION['refugeeId'] ?? null; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,10 +14,14 @@ $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 <div class="container">
     <h1 class="mt-4 mb-4">Create New Request</h1>
 
+    <?php if ($errorMessage): ?>
+        <div class="alert alert-danger"><?php echo htmlspecialchars($errorMessage); ?></div>
+    <?php endif; ?>
+
     <form method="POST" action="<?php echo $base_url; ?>/requests/add">
         <div class="form-group">
             <label for="refugeeId">Refugee ID</label>
-            <input type="number" class="form-control" id="refugeeId" name="RefugeeId" required>
+            <input type="number" class="form-control" id="refugeeId" name="RefugeeId" value="<?php echo htmlspecialchars($refugeeId); ?>" readonly>
         </div>
         <div class="form-group">
             <label for="name">Request Name</label>

@@ -3,28 +3,23 @@ include_once "RequestState.php";
 
 class PendingState implements RequestState
 {
-    public function submit(Request $request)
+    public function nextState(Request $request)
     {
-        throw new Exception("Request is already submitted.");
-    }
-
-    public function accept(Request $request)
-    {
+        $request->setState(new AcceptedState());
         $request->updateStatus('Accepted');
-        $request->setState('Accepted');
-        echo "Request accepted and is now in Accepted state.\n";
+        echo "Request moved to Accepted state.\n";
     }
 
-    public function complete(Request $request)
+    public function prevState(Request $request)
     {
-        throw new Exception("Cannot complete a request in Pending state.");
+        $request->setState(new DraftState());
+        $request->updateStatus('Draft');
+        echo "Request moved back to Draft state.\n";
     }
 
-    public function decline(Request $request)
+    public function printCurrentState()
     {
-        $request->updateStatus('Declined');
-        $request->setState('Declined');
-        echo "Request declined and is now in Declined state.\n";
+        echo "Current state: Pending\n";
     }
 }
 ?>

@@ -10,7 +10,7 @@
     <h2 class="mt-4 mb-4">Make a Donation</h2>
     <?php $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>
     <form action="<?php echo $base_url; ?>/donations/makeDonation" method="POST">
-        <!-- Hidden action field -->
+        
         <input type="hidden" name="action" value="save">
 
         

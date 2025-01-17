@@ -2,10 +2,10 @@
 
 interface RequestState
 {
-    public function submit(Request $request);
-    public function accept(Request $request);
-    public function complete(Request $request);
-    public function decline(Request $request);
+    public function nextState(Request $request);
+    public function prevState(Request $request);
+    public function printCurrentState();
 }
 
 ?>
+

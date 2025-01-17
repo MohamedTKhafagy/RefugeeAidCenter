@@ -1,6 +1,6 @@
 <?php
 function renderDonatorsView($donators) {
-    // Start output buffering
+    
     ob_start();
     ?>
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ function renderDonatorsView($donators) {
 <div class="container">
     <h1 class="mt-4 mb-4">Donator Management</h1>
     
-    <!-- Add New Refugee Button -->
+    
     <div class="mb-3">
     <?php
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
@@ -22,7 +22,7 @@ function renderDonatorsView($donators) {
         ?>
     </div>
     
-    <!-- Refugee Table -->
+    
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -55,6 +55,6 @@ function renderDonatorsView($donators) {
 </body>
 </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

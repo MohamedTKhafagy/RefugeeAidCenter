@@ -15,16 +15,30 @@ class RequestController
     public function add($data = null)
     {
         session_start();
-        $userid = $_SESSION['user']['id'];
+        $userId = $_SESSION['user']['id']; 
+        $db = DbConnection::getInstance();
+    
+
+        $refugee = $db->fetchAll("SELECT Id FROM Refugee WHERE UserId = $userId");
+        if (empty($refugee)) {
+            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+            header('Location: ' . $base_url . '/requests/create?error=No associated refugee profile found for your account.');
+            return;
+        }
+    
+        $refugeeId = $refugee[0]['Id']; 
+        $_SESSION['refugeeId'] = $refugeeId; 
+    
         if ($data) {
+
             $request = new Request(
                 null,
-                $data['RefugeeId'] ?? null,
+                $refugeeId,
                 $data['Name'] ?? null,
                 $data['Description'] ?? null,
                 $data['Type'] ?? null,
                 $data['Quantity'] ?? null,
-                $userid,
+                $userId
             );
             $request = $request->save();
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
@@ -33,78 +47,75 @@ class RequestController
             require 'Views/CreateRequestView.php';
         }
     }
+    
+    
 
     public function submitRequest($id)
     {
         $request = Request::findById($id);
-        $request->submit();
-        // $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        // header('Location: ' . $base_url . '/requests/view/' . $id);
+        $request->executeNextState();
     }
 
-    public function completeRequest($id)
+    public function nextStateRequest($id)
     {
         $request = Request::findById($id);
-        $request->complete();
+    
+        $request->executeNextState();
+
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         header('Location: ' . $base_url . '/requests/view/' . $id);
     }
+
+    public function previousStateRequest($id)
+{
+    $request = Request::findById($id);
+
+    $request->executePrevState();
+
+    $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+    header('Location: ' . $base_url . '/requests/view/' . $id);
+}
+
 
     public function declineRequest($id)
     {
         $request = Request::findById($id);
-        $request->decline();
-        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        header('Location: ' . $base_url . '/requests/view/' . $id);
+    
+        if ($request->getStatus() === 'Completed') {
+            echo "Error: A completed request cannot be declined.";
+            return;
+        }
+    
+
+        $request->setState(new DeclinedState());
+        $request->updateStatus('Declined');
+        echo "Request has been manually set to Declined state.\n";
     }
-
-
-    public function acceptRequest($id)
-    {
-
-        $request = Request::findById($id);
-        $request->accept();
-        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        header('Location: ' . $base_url . '/requests/view/' . $id);
-    }
-
 
     public function findRequestByIdAdmin()
     {
-        // Fetch all requests from the database
         $requests = Request::alladapter();
-    
-        // Convert rows to an array of associative arrays (if needed)
+
         if (!is_array($requests)) {
             throw new Exception("Error: Data returned by alladapter is invalid.");
         }
-    
-        // Use the adapter to convert to JSON
+
         $adapter = new JSONAdapter();
         try {
             $adapter->ToJSON($requests);
         } catch (Exception $e) {
             echo " Error: " . $e->getMessage();
         }
-    
+
         require 'Views/AdminRequestDetailsView.php';
     }
-    
-    //
 
     public function findRequestByIdRefugee()
     {
         session_start();
-        $userid = $_SESSION['user']['id'];
-        $requests = Request::findByRefugeeId($userid);
+        $userId = $_SESSION['user']['id'];
+        $requests = Request::findByRefugeeId($userId);
         echo renderRefugeeRequestsView($requests);
     }
 }
 ?>
-
-
-
-
-
-
-

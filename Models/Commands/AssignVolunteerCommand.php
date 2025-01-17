@@ -20,7 +20,7 @@ class AssignVolunteerCommand implements TaskCommand
         $this->oldVolunteerId = $task->getVolunteerId();
         $this->newVolunteerId = $volunteerId;
 
-        // Verify volunteer exists if not null
+        
         if ($volunteerId !== null) {
             $db = DbConnection::getInstance();
             $sql = "SELECT * FROM User WHERE Id = ? AND IsDeleted = 0";
@@ -40,7 +40,7 @@ class AssignVolunteerCommand implements TaskCommand
             throw new Exception("Cannot assign volunteer: Task ID is missing");
         }
 
-        // Update task with new volunteer ID and set status to in_progress if assigning
+        
         $status = $this->newVolunteerId ? 'in_progress' : 'pending';
         $volunteerId = $this->newVolunteerId ? $this->newVolunteerId : null;
 
@@ -67,7 +67,7 @@ class AssignVolunteerCommand implements TaskCommand
             throw new Exception("Cannot undo volunteer assignment: Task ID is missing");
         }
 
-        // When undoing, we always want to remove the volunteer assignment
+        
         $status = 'pending';
         $volunteerId = null;
 

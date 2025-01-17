@@ -99,7 +99,7 @@ class Refugee extends User
     {
         $db = DbConnection::getInstance();
 
-        // Query to get all refugees along with their user data
+        
         $query = "
     SELECT 
         User.Id AS UserId, User.Name, User.Age, User.Gender, User.Address, 

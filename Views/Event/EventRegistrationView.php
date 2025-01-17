@@ -7,7 +7,7 @@ function renderEventRegistrationView($events, $userId, $registeredEvents = [])
     $error = isset($_SESSION['error']) ? $_SESSION['error'] : '';
     unset($_SESSION['success'], $_SESSION['error']);
 
-    // Start output buffering
+    
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -137,6 +137,6 @@ function renderEventRegistrationView($events, $userId, $registeredEvents = [])
 
     </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

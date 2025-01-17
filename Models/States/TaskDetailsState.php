@@ -16,7 +16,7 @@ class TaskDetailsState implements TaskWizardStates
 
     public function execute(TaskCreationWizard $wizard): void
     {
-        // Logic for collecting and validating task details
+        
         $task = $wizard->getTask();
         if (!empty($task->getName()) && !empty($task->getDescription())) {
             $this->nextState($wizard);

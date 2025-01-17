@@ -2,7 +2,7 @@
 function renderRefugeeListView($refugees, $rIterator)
 {
     $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-    // Start output buffering
+    
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -61,6 +61,6 @@ function renderRefugeeListView($refugees, $rIterator)
 
     </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

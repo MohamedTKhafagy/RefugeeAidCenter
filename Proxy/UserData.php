@@ -1,6 +1,6 @@
 <?php
 
-// 1. Interface that both the RealSubject (UserModel) and Proxy must implement
+// to be implemented by UserModel and Proxy
 interface UserData {
     public function displayUserDetails($userId): string;
 }

@@ -185,10 +185,10 @@
             const skillEntries = container.querySelectorAll('.skill-entry');
             const newSkill = skillEntries[0].cloneNode(true);
 
-            // Clear selections in the new element
+            
             newSkill.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
 
-            // Add remove button functionality
+            
             newSkill.querySelector('.remove-skill').addEventListener('click', function() {
                 this.closest('.skill-entry').remove();
             });
@@ -196,7 +196,7 @@
             container.appendChild(newSkill);
         });
 
-        // Add remove functionality to all existing skill entries
+        
         document.querySelectorAll('.remove-skill').forEach(button => {
             button.addEventListener('click', function() {
                 if (document.querySelectorAll('.skill-entry').length > 1) {

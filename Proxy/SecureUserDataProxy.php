@@ -6,12 +6,12 @@ class SecureUserDataProxy implements UserData {
         $this->userModel = $userModel;
     }
     
-     // Check if current user is admin (type = 8)
+     // Admin (Type 8)
      private function verifyAdminAccess(): bool {
         return $this->userModel->getType() == 8;
     }
     
-    // Retrieve the actual user data if access is granted
+    //el user object
     private function retrieveRealData($userId): ?User {
         if ($this->verifyAdminAccess()) {
             return $this->userModel;
@@ -19,7 +19,6 @@ class SecureUserDataProxy implements UserData {
         return null;
     }
     
-    // Implementation of the interface method with access control
     public function displayUserDetails($userId): string {
         if ($this->verifyAdminAccess()) {
             $db = DbConnection::getInstance();

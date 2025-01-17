@@ -37,7 +37,7 @@ class Task
         $this->volunteerId = $volunteerId;
         $this->createdAt = date('Y-m-d H:i:s');
 
-        // Initialize the correct state based on status
+        
         switch ($status) {
             case 'completed':
                 $this->currentState = new TaskCompletedState();
@@ -117,7 +117,7 @@ class Task
         return implode(', ', array_column($this->getSkills(), 'name'));
     }
 
-    // State pattern methods
+    
     public function setState(TaskStates $state): void
     {
         $this->currentState = $state;
@@ -218,7 +218,7 @@ class Task
         try {
             $db = DbConnection::getInstance();
             if ($this->id) {
-                // Update existing task
+                
                 $sql = "UPDATE Tasks SET 
                     name = ?, 
                     description = ?, 
@@ -238,7 +238,7 @@ class Task
                 ]);
                 return true;
             } else {
-                // Insert new task
+                
                 $sql = "INSERT INTO Tasks (name, description, hours_of_work, status, event_id, volunteer_id) 
                         VALUES (?, ?, ?, ?, ?, ?)";
                 $db->query($sql, [
@@ -250,7 +250,7 @@ class Task
                     $this->volunteerId
                 ]);
 
-                // Get the last inserted ID
+                
                 $result = $db->fetchAll("SELECT LAST_INSERT_ID() as id");
                 $this->id = $result[0]['id'];
                 return true;

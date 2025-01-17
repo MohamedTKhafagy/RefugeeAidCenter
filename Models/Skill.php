@@ -83,7 +83,7 @@ class Skill
             $db = DbConnection::getInstance();
 
             if ($this->id) {
-                // Update existing skill
+                
                 $sql = "UPDATE Skills SET 
                         name = ?,
                         category_id = ?,
@@ -96,7 +96,7 @@ class Skill
                     $this->id
                 ]);
             } else {
-                // Insert new skill
+                
                 $sql = "INSERT INTO Skills (name, category_id, description) 
                         VALUES (?, ?, ?)";
                 $db->query($sql, [
@@ -105,7 +105,7 @@ class Skill
                     $this->description
                 ]);
 
-                // Get the last inserted ID
+                
                 $result = $db->fetchAll("SELECT LAST_INSERT_ID() as id");
                 $this->id = $result[0]['id'];
             }

@@ -3,7 +3,7 @@ function renderEventFormView($event = null)
 {
     $baseUrl = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 
-    // Start output buffering
+    
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -141,6 +141,6 @@ function renderEventFormView($event = null)
 
     </html>
 <?php
-    // End output buffering and return the content
+    
     return ob_get_clean();
 }

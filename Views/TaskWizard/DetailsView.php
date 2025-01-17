@@ -267,7 +267,7 @@ class TaskWizardDetailsView
 
         <body class="bg-light">
             <div class="container mt-5">
-                <!-- Cancel form completely separate from task form -->
+                
                 <form action="<?= $this->baseUrl ?>/tasks/wizard/cancel" method="post" id="cancelForm">
                 </form>
 
@@ -278,7 +278,7 @@ class TaskWizardDetailsView
                     </button>
                 </div>
 
-                <!-- Wizard Progress -->
+                
                 <div class="wizard-progress">
                     <div class="wizard-step step-active">
                         <div class="step-number">1</div>
@@ -326,7 +326,7 @@ class TaskWizardDetailsView
                                         <?php
                                         $skills = $task->getSkills();
                                         if (empty($skills)) {
-                                            // Add one empty skill entry by default
+                                            
                                         ?>
                                             <div class="skill-entry">
                                                 <div class="form-row">
@@ -399,10 +399,10 @@ class TaskWizardDetailsView
                     const skillEntries = container.querySelectorAll('.skill-entry');
                     const newSkill = skillEntries[0].cloneNode(true);
 
-                    // Clear selections in the new element
+                    
                     newSkill.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
 
-                    // Add remove button functionality
+                    
                     newSkill.querySelector('.remove-skill').addEventListener('click', function() {
                         this.closest('.skill-entry').remove();
                     });
@@ -410,7 +410,7 @@ class TaskWizardDetailsView
                     container.appendChild(newSkill);
                 });
 
-                // Add remove functionality to all existing skill entries
+                
                 document.querySelectorAll('.remove-skill').forEach(button => {
                     button.addEventListener('click', function() {
                         if (document.querySelectorAll('.skill-entry').length > 1) {
