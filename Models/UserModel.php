@@ -43,10 +43,6 @@ abstract class User implements UserData
         $this->Type = $Type;
         $this->Email = $Email;
         $this->Preference = $Preference;
-    }*/
-    public function __construct()
-    {
-        self::$db = DbConnection::getInstance();
     }
 
     public function getUserDetails(int $UserId): ?array
