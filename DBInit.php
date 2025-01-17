@@ -77,4 +77,22 @@ $db->query("
 );
 ");
 
+$db->query("
+    CREATE TABLE user_roles (
+    user_id INT,
+    role VARCHAR(50),
+    PRIMARY KEY (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+");
+$db->query("
+    CREATE TABLE permissions (
+    role VARCHAR(50),
+    permission VARCHAR(50),
+    granted BOOLEAN,
+    PRIMARY KEY (role, permission)
+);
+");
+
 ?>
