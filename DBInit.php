@@ -195,7 +195,7 @@ $db->query("
 $db->query("
    CREATE TABLE IF NOT EXISTS Volunteer (
     VolunteerId INT PRIMARY KEY,
-    Availability VARCHAR(255) NOT NULL,
+    Availability TINYINT UNSIGNED NOT NULL DEFAULT 0,
     IsDeleted TINYINT(1) DEFAULT 0,
     FOREIGN KEY (VolunteerId) REFERENCES User(Id)
 );
@@ -280,6 +280,20 @@ $db->query("
     PRIMARY KEY (volunteer_id, skill_id),
     FOREIGN KEY (volunteer_id) REFERENCES Volunteer(VolunteerId) ON DELETE CASCADE,
     FOREIGN KEY (skill_id) REFERENCES Skills(id) ON DELETE CASCADE
+);
+");
+
+$db->query("
+   CREATE TABLE IF NOT EXISTS Event_Registrations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT NOT NULL,
+    user_id INT NOT NULL,
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'registered',
+    is_deleted TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (event_id) REFERENCES Events(id),
+    FOREIGN KEY (user_id) REFERENCES User(Id),
+    UNIQUE KEY unique_registration (event_id, user_id)
 );
 ");
 

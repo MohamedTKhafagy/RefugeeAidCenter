@@ -31,6 +31,36 @@ class Event
         return $this->id;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function getMaxCapacity()
+    {
+        return $this->maxCapacity;
+    }
+
+    public function getCurrentCapacity()
+    {
+        return $this->currentCapacity;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
     public function changeDate($changedDate)
     {
         $this->date = $changedDate;
@@ -39,11 +69,6 @@ class Event
     public function getAttendees()
     {
         return $this->attendees;
-    }
-
-    public function getCurrentCapacity()
-    {
-        return $this->currentCapacity;
     }
 
     public function delete()

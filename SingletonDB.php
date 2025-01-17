@@ -154,4 +154,9 @@ class DbConnection
         }
         return $stmt;
     }
+
+    public function lastInsertId()
+    {
+        return mysqli_insert_id($this->database_connection);
+    }
 }

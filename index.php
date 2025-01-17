@@ -170,46 +170,128 @@ if ($segments[0] == 'refugees') {
 }
 if ($segments[0] == 'tasks') {
     $controller = new TaskController();
-
     if (isset($segments[1])) {
         switch ($segments[1]) {
-            case 'add':
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $controller->add($_POST);
+            case 'wizard':
+                if (!isset($segments[2])) {
+                    $controller->startWizard();
                 } else {
-                    $controller->add();
+                    switch ($segments[2]) {
+                        case 'details':
+                            $controller->wizardDetails();
+                            break;
+                        case 'event':
+                            $controller->wizardEvent();
+                            break;
+                        case 'review':
+                            $controller->wizardReview();
+                            break;
+                        case 'complete':
+                            $controller->wizardComplete();
+                            break;
+                        case 'cancel':
+                            $controller->cancelWizard();
+                            break;
+                        default:
+                            header('Location: ' . $baseUrl . '/tasks');
+                            exit;
+                    }
                 }
                 break;
             case 'edit':
-                if (isset($segments[2])) {
-                    $controller->edit($segments[2]);
-                }
+                if (isset($segments[2])) $controller->edit($segments[2]);
                 break;
             case 'update':
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $controller->update($_POST);
-                }
+                $controller->update((isset($_POST) && !empty($_POST)) ? $_POST : null);
                 break;
             case 'delete':
-                if (isset($segments[2])) {
-                    $controller->delete($segments[2]);
-                }
+                if (isset($segments[2])) $controller->delete($segments[2]);
                 break;
             case 'assign':
-                if (isset($segments[2])) {
-                    $controller->assign($segments[2]);
-                }
+                if (isset($segments[2])) $controller->assign($segments[2]);
+                break;
+            case 'unassign':
+                if (isset($segments[2])) $controller->unassign($segments[2]);
                 break;
             case 'complete':
-                if (isset($segments[2])) {
-                    $controller->complete($segments[2]);
-                }
+                if (isset($segments[2])) $controller->complete($segments[2]);
                 break;
             default:
                 $controller->index();
         }
     } else {
         $controller->index();
+    }
+} elseif ($segments[0] == 'events') {
+    require_once 'Controllers/EventController.php';
+    require_once 'Views/Event/EventListView.php';
+    require_once 'Views/Event/EventFormView.php';
+    require_once 'Views/Event/EventDetailsView.php';
+    require_once 'Views/Event/EventRegistrationView.php';
+
+    $controller = new EventController();
+
+    if (count($segments) == 1) {
+        $controller->index();
+    } else {
+        switch ($segments[1]) {
+            case 'add':
+                $controller->add();
+                break;
+            case 'edit':
+                if (isset($segments[2])) {
+                    $controller->edit($segments[2]);
+                } else {
+                    header('Location: ' . $baseUrl . '/events');
+                }
+                break;
+            case 'delete':
+                if (isset($segments[2])) {
+                    $controller->delete($segments[2]);
+                } else {
+                    header('Location: ' . $baseUrl . '/events');
+                }
+                break;
+            case 'details':
+                if (isset($segments[2])) {
+                    $controller->details($segments[2]);
+                } else {
+                    header('Location: ' . $baseUrl . '/events');
+                }
+                break;
+            case 'registration':
+                $controller->registration();
+                break;
+            case 'register':
+                $controller->register();
+                break;
+            case 'unregister':
+                $controller->unregister();
+                break;
+            default:
+                header('Location: ' . $baseUrl . '/events');
+        }
+    }
+    exit;
+} else if ($segments[0] == 'test') {
+    require_once 'tests/TestController.php';
+    $controller = new TestController();
+
+    if (count($segments) > 1) {
+        switch ($segments[1]) {
+            case 'mock-login':
+                $controller->mockLogin();
+                break;
+            case 'mock-logout':
+                $controller->mockLogout();
+                break;
+            default:
+                header('Location: ' . $baseUrl . '/login');
+                exit;
+        }
+    } else {
+        header('Location: ' . $baseUrl . '/login');
+        exit;
     }
 } else {
 }
