@@ -137,7 +137,7 @@ class AdminView {
                             <td><?= $event['current_capacity'] ?>/<?= $event['max_capacity'] ?></td>
                             <td><?= htmlspecialchars($event['date']) ?></td>
                             <td>
-                                <a href="/admin/editEvent/<?= $event['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="admin/editEvent/<?= $event['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
                                 <button onclick="deleteEvent(<?= $event['id'] ?>)" class="btn btn-sm btn-danger">Delete</button>
                             </td>
                         </tr>
@@ -178,7 +178,7 @@ class AdminView {
                             <td><?= htmlspecialchars($task['VolunteerName'] ?? 'Unassigned') ?></td>
                             <td><?= $task['IsCompleted'] ? 'Completed' : 'In Progress' ?></td>
                             <td>
-                                <a href="/admin/editTask/<?= $task['Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="admin/editTask/<?= $task['Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
                                 <button onclick="deleteTask(<?= $task['Id'] ?>)" class="btn btn-sm btn-danger">Delete</button>
                             </td>
                         </tr>
@@ -217,7 +217,7 @@ class AdminView {
                             <td><?= $this->getCollectionStatus($donation['Collection']) ?></td>
                             <td><?= $this->getCurrencyType($donation['Currency']) ?></td>
                             <td>
-                                <a href="/admin/editDonation/<?= $donation['Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="admin/editDonation/<?= $donation['Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -251,6 +251,14 @@ class AdminView {
                         <option value="0" <?= $user['Gender'] == 0 ? 'selected' : '' ?>>Male</option>
                         <option value="1" <?= $user['Gender'] == 1 ? 'selected' : '' ?>>Female</option>
                     </select>
+                </div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                    <select class="form-control" id="address" name="Address">
+                        <option value="1" <?= $user['Address'] == 1 ? 'selected' : '' ?>>Egypt</option>
+                        <option value="2" <?= $user['Address'] == 2 ? 'selected' : '' ?>>America</option>
+                    </select>
+                <div>
+
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
@@ -288,7 +296,7 @@ class AdminView {
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Update User</button>
-                <a href="/admin" class="btn btn-secondary">Cancel</a>
+                <a href="/RefugeeAidCenter/admin" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
         <?php
@@ -330,7 +338,7 @@ class AdminView {
                            value="<?= htmlspecialchars($event['date']) ?>" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Update Event</button>
-                <a href="/admin" class="btn btn-secondary">Cancel</a>
+                <a href="/RefugeeAidCenter/admin" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
         <?php
@@ -390,7 +398,99 @@ class AdminView {
         <?php
         return ob_get_clean();
     }
-
+    public function renderEditDonation($donation, $users) {
+        ob_start();
+        ?>
+        <div class="container mt-4">
+            <h2>Edit Donation</h2>
+            <form method="POST" class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="amount" 
+                               name="Amount" 
+                               value="<?= htmlspecialchars($donation['Amount']) ?>" 
+                               required>
+                    </div>
+    
+                    <div class="col-md-6 mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <select class="form-select" id="type" name="Type" required>
+                            <option value="0" <?= $donation['Type'] == 0 ? 'selected' : '' ?>>Money</option>
+                            <option value="1" <?= $donation['Type'] == 1 ? 'selected' : '' ?>>Food</option>
+                            <option value="2" <?= $donation['Type'] == 2 ? 'selected' : '' ?>>Clothes</option>
+                            <option value="3" <?= $donation['Type'] == 3 ? 'selected' : '' ?>>Medicine</option>
+                            <option value="4" <?= $donation['Type'] == 4 ? 'selected' : '' ?>>Other</option>
+                        </select>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="directedTo" class="form-label">Directed To</label>
+                        <select class="form-select" id="directedTo" name="DirectedTo">
+                            <option value="">Select Recipient</option>
+                            <?php foreach ($users as $user): ?>
+                                <option value="<?= $user['Id'] ?>" 
+                                        <?= $donation['DirectedTo'] == $user['Id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($user['Name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+    
+                    <div class="col-md-6 mb-3">
+                        <label for="collection" class="form-label">Collection Status</label>
+                        <select class="form-select" id="collection" name="Collection" required>
+                            <option value="0" <?= $donation['Collection'] == 0 ? 'selected' : '' ?>>Pending</option>
+                            <option value="1" <?= $donation['Collection'] == 1 ? 'selected' : '' ?>>Collected</option>
+                            <option value="2" <?= $donation['Collection'] == 2 ? 'selected' : '' ?>>Distributed</option>
+                        </select>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="currency" class="form-label">Currency</label>
+                        <select class="form-select" id="currency" name="Currency" required>
+                            <option value="0" <?= $donation['Currency'] == 0 ? 'selected' : '' ?>>USD</option>
+                            <option value="1" <?= $donation['Currency'] == 1 ? 'selected' : '' ?>>EUR</option>
+                            <option value="2" <?= $donation['Currency'] == 2 ? 'selected' : '' ?>>GBP</option>
+                        </select>
+                    </div>
+                </div>
+    
+                <div class="row mt-3">
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Update Donation</button>
+                        <a href="/admin" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    
+        <script>
+        // Form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+        </script>
+        <?php
+        return ob_get_clean();
+    }
 
     private function getUserType($type) {
         $types = [

@@ -35,7 +35,7 @@ class AdminController {
             // Handle form submission
             $result = $this->model->updateUser($userId, $_POST);
             if ($result) {
-                header('Location: /admin');
+                header('Location:/RefugeeAidCenter/admin');
                 exit;
             }
         }
@@ -47,7 +47,7 @@ class AdminController {
     public function deleteUser($userId) {
         $result = $this->model->deleteUser($userId);
         if ($result) {
-            header('Location: /admin');
+            header('Location:/RefugeeAidCenter/admin'); //here change
             exit;
         } else {
             echo "Failed to delete user.";
@@ -58,7 +58,7 @@ class AdminController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $this->model->updateEvent($eventId, $_POST);
             if ($result) {
-                header('Location: /admin');
+                header('Location:/RefugeeAidCenter/admin');
                 exit;
             }
         }
@@ -71,7 +71,7 @@ class AdminController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $this->model->updateTask($taskId, $_POST);
             if ($result) {
-                header('Location: /admin');
+                header('Location:/RefugeeAidCenter/admin');
                 exit;
             }
         }
@@ -85,7 +85,7 @@ class AdminController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $this->model->updateDonation($donationId, $_POST);
             if ($result) {
-                header('Location: /admin');
+                header('Location:/RefugeeAidCenter/admin');
                 exit;
             }
         }
