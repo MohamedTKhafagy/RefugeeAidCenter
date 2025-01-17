@@ -90,7 +90,7 @@
                     <option value="volunteer">Volunteer</option>
                 </select>
             </div>
-            
+
 
             <div class="form-group">
                 <label for="name">Email:</label>
@@ -105,13 +105,13 @@
             <button type="submit">Login</button>
         </form>
         <?php
-            if (isset($commonErrors) && !empty($commonErrors)) {
-                echo "<ul>";
-                foreach ($commonErrors as $error) {
-                    echo "<li style='color:red'>$error</li>";
-                }
-                echo "</ul>";
+        if (isset($commonErrors) && !empty($commonErrors)) {
+            echo "<ul>";
+            foreach ($commonErrors as $error) {
+                echo "<li style='color:red'>$error</li>";
             }
+            echo "</ul>";
+        }
         ?>
     </div>
 </body>
