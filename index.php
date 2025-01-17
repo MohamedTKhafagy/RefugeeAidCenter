@@ -244,7 +244,7 @@ if ($segments[0] == 'tasks') {
         $controller->index();
     }
 }
-} 
+
 if ($segments[0] == 'tasks') {
     $controller = new TaskController();
 
@@ -261,4 +261,6 @@ if ($segments[0] == 'tasks') {
 else {
     
 }
+
+
 ?>

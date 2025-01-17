@@ -243,6 +243,23 @@ $db->query("
     FOREIGN KEY (VolunteerId) REFERENCES User(Id)
 );
 ");
+
+
+$db->query("
+    CREATE TABLE IF NOT EXISTS Task (
+        Id INT AUTO_INCREMENT PRIMARY KEY,
+        Name VARCHAR(255) NOT NULL,
+        Description TEXT,
+        SkillRequired VARCHAR(255),
+        HoursOfWork INT,
+        AssignedVolunteerId INT,
+        IsDeleted BOOLEAN DEFAULT 0,
+        IsCompleted BOOLEAN DEFAULT 0,
+        FOREIGN KEY (AssignedVolunteerId) REFERENCES User(Id)
+    );
+");
+
+
 /*
 
 $db->query("
