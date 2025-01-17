@@ -9,9 +9,10 @@ class UserAdmin
 {
     private SecureUserDataProxy $secureUserDataProxy;
 
-    public function __construct(User $user)
+  // Added the current user ID to the constructor so we can track it for later use 
+    public function __construct(User $user, int $currentUserId)
     {
-        $this->secureUserDataProxy = new SecureUserDataProxy($user);
+    $this->secureUserDataProxy = new SecureUserDataProxy($user, $currentUserId);
     }
 
     public function getUserDetails(int $UserId): ?array
