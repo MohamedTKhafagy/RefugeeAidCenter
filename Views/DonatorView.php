@@ -1,4 +1,9 @@
 <!-- views/DonatorView.php -->
+<?php
+function renderDonatorView($donator) {
+    // Start output buffering
+    ob_start();
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +31,17 @@
         echo '<a href="' . $base_url . '/donations/makeDonation/' . $donator->getID() . '" class="btn btn-primary">Make a Donation</a>';
         ?>
     </div>
+    <div class="mb-3">
+    <?php
+        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        echo '<a href="' . $base_url . '/donators/viewDonations/' . $donator->getID() . '" class="btn btn-primary">View Your Donations</a>';
+        ?>
+    </div>
 </div>
 </body>
 
 </html>
+<?php
+    // End output buffering and return the content
+    return ob_get_clean();
+}

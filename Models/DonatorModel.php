@@ -15,7 +15,7 @@ class Donator extends User{
     //DirectedTo: 0 = Hospital, 1 = School, 2 = Shelter
     //Collection: 0 = No Collection Fee, 1 = Add Collection Fee (Default)
     //Currency: 0 = EGP (Default), 1 = USD, 2 = GBP
-    public function MakeDonation($Type,$Amount,$DirectedTo,$Collection=1,$currency=0){
+   /* public function MakeDonation($Type,$Amount,$DirectedTo,$Collection=1,$currency=0){
        $donation =new Donation($Type,$Amount,$DirectedTo,$Collection,$currency);
        $status = $donation->Donate();
        if($status){
@@ -24,7 +24,7 @@ class Donator extends User{
        else{
         return "Donation not successful";
        }
-    }
+    }*/
 
     public function GetInvoice(Donation $Donation){
         return $Donation->GenerateInvoice();
@@ -113,6 +113,27 @@ class Donator extends User{
         IsDeleted = 1
         WHERE Id = $id;";
         $db->query($sql);
+    }
+    public static function findDonationsById($id){
+        $db=DbConnection::getInstance();
+        $sql = "SELECT d.*
+                FROM donation d
+                JOIN donatordonation dd ON d.Id = dd.DonationId
+                WHERE dd.donatorId = $id;";
+        $rows=$db->fetchAll($sql);
+        $donations = [];
+        foreach($rows as $donation){
+            $donations[]= new Donation(
+                $donation["Id"],
+                $donation["Type"],
+                $donation["Amount"],
+                $donation["DirectedTo"],
+                $donation["Collection"],
+                $donation["Currency"],
+                $donation["State"]
+                );
+        }
+        return $donations ?? [];
     }
 }
 

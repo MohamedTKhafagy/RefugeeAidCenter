@@ -82,6 +82,7 @@ if ($segments[0] == 'donators') {
     $controller = new DonatorController();
     if (isset($segments[1]) && $segments[1] === 'add') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2])) $controller->findDonatorById($segments[2]);
+    else if(isset($segments[1])&&$segments[1]=='viewDonations' && isset($segments[2])) $controller->findDonationsById($segments[2]);
     else if(isset($segments[1])&&$segments[1]=='edit' && isset($segments[2])) $controller->edit($segments[2]);
     else if (isset($segments[1]) && $segments[1] === 'editDonator') $controller->editDonator((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if(isset($segments[1])&&$segments[1]=='delete' && isset($segments[2])) $controller->delete($segments[2]);
@@ -91,6 +92,9 @@ if ($segments[0] == 'donations') {
     $controller = new DonationController();
     if (isset($segments[1]) && $segments[1] === 'makeDonation') $controller->add((isset($_POST) && !empty($_POST)) ? $_POST : null);
     else if(isset($segments[1])&&$segments[1]=='view' && isset($segments[2]))$controller->findDonationById($segments[2]);
+    else if(isset($segments[1])&&$segments[1]=='complete' && isset($segments[2]))$controller->complete($segments[2]);
+    else if(isset($segments[1])&&$segments[1]=='fail' && isset($segments[2]))$controller->fail($segments[2]);
+    else if(isset($segments[1])&&$segments[1]=='undo' && isset($segments[2]))$controller->undo($segments[2]);
     else $controller->index();
 }
 

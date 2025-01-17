@@ -1,4 +1,5 @@
 <?php
+include_once "DonationsState.php";
 include_once "SingletonDB.php";
 include_once "DonationStrategy.php";
 include_once "MoneyDonationDecorator.php";
@@ -9,21 +10,60 @@ class Donation {
 
     private $Id;
     private DonationStrategy $DonationStrategy;
+    private DonationStates $state;
     private $Amount;
     private $Type;//Type: 0 = Money, 1 = Clothes, 2 = Food
     private $DirectedTo;//DirectedTo: 0 = Hospital, 1 = School, 2 = Shelter
     private $Collection;//Collection: 0 = No Collection Fee, 1 = Add Collection Fee (Default)
     private $currency;//Currency: 0 = EGP (Default), 1 = USD, 2 = GBP
+    private $failed = false;
 
-    public function __construct($Id,$Type,$Amount,$DirectedTo,$Collection=1,$currency=0){
+    public function __construct($Id,$Type,$Amount,$DirectedTo,$Collection,$currency,$state){
         $this->Id = $Id;
         $this->Type = $Type;
         $this->Amount = $Amount;
         $this->DirectedTo = $DirectedTo;
         $this->Collection = $Collection;
         $this->currency = $currency;
+        $this->setState($state);
         $this->InitializeDonationStrategy();
     }
+
+    public function NextState(){
+        if($this->state->getCurrentState()=="Completed"){
+            return;
+        }
+        $this->state->nextState($this,$this->failed);
+        if($this->state->getCurrentState()=="Completed"){
+            $this->Donate();
+        }
+        $this->updateState();  
+    }
+
+    public function setState($state){
+        if($state == "Failed"){
+            $this->state = new FailedState();
+        }
+        else if ($state == "Pending"){
+            $this->state = new PendingState();
+        }
+        else{
+            $this->state = new CompletedState();
+        }
+    }
+    public function getState(){
+        return $this->state->getCurrentState();
+    }
+
+    public function PrevState(){
+        if($this->getState()=="Failed"){
+            $failed = false;
+            $this->state->previousState($this,$this->failed);
+            $this->updateState();
+        }
+        $this->state->previousState($this,$this->failed);
+    }
+
     
     public function InitializeDonationStrategy(){
         if($this->Type == 0){//Money
@@ -130,13 +170,23 @@ class Donation {
     public function setDonationStrategy($DonationStrategy){
         $this->DonationStrategy = $DonationStrategy;
     }
+    public function setFailed($failed){
+        $this->failed = $failed;
+    }
 
     // Getter methods
     public function getID() {
         return $this->Id;
     }
     public function GenerateInvoice(){
-        return $this->DonationStrategy->Description();
+        if($this->state->getCurrentState()=="Completed"){
+            return $this->DonationStrategy->Description();
+        }
+        elseif($this->state->getCurrentState()=="Pending"){
+            return "This Donation is pending.";
+        }else{
+            return "This Donation Failed";
+        }
     }
     public function Donate(){
         return $this->DonationStrategy->Donate();
@@ -192,6 +242,7 @@ class Donation {
                 $donation["DirectedTo"],
                 $donation["Collection"],
                 $donation["Currency"],
+                $donation["State"]
                 );
         }
     }
@@ -209,17 +260,29 @@ class Donation {
                 $donation["DirectedTo"],
                 $donation["Collection"],
                 $donation["Currency"],
+                $donation["State"]
                 );
         }
         return $donations ?? [];
     
     }
+    public function updateState(){
+        $db=DbConnection::getInstance();
+        $state = $this->state->getCurrentState();
+        $sql = "
+        UPDATE Donation
+        SET State = '$state'
+        WHERE id = $this->Id;
+        ";
+        $db->query($sql);
+    }
     
     public function save(){
         $db=DbConnection::getInstance();
+        $state = $this->state->getCurrentState();
         $sql = "
-        INSERT INTO Donation (Amount, Type, DirectedTo, Collection, Currency)
-        VALUES ($this->Amount, $this->Type, $this->DirectedTo, $this->Collection, $this->currency)
+        INSERT INTO Donation (Amount, Type, DirectedTo, Collection, Currency, State)
+        VALUES ($this->Amount, $this->Type, $this->DirectedTo, $this->Collection, $this->currency, '$state')
         ";
         $db->query($sql);
         $sql ="SELECT LAST_INSERT_ID() AS last;";
