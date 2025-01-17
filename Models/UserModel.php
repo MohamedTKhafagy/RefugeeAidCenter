@@ -1,8 +1,9 @@
 <?php
+
 require_once "Observer.php";
-abstract class User implements Observer 
-{
-    private static $Addressfile = __DIR__ . '/../data/Addresses.txt'; // Path to Addresses text file
+require_once __DIR__ . "/../SingletonDB.php";
+
+abstract class User  implements Observer{
 
     // User properties
     protected $Id;
@@ -14,9 +15,7 @@ abstract class User implements Observer
     protected $Nationality;
     protected $Type; //0: Refugee, 1: Donator, 2: Volunteer, 3: Social Worker, 4: Doctor, 5: Nurse, 6: Teacher  
     protected $Email;
-    protected $Preference; // Communication Preference (SMS, Email) 0: Email, 1: SMS
-    protected $observer;
-    protected $message;
+    protected $Preference; // Some preferences specific to the user
 
     // Constructor to initialize user data
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
@@ -34,7 +33,6 @@ abstract class User implements Observer
     }
 
 
-    abstract public function RegisterEvent();
     abstract public function Update($Message);
 
 
@@ -50,19 +48,27 @@ abstract class User implements Observer
         return $this->Name;
     }
 
+
     public function getAge()
     {
         return $this->Age;
     }
+
 
     public function getGender()
     {
         return $this->Gender;
     }
 
+
     public function getNationality()
     {
         return $this->Nationality;
+    }
+
+    public function getUserId()
+    {
+        return $this->Id;
     }
 
     public function getID()
