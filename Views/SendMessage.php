@@ -83,52 +83,51 @@
 <body>
     <h1>Send Communication Message</h1>
    
-    <form action= '<?php echo $base_url; ?>/communication/send' method="POST">
-        <div class="form-group">
-            <label for="MessageBody">Message:</label>
-            <textarea name="MessageBody" id="MessageBody" required></textarea>
-        </div>
+    <form action="/RefugeeAidCenter/communication/send" method="POST">
+    <div class="form-group">
+        <label for="EventId">Event:</label>
+        <input type="number" name="EventId" id="EventId" placeholder="Enter Event ID" required />
+    </div>
 
-        <div class="form-group">
-            <label for="Type">Communication Type:</label>
-            <select name="Type" id="Type" required>
-                <option value="SMS">SMS</option>
-                <option value="Email">Email</option>
-            </select>
-        </div>
+    <div class="form-group">
+        <label for="MessageBody">Message:</label>
+        <textarea name="MessageBody" id="MessageBody" placeholder="Enter the message to be sent" required></textarea>
+    </div>
 
-        <div class="form-group hidden" id="smsFields">
-            <label for="PhoneNumber" class="toggle-label">Phone Number (for SMS):</label>
-            <input type="text" name="PhoneNumber" id="PhoneNumber" placeholder="Enter recipient's phone number" />
-        </div>
+    <div class="form-group" id="subjectField">
+        <label for="Subject">Email Subject:</label>
+        <input type="text" name="Subject" id="Subject" placeholder="Enter subject for email" />
+    </div>
 
-        <div class="form-group hidden" id="emailFields">
-            <label for="Email" class="toggle-label">Email Address:</label>
-            <input type="email" name="Email" id="Email" placeholder="Enter recipient's email address" required />
-            <label for="Subject" class="toggle-label">Email Subject:</label>
-            <input type="text" name="Subject" id="Subject" placeholder="Enter email subject" required />
-        </div>
+    <div class="form-group">
+        <label for="Type">Communication Type:</label>
+        <select name="Type" id="Type" required>
+            <option value="SMS">SMS</option>
+            <option value="Email">Email</option>
+        </select>
+    </div>
 
-        <div class="form-group">
-            <input type="submit" value="Send Message" />
-        </div>
+    <div class="form-group">
+        <input type="submit" value="Send Message to Event Users" />
+    </div>
     </form>
 
     <script>
         const typeSelect = document.getElementById('Type');
-        const smsFields = document.getElementById('smsFields');
-        const emailFields = document.getElementById('emailFields');
+        const subjectField = document.getElementById('subjectField');
 
         typeSelect.addEventListener('change', function () {
             const value = this.value;
 
             if (value === 'SMS') {
-                smsFields.classList.remove('hidden');
-                emailFields.classList.add('hidden');
+                subjectField.classList.add('hidden'); // Hide subject field for SMS
             } else if (value === 'Email') {
-                emailFields.classList.remove('hidden');
-                smsFields.classList.add('hidden');
+                subjectField.classList.remove('hidden'); // Show subject field for Email
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            typeSelect.dispatchEvent(new Event('change'));
         });
     </script>
 

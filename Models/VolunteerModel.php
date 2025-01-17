@@ -1,17 +1,110 @@
 <?php
 require_once 'UserModel.php';
 require_once 'DBInit.php';
+require_once 'Skill.php';
 
 class Volunteer extends User
 {
-    private $Skills;
-    private $Availability;
+    private $availability;
+    private $skills = [];
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $Skills, $Availability)
+
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $Skills, $Availability)
     {
-        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
-        $this->Skills = $Skills;
-        $this->Availability = $Availability;
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference);
+        $this->availability = $Availability;
+        $this->skills = $Skills;
+        if ($Id) {
+            $this->loadSkills();
+        }
+    }
+
+    public function addSkill($skillId)
+    {
+        if (!$this->Id) {
+            throw new Exception("Volunteer must be saved before adding skills");
+        }
+
+        $db = DbConnection::getInstance();
+        $sql = "INSERT IGNORE INTO Volunteer_Skills (volunteer_id, skill_id) 
+                VALUES ($this->Id, $skillId)";
+        $db->query($sql);
+        $this->loadSkills();
+    }
+
+    public function removeSkill($skillId)
+    {
+        if (!$this->Id) return;
+
+        $db = DbConnection::getInstance();
+        $sql = "DELETE FROM Volunteer_Skills WHERE volunteer_id = $this->Id AND skill_id = $skillId";
+        $db->query($sql);
+        $this->loadSkills();
+    }
+
+    public function getSkills()
+    {
+        return $this->skills;
+    }
+
+    public function getAvailability()
+    {
+        $days = [];
+        $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $availability = (int)$this->availability;
+
+        for ($i = 0; $i < 7; $i++) {
+            if ($availability & (1 << $i)) {
+                $days[] = $dayNames[$i];
+            }
+        }
+
+        return implode(', ', $days);
+    }
+
+    public function setAvailability($days)
+    {
+        $bits = 0;
+        $dayMap = [
+            'Sunday' => 0,
+            'Monday' => 1,
+            'Tuesday' => 2,
+            'Wednesday' => 3,
+            'Thursday' => 4,
+            'Friday' => 5,
+            'Saturday' => 6
+        ];
+
+        if (is_string($days)) {
+            $days = [$days];
+        }
+
+        foreach ($days as $day) {
+            if (isset($dayMap[$day])) {
+                $bits |= (1 << $dayMap[$day]);
+            }
+        }
+
+        $this->availability = $bits;
+    }
+
+    public function isAvailableOn($day)
+    {
+        $dayMap = [
+            'Sunday' => 0,
+            'Monday' => 1,
+            'Tuesday' => 2,
+            'Wednesday' => 3,
+            'Thursday' => 4,
+            'Friday' => 5,
+            'Saturday' => 6
+        ];
+
+        if (!isset($dayMap[$day])) {
+            return false;
+        }
+
+        return ($this->availability & (1 << $dayMap[$day])) !== 0;
     }
 
     public function RegisterEvent()
@@ -19,27 +112,12 @@ class Volunteer extends User
         echo "Volunteer has registered for an event.";
     }
 
-    public function Update($message)
-    {
-        echo "Updating volunteer information.";
-    }
 
-    // Getter for Skills
-    public function getSkills()
-    {
-        return $this->Skills;
-    }
-
-    // Getter for Availability
-    public function getAvailability()
-    {
-        return $this->Availability;
-    }
 
     public static function findById($id)
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT u.*, v.Skills, v.Availability 
+        $sql = "SELECT u.*, v.Availability 
                 FROM User u 
                 JOIN Volunteer v ON u.Id = v.VolunteerId 
                 WHERE u.Id = $id AND u.Type = 2 AND u.IsDeleted = 0;";
@@ -55,8 +133,9 @@ class Volunteer extends User
                 $volunteer["Nationality"],
                 $volunteer["Type"],
                 $volunteer["Email"],
+                null,
                 $volunteer["Preference"],
-                $volunteer["Skills"],
+                null,
                 $volunteer["Availability"]
             );
         }
@@ -66,7 +145,7 @@ class Volunteer extends User
     public static function all()
     {
         $db = DbConnection::getInstance();
-        $sql = "SELECT u.*, v.Skills, v.Availability 
+        $sql = "SELECT u.*, v.Availability 
                 FROM User u 
                 JOIN Volunteer v ON u.Id = v.VolunteerId 
                 WHERE u.Type = 2 AND u.IsDeleted = 0;";
@@ -83,82 +162,126 @@ class Volunteer extends User
                 $volunteer["Nationality"],
                 $volunteer["Type"],
                 $volunteer["Email"],
+                null,
                 $volunteer["Preference"],
-                $volunteer["Skills"],
+                null,
                 $volunteer["Availability"]
             );
         }
         return $volunteers ?? [];
     }
 
+    protected function loadSkills()
+    {
+        if (!$this->Id) return;
+
+        $db = DbConnection::getInstance();
+        $sql = "SELECT s.id, s.name, sc.name as category 
+                FROM Skills s 
+                JOIN Volunteer_Skills vs ON s.id = vs.skill_id 
+                JOIN SkillCategories sc ON s.category_id = sc.id
+                WHERE vs.volunteer_id = ?";
+        $this->skills = $db->fetchAll($sql, [$this->Id]);
+    }
+
     public function save()
     {
-        $db = DbConnection::getInstance();
-        // $db->beginTransaction();
         try {
-            $sql = "
-            INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference)
-            VALUES ('$this->Name', $this->Age, '$this->Gender', '$this->Address', '$this->Phone', '$this->Nationality', $this->Type, '$this->Email', '$this->Preference')
-            ";
+            $db = DbConnection::getInstance();
+            $userId = parent::save();
+            if ($userId == -1) return -1;
+            $sql = "INSERT INTO Volunteer (VolunteerId, Availability)
+                    VALUES ($this->Id, " . $this->availability . ")
+                    ON DUPLICATE KEY UPDATE Availability = " . $this->availability;
             $db->query($sql);
 
-            $sql = "SELECT LAST_INSERT_ID() AS last;";
-            $rows = $db->fetchAll($sql);
-            foreach ($rows as $row) {
-                $userId = $row["last"];
+            foreach ($this->skills as $skillName) {
+                if (empty($skillName)) continue;
+                $skill = Skill::findByName($skillName);
+                if (!$skill) {
+                    $categoryId = Skill::getCategoryIdByName($skillName);
+                    if (!$categoryId) {
+                        $categoryId = Skill::getCategoryIdByName('Other');
+                    }
+                    $skill = new Skill($skillName, $categoryId, 'Skill for ' . $skillName);
+                    $skill->save();
+                }
+                $this->addSkill($skill->getId());
             }
 
-            $sql = "
-            INSERT INTO Volunteer (VolunteerId, Skills, Availability)
-            VALUES ($userId, '$this->Skills', '$this->Availability')
-            ";
-            $db->query($sql);
-
-            return $this->findById($userId);
+            return $this->Id;
         } catch (Exception $e) {
             throw $e;
         }
     }
 
-    public static function editById($id, $volunteer)
+    public function Update($data)
     {
+        parent::Update($data);
         $db = DbConnection::getInstance();
-        // $db->beginTransaction();
-        try {
-            $sql = "UPDATE User
-            SET 
-            Name = '$volunteer->Name',
-            Age = $volunteer->Age,
-            Gender = '$volunteer->Gender',
-            Address = '$volunteer->Address',
-            Phone = '$volunteer->Phone',
-            Nationality = '$volunteer->Nationality',
-            Type = $volunteer->Type,
-            Email = '$volunteer->Email',
-            Preference = '$volunteer->Preference'
-            WHERE Id = $id;";
-            $db->query($sql);
+        $av = $data['Availability'];
+        $sql = "UPDATE Volunteer SET Availability = $av WHERE VolunteerId = $this->Id";
+        $db->query($sql);
+        if (isset($data['skills'])) {
+            $db->query("DELETE FROM Volunteer_Skills WHERE volunteer_id = " . $data['Id']);
+            foreach ($data['skills'] as $skillName) {
+                if (empty($skillName)) continue;
 
-            $sql = "UPDATE Volunteer
-            SET 
-            Skills = '$volunteer->Skills',
-            Availability = '$volunteer->Availability'
-            WHERE VolunteerId = $id;";
-            $db->query($sql);
-        } catch (Exception $e) {
+                $skill = Skill::findByName($skillName);
+                if (!$skill) {
+                    $categoryId = Skill::getCategoryIdByName($skillName);
+                    if (!$categoryId) {
+                        $categoryId = Skill::getCategoryIdByName('Other');
+                    }
 
-            throw $e;
+                    $skill = new Skill($skillName, $categoryId, 'Skill for ' . $skillName);
+                    $skill->save();
+                }
+                $this->addSkill($skill->getId());
+            }
         }
     }
 
     public static function deleteById($id)
     {
         $db = DbConnection::getInstance();
-        $sql = "UPDATE User
-        SET
-        IsDeleted = 1
-        WHERE Id = $id;";
-        $db->query($sql);
+
+        try {
+            // Start transaction
+            $db->query("START TRANSACTION");
+
+            // Delete volunteer's skills
+            $db->query("DELETE FROM Volunteer_Skills WHERE volunteer_id = ?", [$id]);
+
+            // Mark volunteer as deleted in User table
+            $db->query("UPDATE User SET IsDeleted = 1 WHERE Id = ?", [$id]);
+
+            // Mark volunteer as deleted in Volunteer table
+            $db->query("UPDATE Volunteer SET IsDeleted = 1 WHERE VolunteerId = ?", [$id]);
+
+            // Commit transaction
+            $db->query("COMMIT");
+            return true;
+        } catch (Exception $e) {
+            // Rollback on error
+            $db->query("ROLLBACK");
+            throw $e;
+        }
+    }
+
+
+    public static function emailExists($email, $excludeId = null)
+    {
+        $db = DbConnection::getInstance();
+        $sql = "SELECT COUNT(*) as count FROM User WHERE Email = ? AND IsDeleted = 0";
+        $params = [$email];
+
+        if ($excludeId !== null) {
+            $sql .= " AND Id != ?";
+            $params[] = $excludeId;
+        }
+
+        $result = $db->fetchAll($sql, $params);
+        return $result[0]['count'] > 0;
     }
 }
-?>

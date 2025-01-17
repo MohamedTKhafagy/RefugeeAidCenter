@@ -1,5 +1,10 @@
 <?php
 require_once __DIR__ . '/../Models/DonatorModel.php';
+include __DIR__ . '/../Views/DonatorDonationsList.php';
+include __DIR__ . '/../Views/DonatorsView.php';
+include __DIR__ . '/../Views/DonatorView.php';
+include __DIR__ . '/../Views/AddDonatorView.php';
+include __DIR__ . '/../Views/EditDonatorView.php';
 
 
 class DonatorController
@@ -8,7 +13,7 @@ class DonatorController
     public function index()
     {
         $donators = Donator::all();
-        require 'Views/DonatorsView.php';
+        echo renderDonatorsView($donators);
     }
 
     public function add($data = null)
@@ -20,7 +25,8 @@ class DonatorController
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/donators');
         } else {
-            require 'Views/AddDonatorView.php';
+            echo renderAddDonatorView();
+           // require 'Views/AddDonatorView.php';
         }
     }
 
@@ -36,6 +42,7 @@ class DonatorController
             $data['Nationality'],
             1,
             $data['Email'],
+            null,
             $data['Preference']
         );
         $donator->save();
@@ -52,6 +59,7 @@ class DonatorController
             $data['Nationality'],
             1,
             $data['Email'],
+            null,
             $data['Preference']
         );
         Donator::editById($data['Id'], $donator);
@@ -61,7 +69,8 @@ class DonatorController
 
     public function edit($id){
             $donator = Donator::findById($id);
-            require 'Views/EditDonatorView.php';
+            echo renderEditDonatorView($donator);
+            //require 'Views/EditDonatorView.php';
     }
     public function delete($id){
         Donator::deleteById($id);
@@ -72,6 +81,13 @@ class DonatorController
     public function findDonatorById($id)
     {
         $donator = Donator::findById($id);
-        require 'Views/DonatorView.php';
+        echo renderDonatorView($donator);
+    }
+
+    public function findDonationsById(){
+        session_start();
+        $userid = $_SESSION['user']['id'];
+        $donations = Donator::findDonationsById($userid);
+        echo renderDonatorDonationsView($donations);
     }
 }

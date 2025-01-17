@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../Models/DonationModel.php';
 require_once __DIR__ . '/../Models/DonatorModel.php';
-
+include __DIR__ . '/../Views/DonationsView.php';
+include __DIR__ . '/../Views/DonationView.php';
 
 class DonationController
 {
@@ -9,7 +10,21 @@ class DonationController
     public function index()
     {
         $donations = Donation::all();
-        require 'Views/DonationsView.php';
+         // Initialize an array to store donators associated with donations
+        $donatorsWithDonations = [];
+
+        // Loop through each donation to find the associated donator
+        foreach ($donations as $donation) {
+            $donatorId = $donation->findDonatorId();
+            $donator = Donator::findById($donatorId);
+            // Add the donator and their donation to the array
+            $donatorsWithDonations[] = [
+                'donation' => $donation,
+                'donator' => $donator,
+            ];
+        }
+        echo renderDonationManagementView($donatorsWithDonations);
+        //require 'Views/DonationsView.php';
     }
     private function extractLastNumber($url)
     {
@@ -21,12 +36,14 @@ class DonationController
     }
     public function add($data = null)
     {
+        session_start();
+        $userid = $_SESSION['user']['id'];
         if ($data) {
             //validation
             $donation = $this->saveDonation($data);
-            $donation->Donate();
+            //$donation->Donate();
             // Get the current URL
-            $donation->recordTransaction($data['DonatorId']);
+            $donation->recordTransaction($userid);
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             header('Location: ' . $base_url . '/donations/view/' . $donation->getID());
         } else {
@@ -42,7 +59,8 @@ class DonationController
             $data['Amount'] ?? null,
             $data['DirectedTo'] ?? null,
             $data['CollectionFee'] ?? null,
-            $data['currency'] ?? null
+            $data['currency'] ?? null,
+            "Pending"
         );
         $donation=$donation->save();
         return $donation;
@@ -54,6 +72,23 @@ class DonationController
         $donatorId = $donation->findDonatorId();
         $donator = Donator::findById($donatorId); 
         $Invoice = $donation->GenerateInvoice();
-        require 'Views/DonationView.php';
+        echo renderDonationView($donation, $donator, $Invoice);
+    }
+
+    public function complete($id){
+        $donation = Donation::findById($id);
+        $donation->NextState();
+        $this->index();
+    }
+    public function fail($id){
+        $donation = Donation::findById($id);
+        $donation->setFailed(true);
+        $donation->NextState();
+        $this->index();
+    }
+    public function undo($id){
+        $donation = Donation::findById($id);
+        $donation->PrevState();
+        $this->index();
     }
 }

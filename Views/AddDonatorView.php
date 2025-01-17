@@ -1,3 +1,8 @@
+<?php
+function renderAddDonatorView() {
+    // Start output buffering
+    ob_start();
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,3 +82,7 @@
 </div>
 </body>
 </html>
+<?php
+    // End output buffering and return the content
+    return ob_get_clean();
+}

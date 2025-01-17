@@ -6,7 +6,13 @@ class EventAdmin extends User{
 
     }
     public function RegisterEvent(Event $event){
+        foreach ($this->events as $existingEvent) {
+            if ($existingEvent->getId() === $event->getId()) {
+                return "Event with this ID already exists";
+            }
+        }
         $this->events[] = $event;
+        return "Event registered successfully";
     }
     public function update($message){
         echo "EventAdmin received update: {$message}\n";

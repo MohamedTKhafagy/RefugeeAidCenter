@@ -12,14 +12,7 @@
     <form action="<?php echo $base_url; ?>/donations/makeDonation" method="POST">
         <!-- Hidden action field -->
         <input type="hidden" name="action" value="save">
-        <div class="form-group">
-            <?php 
-            $url = $_SERVER['REQUEST_URI'];
-            // Extract the last number in the URL
-            $DonatorId = $this->extractLastNumber($url);
-            ?>
-            <input hidden readonly type="text" name="DonatorId" id="DonatorId" value="<?php echo htmlspecialchars($DonatorId); ?>" class="form-control" required>
-        </div>
+
         
 
         <div class="form-group">

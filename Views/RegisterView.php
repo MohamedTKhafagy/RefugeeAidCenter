@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,26 +50,6 @@
             border-radius: 4px;
         }
 
-        .days {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .day {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 5px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 5px;
-            background-color: #f0f0f0;
-        }
-
-        .form-group .day input {
-            margin-left: 5px;
-        }
-
         .hidden {
             display: none;
         }
@@ -86,6 +67,13 @@
 
         button:hover {
             background-color: #0056b3;
+        }
+
+        .skill-entry {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -106,10 +94,19 @@
                 </select>
             </div>
 
-
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
             </div>
 
             <div class="form-group">
@@ -147,10 +144,6 @@
                 <input type="text" id="nationality" name="nationality" required>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
 
             <div class="form-group">
                 <label for="passportNumber">Passport Number:</label>
@@ -192,47 +185,59 @@
             <!-- Volunteer-Specific Fields -->
             <div id="volunteerFields" class="hidden">
                 <div class="form-group">
-                    <label for="skills">Skills:</label>
-                    <select name="skills" id="skills" class="form-control" required>
-                        <option value="Medical">Medical</option>
-                        <option value="Teaching">Teaching</option>
-                        <option value="Counseling">Counseling</option>
-                        <option value="Translation">Translation</option>
-                        <option value="Logistics">Logistics</option>
-                        <option value="Fundraising">Fundraising</option>
-                    </select>
+                    <label>Skills:</label>
+                    <div id="skillsContainer">
+                        <div class="skill-entry">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <select name="skills[]" class="form-control">
+                                        <option value="">Select a skill</option>
+                                        <option value="Medical">Medical</option>
+                                        <option value="Teaching">Teaching</option>
+                                        <option value="Counseling">Counseling</option>
+                                        <option value="Translation">Translation</option>
+                                        <option value="Logistics">Logistics</option>
+                                        <option value="Fundraising">Fundraising</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-block remove-skill">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm mt-2" id="addSkill">Add Another Skill</button>
                 </div>
+
                 <div class="form-group">
                     <label>Availability:</label>
-                    <div class="days">
-                        <div class="day">
-                            <label for="Saturday">Sat</label>
-                            <input type="checkbox" name="availability[]" id="Saturday" value="Saturday">
-                        </div>
-                        <div class="day">
-                            <label for="Sunday">Sun</label>
-                            <input type="checkbox" name="availability[]" id="Sunday" value="Sunday">
-                        </div>
-                        <div class="day">
-                            <label for="Monday">Mon</label>
-                            <input type="checkbox" name="availability[]" id="Monday" value="Monday">
-                        </div>
-                        <div class="day">
-                            <label for="Tuesday">Tue</label>
-                            <input type="checkbox" name="availability[]" id="Tuesday" value="Tuesday">
-                        </div>
-                        <div class="day">
-                            <label for="Wednesday">Wed</label>
-                            <input type="checkbox" name="availability[]" id="Wednesday" value="Wednesday">
-                        </div>
-                        <div class="day">
-                            <label for="Thursday">Thu</label>
-                            <input type="checkbox" name="availability[]" id="Thursday" value="Thursday">
-                        </div>
-                        <div class="day">
-                            <label for="Friday">Fri</label>
-                            <input type="checkbox" name="availability[]" id="Friday" value="Friday">
-                        </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="sunday" name="Availability[]" value="Sunday">
+                        <label class="custom-control-label" for="sunday">Sunday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="monday" name="Availability[]" value="Monday">
+                        <label class="custom-control-label" for="monday">Monday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="tuesday" name="Availability[]" value="Tuesday">
+                        <label class="custom-control-label" for="tuesday">Tuesday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="wednesday" name="Availability[]" value="Wednesday">
+                        <label class="custom-control-label" for="wednesday">Wednesday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="thursday" name="Availability[]" value="Thursday">
+                        <label class="custom-control-label" for="thursday">Thursday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="friday" name="Availability[]" value="Friday">
+                        <label class="custom-control-label" for="friday">Friday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="saturday" name="Availability[]" value="Saturday">
+                        <label class="custom-control-label" for="saturday">Saturday</label>
                     </div>
                 </div>
             </div>
@@ -261,8 +266,6 @@
             const type = document.getElementById("type").value;
             const passportNumber = document.getElementById("passportNumber");
 
-            console.log(type);
-
             if (type === "refugee") {
                 if (passportNumber.value.trim() === "") {
                     alert("Passport Number is required for Refugees.");
@@ -271,14 +274,31 @@
                 }
             }
 
-            const checkboxes = document.querySelectorAll('#volunteerFields input[type="checkbox"]');
-            if (type === "volunteer" && !Array.from(checkboxes).some(checkbox => checkbox.checked)) {
-                alert("Please select at least one availability day for Volunteers.");
-                return false;
-            }
-
             return true;
         }
+
+        // Add skill functionality
+        document.getElementById('addSkill').addEventListener('click', function() {
+            const container = document.getElementById('skillsContainer');
+            const newSkill = container.children[0].cloneNode(true);
+
+            // Clear selections in the new element
+            newSkill.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+
+            // Add remove button functionality
+            newSkill.querySelector('.remove-skill').addEventListener('click', function() {
+                this.closest('.skill-entry').remove();
+            });
+
+            container.appendChild(newSkill);
+        });
+
+        // Add remove functionality to the initial skill entry
+        document.querySelector('.remove-skill').addEventListener('click', function() {
+            if (document.querySelectorAll('.skill-entry').length > 1) {
+                this.closest('.skill-entry').remove();
+            }
+        });
     </script>
 </body>
 

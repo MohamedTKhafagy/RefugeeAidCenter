@@ -3,21 +3,24 @@ interface CommunicationStrategy {
     public function notify();
 }
 
+
 class EmailCommunication implements CommunicationStrategy {
     private $email;
     private $subject;
-    private $messageBody;
+    private $message;
 
-    public function __construct($email, $subject, $messageBody) {
+    public function __construct($email, $subject, $message) {
         $this->email = $email;
         $this->subject = $subject;
-        $this->messageBody = $messageBody;
+        $this->message = $message;
     }
 
     public function notify() {
-        echo "Sending Email to {$this->email} with subject: '{$this->subject}' and message: '{$this->messageBody}'\n";
+        $mailer = new MailerFacade();
+        $mailer->sendEmail($this->email, $this->subject, $this->message);
     }
 }
+
 
 class SMSCommunication implements CommunicationStrategy {
     private $phoneNumber;
