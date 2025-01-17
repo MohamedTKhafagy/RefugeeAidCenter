@@ -7,9 +7,9 @@ class Volunteer extends User
     private $Skills;
     private $Availability;
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference, $Skills, $Availability)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $Skills, $Availability)
     {
-        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference);
         $this->Skills = $Skills;
         $this->Availability = $Availability;
     }
@@ -55,6 +55,7 @@ class Volunteer extends User
                 $volunteer["Nationality"],
                 $volunteer["Type"],
                 $volunteer["Email"],
+                null,
                 $volunteer["Preference"],
                 $volunteer["Skills"],
                 $volunteer["Availability"]
@@ -98,8 +99,8 @@ class Volunteer extends User
         // $db->beginTransaction();
         try {
             $sql = "
-            INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference)
-            VALUES ('$this->Name', $this->Age, '$this->Gender', '$this->Address', '$this->Phone', '$this->Nationality', $this->Type, '$this->Email', '$this->Preference')
+            INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Password, Preference)
+            VALUES ('$this->Name', $this->Age, '$this->Gender', '$this->Address', '$this->Phone', '$this->Nationality', $this->Type, '$this->Email', '$this->Password', '$this->Preference')
             ";
             $db->query($sql);
 
@@ -107,6 +108,7 @@ class Volunteer extends User
             $rows = $db->fetchAll($sql);
             foreach ($rows as $row) {
                 $userId = $row["last"];
+                $this->Id = $userId;
             }
 
             $sql = "
@@ -115,7 +117,7 @@ class Volunteer extends User
             ";
             $db->query($sql);
 
-            return $this->findById($userId);
+            return $this->Id;
         } catch (Exception $e) {
             throw $e;
         }

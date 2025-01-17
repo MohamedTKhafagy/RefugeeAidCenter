@@ -10,7 +10,7 @@ class Adult extends Refugee {
     private $Family = []; // Array of Refugee IDs 
 
     public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare, $AdultID, $Profession, $Education, $Family = []) {
-        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $RefugeeID, $PassportNumber, $Advisor, $Shelter, $HealthCare);
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference, $PassportNumber, $Advisor, $Shelter, $HealthCare, $RefugeeID);
         $this->AdultID = $AdultID;
         $this->Profession = $Profession;
         $this->Education = $Education;
@@ -34,6 +34,7 @@ class Adult extends Refugee {
             $this->AdultID = $lastId;
             $this->saveFamily();
         }
+        return $this->Id;
     }
 
     private function saveFamily() {

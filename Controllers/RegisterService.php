@@ -45,23 +45,6 @@ class RegisterService
         
         return $errors;
     }
-
-    public function getRegisterationStrategy($type)
-    {
-        switch ($type) {
-            case 'volunteer':
-                return new VolunteerAuthentication();
-            case 'donator':
-                return new DonatorAuthentication();
-            case 'refugee':
-            case 'adult':
-                return new RefugeeAuthentication();
-            case 'child':
-                return new ChildAuthentication();
-            default:
-                throw new Exception("Invalid user type.");
-        }
-    }
 }
 
 ?>

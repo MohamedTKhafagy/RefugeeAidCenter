@@ -6,9 +6,9 @@ class Donator extends User{
 
     //private static $file = __DIR__ . '/../data/donators.txt'; // Path to text file
 
-    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference)
+    public function __construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference)
     {
-        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Preference);
+        parent::__construct($Id, $Name, $Age, $Gender, $Address, $Phone, $Nationality, $Type, $Email, $Password, $Preference);
     }
 
     //Type: 0 = Money, 1 = Clothes, 2 = Food
@@ -54,6 +54,7 @@ class Donator extends User{
                 $donor["Nationality"],
                 $donor["Type"],
                 $donor["Email"],
+                null,
                 $donor["Preference"]);
         }
     }
@@ -74,6 +75,7 @@ class Donator extends User{
                 $donor["Nationality"],
                 $donor["Type"],
                 $donor["Email"],
+                null,
                 $donor["Preference"]);
         }
         return $donators ?? [];
@@ -83,10 +85,16 @@ class Donator extends User{
     public function save(){
         $db=DbConnection::getInstance();
         $sql = "
-        INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Preference)
-        VALUES ('$this->Name', $this->Age, $this->Gender, $this->Address, '$this->Phone', '$this->Nationality', 1, '$this->Email', $this->Preference)
+        INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Password, Preference)
+        VALUES ('$this->Name', $this->Age, $this->Gender, $this->Address, '$this->Phone', '$this->Nationality', 1, '$this->Email', '$this->Password', $this->Preference)
         ";
         $db->query($sql);
+        $sql ="SELECT LAST_INSERT_ID() AS last;";
+        $rows=$db->fetchAll($sql);
+        foreach($rows as $row){
+            $this->Id = $row["last"];
+        }
+        return $this->Id;
     }
 
     public static function editById($id,$donor){

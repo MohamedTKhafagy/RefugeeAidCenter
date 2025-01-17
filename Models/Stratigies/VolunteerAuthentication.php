@@ -24,7 +24,7 @@ class VolunteerAuthentication implements iUserAuthentication
             $availability
         );
 
-        $volunteer->save();
+        return $volunteer->save();
     }
 
     public function validate($data)

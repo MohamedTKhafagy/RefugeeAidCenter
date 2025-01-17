@@ -155,14 +155,13 @@ abstract class User implements Observer
         }
     }
     public function save() {
-        echo $this->Age;
         $db = DbConnection::getInstance();
         $query = "INSERT INTO User (Name, Age, Gender, Address, Phone, Nationality, Type, Email, Password, Preference) VALUES ('$this->Name', '$this->Age', '$this->Gender', '1', '$this->Phone', '$this->Nationality', '$this->Type', '$this->Email', '$this->Password', '$this->Preference')";
         $db->query($query);
         $sql ="SELECT LAST_INSERT_ID() AS last;";
         $rows=$db->fetchAll($sql);
         foreach($rows as $row){
-            echo $row["last"];
+            $this->Id = $row["last"];
             return $row["last"];
         }
         return -1;

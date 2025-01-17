@@ -6,6 +6,7 @@ require_once __DIR__ . '/../Models/Stratigies/RefugeeAuthentication.php';
 require_once __DIR__ . '/../Models/Stratigies/ChildAuthentication.php';
 require_once __DIR__ . "/../Models/UserModel.php";
 require_once __DIR__ . "/RegisterService.php";
+require_once __DIR__ . "/../Models/Stratigies/RegisterationFactory.php";
 
 class RegisterController
 {
@@ -25,14 +26,19 @@ class RegisterController
     {
         $registerService = new RegisterService();
         $commonErrors = $registerService->validateUserData($data);
-        $strategy = $registerService->getRegisterationStrategy($data['type']);
+        $strategy = RegisterationFactory::createStrategy($data['type']);
         $specificErrors = $strategy->validate($data);
         $errors = array_merge($commonErrors, $specificErrors);
         if (!empty($errors)) {
             require (!$admin ? 'Views/RegisterView.php' : 'Views/AddRefugeeView.php');
             return;
         }
-        $strategy->register($data);
+        $id = $strategy->register($data);
+        session_start();
+        $_SESSION['user'] = [
+            'id' => $id,
+            'type' => $data['type']
+        ];
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         header('Location: ' . $base_url . '/dashboard/' . $data['type']);
     }

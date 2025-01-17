@@ -43,6 +43,7 @@ class Refugee extends User
         $sql = "SELECT LAST_INSERT_ID() AS last;";
         $rows = $db->fetchAll($sql);
         foreach ($rows as $row) {
+            $this->RefugeeID = $row["last"];
             return $row["last"];
         }
         return -1;
