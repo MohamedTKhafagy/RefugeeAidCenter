@@ -1,34 +1,75 @@
 <?php
 require_once __DIR__ . '/../Models/VolunteerModel.php';
-
+require_once __DIR__ . '/../Views/VolunteerListView.php';
+require_once __DIR__ . '/../Views/AddVolunteerView.php';
 
 class VolunteerController
 {
+    public function __construct()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    private function checkAdminAccess()
+    {
+        if (
+            !isset($_SESSION['user']) ||
+            !isset($_SESSION['user']['type']) ||
+            $_SESSION['user']['type'] !== 'admin'
+        ) {
+            $_SESSION['error'] = "Access denied. Admin privileges required.";
+            header('Location: ' . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/login');
+            exit;
+        }
+    }
 
     // Display a list of all volunteers
     public function index()
     {
-        $volunteers = Volunteer::all(); // Retrieve all volunteers
-        require 'Views/VolunteerListView.php'; // Load view to display volunteers
+        $this->checkAdminAccess();
+        $volunteers = Volunteer::all();
+        echo renderVolunteerListView($volunteers);
     }
 
     // Display form to add a new volunteer or handle form submission
     public function add($data = null)
     {
-
+        $this->checkAdminAccess();
         if ($data) {
             $this->saveVolunteer($data);
             $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-            header('Location: ' . $base_url . '/volunteers'); // Redirect to list after adding
+            header('Location: ' . $base_url . '/volunteers');
         } else {
-            require 'Views/AddVolunteerView.php';
+            echo renderAddVolunteerView();
         }
     }
 
     // Save volunteer data
     public function saveVolunteer($data)
     {
+        $this->checkAdminAccess();
         try {
+            // Convert availability array to bit field
+            $availabilityBits = 0;
+            if (isset($data['Availability']) && is_array($data['Availability'])) {
+                $dayMap = [
+                    'Sunday' => 0,
+                    'Monday' => 1,
+                    'Tuesday' => 2,
+                    'Wednesday' => 3,
+                    'Thursday' => 4,
+                    'Friday' => 5,
+                    'Saturday' => 6
+                ];
+                foreach ($data['Availability'] as $day) {
+                    if (isset($dayMap[$day])) {
+                        $availabilityBits |= (1 << $dayMap[$day]);
+                    }
+                }
+            }
+
             // Create and save the volunteer
             $volunteer = new Volunteer(
                 null,
@@ -41,7 +82,7 @@ class VolunteerController
                 2,
                 $data['Email'],
                 $data['Preference'],
-                $data['Availability']
+                $availabilityBits
             );
             $volunteer->save();
 
@@ -73,7 +114,8 @@ class VolunteerController
             return $volunteer;
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            header('Location: ' . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/volunteers/add');
+            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+            header('Location: ' . $base_url . '/volunteers/add');
             exit;
         }
     }
@@ -81,70 +123,101 @@ class VolunteerController
     // Show details of a specific volunteer by ID
     public function showVolunteer($id)
     {
+        $this->checkAdminAccess();
         $volunteer = Volunteer::findById($id);
         require 'Views/VolunteerDetailView.php';
     }
 
     public function editVolunteer($data)
     {
-        $db = DbConnection::getInstance();
+        $this->checkAdminAccess();
+        try {
+            $db = DbConnection::getInstance();
 
-        // Create and update the volunteer
-        $volunteer = new Volunteer(
-            $data['Id'],
-            $data['Name'],
-            $data['Age'],
-            $data['Gender'],
-            $data['Address'],
-            $data['Phone'],
-            $data['Nationality'],
-            2,
-            $data['Email'],
-            $data['Preference'],
-            $data['Availability']
-        );
-        Volunteer::editById($data['Id'], $volunteer);
+            // Convert availability array to bit field
+            $availabilityBits = 0;
+            if (isset($data['Availability']) && is_array($data['Availability'])) {
+                $dayMap = [
+                    'Sunday' => 0,
+                    'Monday' => 1,
+                    'Tuesday' => 2,
+                    'Wednesday' => 3,
+                    'Thursday' => 4,
+                    'Friday' => 5,
+                    'Saturday' => 6
+                ];
+                foreach ($data['Availability'] as $day) {
+                    if (isset($dayMap[$day])) {
+                        $availabilityBits |= (1 << $dayMap[$day]);
+                    }
+                }
+            }
 
-        // Handle skills
-        if (isset($data['skills'])) {
-            // First remove all existing skills
-            $db->query("DELETE FROM Volunteer_Skills WHERE volunteer_id = " . $data['Id']);
+            // Create and update the volunteer
+            $volunteer = new Volunteer(
+                $data['Id'],
+                $data['Name'],
+                $data['Age'],
+                $data['Gender'],
+                $data['Address'],
+                $data['Phone'],
+                $data['Nationality'],
+                2,
+                $data['Email'],
+                $data['Preference'],
+                $availabilityBits
+            );
+            Volunteer::editById($data['Id'], $volunteer);
 
-            // Then add the new skills
-            foreach ($data['skills'] as $skillName) {
-                if (empty($skillName)) continue;
+            // Handle skills
+            if (isset($data['skills'])) {
+                // First remove all existing skills
+                $db->query("DELETE FROM Volunteer_Skills WHERE volunteer_id = " . $data['Id']);
 
-                // Find or create the skill
-                $skill = Skill::findByName($skillName);
-                if (!$skill) {
-                    // Get the category ID first
-                    $categoryId = Skill::getCategoryIdByName($skillName);
-                    if (!$categoryId) {
-                        // If category doesn't exist, use 'Other' category
-                        $categoryId = Skill::getCategoryIdByName('Other');
+                // Then add the new skills
+                foreach ($data['skills'] as $skillName) {
+                    if (empty($skillName)) continue;
+
+                    // Find or create the skill
+                    $skill = Skill::findByName($skillName);
+                    if (!$skill) {
+                        // Get the category ID first
+                        $categoryId = Skill::getCategoryIdByName($skillName);
+                        if (!$categoryId) {
+                            // If category doesn't exist, use 'Other' category
+                            $categoryId = Skill::getCategoryIdByName('Other');
+                        }
+
+                        $skill = new Skill($skillName, $categoryId, 'Skill for ' . $skillName);
+                        $skill->save();
                     }
 
-                    $skill = new Skill($skillName, $categoryId, 'Skill for ' . $skillName);
-                    $skill->save();
+                    // Add the skill to the volunteer
+                    $volunteer->addSkill($skill->getId());
                 }
-
-                // Add the skill to the volunteer
-                $volunteer->addSkill($skill->getId());
             }
-        }
 
-        $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        header('Location: ' . $base_url . '/volunteers');
+            $_SESSION['success'] = "Volunteer updated successfully";
+            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+            header('Location: ' . $base_url . '/volunteers');
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+            header('Location: ' . $base_url . '/volunteers/edit/' . $data['Id']);
+            exit;
+        }
     }
 
     public function edit($id)
     {
+        $this->checkAdminAccess();
         $volunteer = Volunteer::findById($id);
         require 'Views/EditVolunteerView.php';
     }
 
     public function delete($id)
     {
+        $this->checkAdminAccess();
         $db = DbConnection::getInstance();
 
         // Check if volunteer has any assigned tasks
@@ -161,8 +234,10 @@ class VolunteerController
         $base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         header('Location: ' . $base_url . '/volunteers');
     }
+
     public function findVolunteerById($id)
     {
+        $this->checkAdminAccess();
         $volunteer = Volunteer::findById($id);
         require 'Views/VolunteerDetailView.php';
     }
