@@ -205,20 +205,38 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="Availability">Availability:</label>
-                    <select name="availability" id="Availability" class="form-control" required>
-                        <option value="Monday">Monday</option>
-                        <option value="Tuesday">Tuesday</option>
-                        <option value="Wednesday">Wednesday</option>
-                        <option value="Thursday">Thursday</option>
-                        <option value="Friday">Friday</option>
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
-                    </select>
+                    <label>Availability:</label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="sunday" name="Availability[]" value="Sunday">
+                        <label class="custom-control-label" for="sunday">Sunday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="monday" name="Availability[]" value="Monday">
+                        <label class="custom-control-label" for="monday">Monday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="tuesday" name="Availability[]" value="Tuesday">
+                        <label class="custom-control-label" for="tuesday">Tuesday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="wednesday" name="Availability[]" value="Wednesday">
+                        <label class="custom-control-label" for="wednesday">Wednesday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="thursday" name="Availability[]" value="Thursday">
+                        <label class="custom-control-label" for="thursday">Thursday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="friday" name="Availability[]" value="Friday">
+                        <label class="custom-control-label" for="friday">Friday</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="saturday" name="Availability[]" value="Saturday">
+                        <label class="custom-control-label" for="saturday">Saturday</label>
+                    </div>
                 </div>
-            </div>
 
-            <button type="submit">Register</button>
+                <button type="submit">Register</button>
         </form>
         <?php
         if (isset($errors) && !empty($errors)) {

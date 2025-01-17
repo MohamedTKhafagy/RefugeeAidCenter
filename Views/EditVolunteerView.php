@@ -160,16 +160,22 @@
             </div>
 
             <div class="form-group">
-                <label for="Availability">Availability:</label>
-                <select name="Availability" id="Availability" class="form-control" required>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
+                <label>Availability:</label>
+                <?php
+                $availableDays = explode(', ', $volunteer->getAvailability());
+                $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                foreach ($days as $day):
+                ?>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox"
+                            class="custom-control-input"
+                            id="<?= strtolower($day) ?>"
+                            name="Availability[]"
+                            value="<?= $day ?>"
+                            <?= in_array($day, $availableDays) ? 'checked' : '' ?>>
+                        <label class="custom-control-label" for="<?= strtolower($day) ?>"><?= $day ?></label>
+                    </div>
+                <?php endforeach; ?>
             </div>
 
             <div class="btn-toolbar">

@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../Event.php';
+require_once __DIR__ . '/../DBInit.php';
+
 class TaskListView
 {
     private $tasks;
@@ -64,7 +67,7 @@ class TaskListView
             <div class="container mt-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Task Management</h2>
-                    <a href="<?= $this->baseUrl ?>/tasks/add" class="btn btn-primary">
+                    <a href="<?= $this->baseUrl ?>/tasks/wizard" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Create New Task
                     </a>
                 </div>
@@ -96,7 +99,7 @@ class TaskListView
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Associated Event</th>
                                     <th>Skills Required</th>
                                     <th>Hours</th>
                                     <th>Assigned To</th>
@@ -111,8 +114,33 @@ class TaskListView
                                         <td><?= htmlspecialchars($task->getName()) ?></td>
                                         <td>
                                             <?php
-                                            $description = htmlspecialchars($task->getDescription());
-                                            echo strlen($description) > 50 ? substr($description, 0, 47) . '...' : $description;
+                                            $eventId = $task->getEventId();
+                                            if ($eventId) {
+                                                $db = DbConnection::getInstance();
+                                                $sql = "SELECT * FROM Events WHERE id = ? AND is_deleted = 0";
+                                                $result = $db->fetchAll($sql, [$eventId]);
+
+                                                if (!empty($result)) {
+                                                    $eventData = $result[0];
+                                                    $event = new Event(
+                                                        $eventData['id'],
+                                                        $eventData['name'],
+                                                        $eventData['location'],
+                                                        $eventData['type'],
+                                                        $eventData['max_capacity'],
+                                                        $eventData['current_capacity'],
+                                                        $eventData['date'],
+                                                        [], // volunteers array
+                                                        []  // attendees array
+                                                    );
+                                                    echo '<a href="' . $this->baseUrl . '/events/details/' . $event->getId() . '">' .
+                                                        htmlspecialchars($event->getName()) . '</a>';
+                                                } else {
+                                                    echo '<span class="text-muted">Event not found</span>';
+                                                }
+                                            } else {
+                                                echo '<span class="text-muted">No event assigned</span>';
+                                            }
                                             ?>
                                         </td>
                                         <td>
@@ -147,6 +175,10 @@ class TaskListView
                                             <?php if (!$task->getVolunteerId()): ?>
                                                 <a href="<?= $this->baseUrl ?>/tasks/assign/<?= $task->getId() ?>" class="btn btn-sm btn-success" title="Assign Volunteer">
                                                     <i class="fas fa-user-plus"></i>
+                                                </a>
+                                            <?php elseif ($task->getStatus() !== 'completed'): ?>
+                                                <a href="<?= $this->baseUrl ?>/tasks/unassign/<?= $task->getId() ?>" class="btn btn-sm btn-warning" title="Unassign Volunteer" onclick="return confirm('Are you sure you want to unassign the volunteer from this task?');">
+                                                    <i class="fas fa-user-minus"></i>
                                                 </a>
                                             <?php endif; ?>
                                             <?php if ($task->getStatus() === 'in_progress'): ?>

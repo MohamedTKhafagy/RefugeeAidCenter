@@ -159,15 +159,7 @@
                     <?php if ($task->getVolunteerId()): ?>
                         <div class="form-group">
                             <label>Assigned Volunteer:</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" value="<?= htmlspecialchars($task->getVolunteerName()) ?> (#<?= htmlspecialchars($task->getVolunteerId()) ?>)" readonly>
-                                <div class="input-group-append">
-                                    <a href="/RefugeeAidCenter/tasks/unassign/<?= $task->getId() ?>" class="btn btn-warning"
-                                        onclick="return confirm('Are you sure you want to unassign this volunteer?')">
-                                        <i class="fas fa-user-minus"></i> Unassign
-                                    </a>
-                                </div>
-                            </div>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($task->getVolunteerName()) ?> (#<?= htmlspecialchars($task->getVolunteerId()) ?>)" readonly>
                         </div>
                     <?php endif; ?>
                 </div>
