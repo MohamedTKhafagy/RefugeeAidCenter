@@ -54,18 +54,4 @@ Received data: Array
     [Subject] => try
 )
 
-Type: SMS, MessageBody: q, PhoneNumber: 201550501495, Email: 20p8103@eng.asu.edu.eg, Subject: try
-Processing SMS to 201550501495.
-SMS sent successfully to 201550501495.
-Received data: Array
-(
-    [MessageBody] => ya zalem
-    [Type] => Email
-    [PhoneNumber] => 201550501495
-    [Email] => ahmedbehairy10@gmail.com
-    [Subject] => Nadin
-)
 
-Type: Email, MessageBody: ya zalem, PhoneNumber: 201550501495, Email: ahmedbehairy10@gmail.com, Subject: Nadin
-Processing Email to ahmedbehairy10@gmail.com.
-Email sent successfully to ahmedbehairy10@gmail.com.
